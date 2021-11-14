@@ -207,7 +207,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         return posicionMundo - (m_posicion - m_extension);
     }
 
-    void OnDrawGizmos()
+    void OnDrawGizmosSelected()
     {
         if (Vacio())
             Gizmos.color = Color.red;

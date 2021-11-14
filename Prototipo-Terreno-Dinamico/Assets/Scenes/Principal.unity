@@ -347,11 +347,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 50d71fe15cf447c459483df24e144eb1, type: 2}
   - {fileID: 11400000, guid: b1645e43f58ec564aaa77ed31271a00f, type: 2}
   - {fileID: 11400000, guid: 4f1445af549bf894ca38c868f5f61508, type: 2}
-  m_materialSeleccionado: 4
-  m_posicion: {x: 0, y: -50, z: 0}
-  anchoPlancha: 50
+  m_materialSeleccionado: 0
+  m_posicion: {x: 0, y: 19, z: 0}
+  anchoPlancha: 0
   tirar: 1
-  continuo: 0
+  continuo: 1
 --- !u!4 &1175692662
 Transform:
   m_ObjectHideFlags: 0
@@ -360,7 +360,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1175692660}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 50, y: 50, z: 50}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -398,7 +398,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_posicion: {x: 0, y: 0, z: 0}
-  m_extension: {x: 5, y: 5, z: 5}
+  m_alturaMinima: 0
   m_chunkAncho: 10
   m_chunkPrefab: {fileID: 745530614551460446, guid: 31fa039da3f6a3b4f9c4ee433e6ea11b, type: 3}
   m_defaultValor: 0
@@ -411,7 +411,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1961341987}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 50, y: 50, z: 50}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -462,7 +462,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4269162514492758820, guid: d0400b19dc40e1c46ba34f7225a856c4, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6425291004775089789, guid: d0400b19dc40e1c46ba34f7225a856c4, type: 3}
       propertyPath: m_RootOrder

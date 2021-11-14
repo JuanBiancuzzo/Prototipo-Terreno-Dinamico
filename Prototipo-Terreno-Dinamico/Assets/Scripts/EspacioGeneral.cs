@@ -5,7 +5,10 @@ using UnityEngine;
 public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedorConDatos
 {
     public Vector3Int m_posicion; // posicion del centro
-    public Vector3Int m_extension; // cantidad de chunk en esa direccion
+    // public Vector3Int m_extension; // cantidad de chunk en esa direccion
+
+    public int m_alturaMinima = 0;
+
     [Range(1, 20)] public int m_chunkAncho;
 
     Dictionary<Vector3Int, Chunk> m_contenedores = new Dictionary<Vector3Int, Chunk>();
@@ -86,13 +89,15 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
 
     public bool EnRango(Vector3Int posicion)
     {
-        Vector3Int minimo = m_posicion - m_extension * m_chunkAncho;
+        return posicion.y > m_alturaMinima;
+
+        /*Vector3Int minimo = m_posicion - m_extension * m_chunkAncho;
         Vector3Int maximo = m_posicion + m_extension * m_chunkAncho;
 
         for (int i = 0; i < 3; i++)
             if (minimo[i] > posicion[i] || maximo[i] <= posicion[i])
                 return false;
-        return true;
+        return true;*/
     }
 
     public bool EnRango(IContenible contenible)
@@ -176,6 +181,17 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
 
     void OnDrawGizmos()
     {
-        Gizmos.DrawWireCube(transform.position, m_extension * m_chunkAncho * 2);
+        Vector3 posicion = new Vector3(m_posicion.x, (float) m_alturaMinima, m_posicion.z) + transform.position;
+        float radioProfundidad = m_chunkAncho * 2;
+        float radioHorizontal = m_chunkAncho * 2;
+        foreach (Chunk chunk in m_chunks)
+        {
+            Vector3Int posicionChunk = WTC(chunk.m_posicion) + Vector3Int.one;
+
+            radioHorizontal = Mathf.Max(radioHorizontal, Mathf.Abs((float)posicionChunk.x * m_chunkAncho * 2));
+            radioProfundidad = Mathf.Max(radioProfundidad, Mathf.Abs((float)posicionChunk.z * m_chunkAncho * 2));
+        }
+
+        Gizmos.DrawWireCube(posicion, Vector3.forward * radioProfundidad + Vector3.right * radioHorizontal);
     }
 }
