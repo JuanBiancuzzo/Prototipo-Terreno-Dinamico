@@ -10,7 +10,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
     Vector3Int m_extension; // "radio" del cuadrado
 
     IContenible[,,] m_contenido;
-    VolumenMinimo m_volumenMinimo;
+    VolumenMinimo m_volumenMinimo = null;
     int m_cantidad;
 
     Mesh m_meshVisual;
@@ -213,6 +213,9 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
             Gizmos.color = Color.red;
 
         Gizmos.DrawWireCube(m_posicion + transform.position, m_extension * 2);
+
+        if (m_volumenMinimo == null)
+            return;
 
         List<Extremo> extremos = m_volumenMinimo.GetExtremos();
         foreach (Extremo extremo in extremos)

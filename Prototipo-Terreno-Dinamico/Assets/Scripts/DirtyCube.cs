@@ -141,16 +141,6 @@ public class DirtyCube : IRenderizable
         return m_extremos.Interseccion(otro.m_extremos).Valido();
     }
 
-    private Vector3 Posicion()
-    {
-        Vector3 posicion = Vector3.zero;
-
-        for (int i = 0; i < 3; i++)
-            posicion[i] = (m_extremos.m_maximo[i] + m_extremos.m_maximo[i]) / 2f;
-
-        return posicion;
-    }
-
     private void SetInicial(Vector3Int punto)
     {
         m_extremos.m_maximo.Set(punto.x, punto.y, punto.z);

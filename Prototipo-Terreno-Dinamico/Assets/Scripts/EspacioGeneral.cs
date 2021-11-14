@@ -90,14 +90,6 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
     public bool EnRango(Vector3Int posicion)
     {
         return posicion.y > m_alturaMinima;
-
-        /*Vector3Int minimo = m_posicion - m_extension * m_chunkAncho;
-        Vector3Int maximo = m_posicion + m_extension * m_chunkAncho;
-
-        for (int i = 0; i < 3; i++)
-            if (minimo[i] > posicion[i] || maximo[i] <= posicion[i])
-                return false;
-        return true;*/
     }
 
     public bool EnRango(IContenible contenible)
@@ -181,17 +173,27 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
 
     void OnDrawGizmos()
     {
-        Vector3 posicion = new Vector3(m_posicion.x, (float) m_alturaMinima, m_posicion.z) + transform.position;
-        float radioProfundidad = m_chunkAncho * 2;
-        float radioHorizontal = m_chunkAncho * 2;
+        List<Vector3> posiciones = new List<Vector3>();
         foreach (Chunk chunk in m_chunks)
-        {
-            Vector3Int posicionChunk = WTC(chunk.m_posicion) + Vector3Int.one;
+            posiciones.Add(WTC(chunk.m_posicion));
 
-            radioHorizontal = Mathf.Max(radioHorizontal, Mathf.Abs((float)posicionChunk.x * m_chunkAncho * 2));
-            radioProfundidad = Mathf.Max(radioProfundidad, Mathf.Abs((float)posicionChunk.z * m_chunkAncho * 2));
-        }
+        Vector3 minimo = Vector3.zero;
+        Vector3 maximo = Vector3.zero;
 
-        Gizmos.DrawWireCube(posicion, Vector3.forward * radioProfundidad + Vector3.right * radioHorizontal);
+        foreach (Vector3 posicionChunk in posiciones)
+            for (int i = 0; i < 3; i++)
+            {
+                minimo[i] = Mathf.Min(minimo[i], posicionChunk[i] - 1);
+                maximo[i] = Mathf.Max(maximo[i], posicionChunk[i] + 1);
+            }
+
+        Vector3 posicion = (maximo + minimo) / 2f;
+        posicion.y = m_alturaMinima;
+        Vector3 extension = maximo - minimo / 2f;
+        extension += Vector3Int.one;
+        extension = extension * m_chunkAncho * 2f;
+        extension.y = 0;
+
+        Gizmos.DrawCube(posicion, extension);
     }
 }
