@@ -19,6 +19,14 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
     public float m_defaultValor;
     public Color m_defaultColor;
 
+    Mesh m_mesh;
+
+    public void Awake()
+    {
+        m_mesh = new Mesh();
+        GetComponent<MeshFilter>().sharedMesh = m_mesh;
+    }
+
     public bool Insertar(IContenible contenible)
     {
         if (contenible == null)
@@ -119,6 +127,12 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
     {
         foreach (Chunk chunk in m_chunks)
             chunk.Renderizar(render, this);
+
+        MeshData meshData = new MeshData();
+        foreach (Chunk chunk in m_chunks)
+            chunk.RecopilarMesh(ref meshData);
+
+        Chunk.LlenarMesh(m_mesh, meshData);
     }
 
     public void GenerarMeshColision(IRender render, Extremo rangoJugador)
@@ -163,7 +177,7 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
         chunkObjeto.name = posicionChunk.ToString();
 
         Chunk chunkFinal = chunkObjeto.GetComponent(typeof(Chunk)) as Chunk;
-        chunkFinal.Inicializar(posicion, extension, this);
+        chunkFinal.Inicializar(posicion, extension);
 
         m_contenedores.Add(posicionChunk, chunkFinal);
         m_chunks.Add(chunkFinal);
@@ -194,6 +208,6 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
         extension = extension * m_chunkAncho * 2f;
         extension.y = 0;
 
-        Gizmos.DrawCube(posicion, extension);
+        Gizmos.DrawWireCube(posicion, extension);
     }
 }

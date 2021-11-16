@@ -13,21 +13,20 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
     VolumenMinimo m_volumenMinimo = null;
     int m_cantidad;
 
-    Mesh m_meshVisual;
+    MeshData m_meshData;
     Mesh m_meshColision;
-    ISacarDatos m_contendedorGeneral;
 
     MeshCollider m_meshColliderComponent;
 
     [Space]
     public float m_distanciaMinima = 10f;
 
-    public void Inicializar(Vector3Int posicion, Vector3Int extension, ISacarDatos contenedorGeneral)
+    public void Inicializar(Vector3Int posicion, Vector3Int extension)
     {
+        m_meshData = new MeshData();
         m_posicion = posicion;
         m_extension = extension;
         m_contenido = new IContenible[extension.x * 2, extension.y * 2, extension.z * 2];
-        m_contendedorGeneral = contenedorGeneral;
 
         m_volumenMinimo = new VolumenMinimo(m_distanciaMinima);
         m_cantidad = 0;
@@ -35,9 +34,6 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 
     public void Awake()
     {
-        m_meshVisual = new Mesh();
-        GetComponent<MeshFilter>().sharedMesh = m_meshVisual;
-
         m_meshColision = new Mesh();
         m_meshColliderComponent = GetComponent<MeshCollider>() as MeshCollider;
     }
@@ -166,9 +162,13 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
     {
         m_volumenMinimo.Renderizar(render, contenedor);
 
-        MeshData preInfo = new MeshData();
-        m_volumenMinimo.RecopilarMesh(ref preInfo);
-        LlenarMesh(m_meshVisual, preInfo);
+        m_meshData.Clear();
+        m_volumenMinimo.RecopilarMesh(ref m_meshData);
+    }
+
+    public void RecopilarMesh(ref MeshData meshData)
+    {
+        meshData.Sumar(m_meshData);
     }
 
     public void GenerarMeshColision(IRender render, Extremo rangoJugador, ISacarDatos contenedor)
@@ -188,7 +188,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         m_meshColliderComponent.sharedMesh = m_meshColision;
     }
 
-    private static void LlenarMesh(Mesh mesh, MeshData meshData)
+    public static void LlenarMesh(Mesh mesh, MeshData meshData)
     {
         mesh.Clear();
         mesh.SetVertices(meshData.m_vertices);
