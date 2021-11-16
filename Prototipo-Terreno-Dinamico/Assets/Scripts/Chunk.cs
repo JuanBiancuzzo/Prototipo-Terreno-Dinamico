@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter))]
-[RequireComponent(typeof(MeshCollider))]
 public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 {
     public Vector3Int m_posicion; // posicion del centro

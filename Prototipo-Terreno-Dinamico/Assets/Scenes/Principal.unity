@@ -349,9 +349,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b1645e43f58ec564aaa77ed31271a00f, type: 2}
   - {fileID: 11400000, guid: 4f1445af549bf894ca38c868f5f61508, type: 2}
   m_materialSeleccionado: 0
-  anchoPlancha: 20
+  anchoPlancha: 0
   tirar: 1
-  continuo: 0
+  continuo: 1
   ponerPiso: 0
 --- !u!4 &1175692662
 Transform:
@@ -402,7 +402,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_posicion: {x: 0, y: 0, z: 0}
   m_alturaMinima: 0
-  m_chunkAncho: 10
+  m_chunkAncho: 16
   m_chunkPrefab: {fileID: 745530614551460446, guid: 31fa039da3f6a3b4f9c4ee433e6ea11b, type: 3}
   m_defaultValor: 0
   m_defaultColor: {r: 1, g: 1, b: 1, a: 0}
