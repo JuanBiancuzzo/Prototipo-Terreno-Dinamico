@@ -69,7 +69,7 @@ public class FallingSand : MonoBehaviour
         if (m_mapa == null)
             return;
 
-        if (m_mapa.Insertar(material))
+        if (m_mapa.Insertar(material) && material.SeActualiza())
             m_paraActualizar.Add(material);
     }
 

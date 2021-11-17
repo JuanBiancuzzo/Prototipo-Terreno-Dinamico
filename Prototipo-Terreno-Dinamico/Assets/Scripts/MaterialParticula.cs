@@ -156,7 +156,6 @@ public class MaterialParticula : ScriptableObject, IContenible
     }
 
     */
-
     public void ActualizarAlrededores(Vector3Int posicionVieja, IContenedorConDatos mapa, ref List<MaterialParticula> paraActualizar)
     {
         for (int i = -1; i <= 1; i++)
@@ -177,6 +176,11 @@ public class MaterialParticula : ScriptableObject, IContenible
     private bool PuedeMoverse(Vector3Int destino)
     {
         return m_opciones_hash.ContainsKey(Utilidades.Hash(destino - m_posicion));
+    }
+
+    public bool SeActualiza()
+    {
+        return m_opciones.Count > 0;
     }
 
     private bool Interpretar(Vector3Int nuevaPosicion, IContenedorConDatos mapa)

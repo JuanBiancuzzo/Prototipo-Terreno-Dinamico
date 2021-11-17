@@ -27,7 +27,7 @@ public class GenerarParticulas : MonoBehaviour
     private void Start()
     {
 		if (ponerPiso)
-			TirarPlancha(50, new Vector3Int(0, 1, 0));
+			TirarPlancha(50, new Vector3Int(0, 1, 0), (int)MaterialSel.Muro);
     }
 
     void FixedUpdate()
@@ -35,24 +35,24 @@ public class GenerarParticulas : MonoBehaviour
 		if (!tirar)
 			return;
 
-		TirarPlancha(anchoPlancha, Vector3Int.FloorToInt(transform.position + Vector3.up));
+		TirarPlancha(anchoPlancha, Vector3Int.FloorToInt(transform.position + Vector3.up), (int)m_materialSeleccionado);
 		if (!continuo)
 			tirar = false;
 	}
 
-	void TirarPlancha(int ancho, Vector3Int posicion)
+	void TirarPlancha(int ancho, Vector3Int posicion, int index)
     {
 		for (int x = -ancho; x <= ancho; x++)
 			for (int z = -ancho; z <= ancho; z++)
-				AgregarElemento(new Vector3Int(x + posicion.x, posicion.y, z + posicion.z));
+				AgregarElemento(new Vector3Int(x + posicion.x, posicion.y, z + posicion.z), index);
 	}
 
-	void AgregarElemento(Vector3Int posicion)
+	void AgregarElemento(Vector3Int posicion, int index)
 	{
 		if (m_materiales.Count == 0)
 			return;
 
-		MaterialParticula materialReferencia = m_materiales[(int)m_materialSeleccionado];
+		MaterialParticula materialReferencia = m_materiales[index];
 		if (materialReferencia == null)
 			return;
 
