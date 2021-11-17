@@ -92,9 +92,8 @@ public class VolumenMinimo : IRenderizable
             return masCercano;
 
         float distanciaMinima = masCercano.DistanciaAlPunto(punto);
-        for (int i = 1; i < m_volumenMinimo.Count; i++)
+        foreach (DirtyCube cubo in m_volumenMinimo)
         {
-            DirtyCube cubo = m_volumenMinimo[i];
             if (cubo.PuntoDentroDelCubo(punto))
             {
                 distanciaMinima = 0;
