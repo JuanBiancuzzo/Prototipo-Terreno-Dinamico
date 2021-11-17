@@ -9,6 +9,50 @@ public class MarchingCubes : MonoBehaviour, IRender
 	MeshData m_meshData;
 	ISacarDatos m_datos;
 
+	ComputeShader shader;
+
+	public void GenerarMeshCompute(Extremo extremo, ISacarDatos datos, ref MeshData preInfo)
+    {
+		int kernel = shader.FindKernel("March");
+
+		Vector3Int minimos = extremo.m_minimo, maximos = extremo.m_maximo;
+		Vector3Int extension = (maximos - minimos) + Vector3Int.one * 2;
+
+		// creando buffer de puntos
+		int numPoints = extension.x * extension.y * extension.z;
+		ComputeBuffer puntos = new ComputeBuffer(numPoints, sizeof(float) * 4);
+
+		Vector4[] datosPuntos = new Vector4[numPoints];
+		for (int z = minimos.z - 1; z <= maximos.z; z++)
+			for (int y = minimos.y - 1; y <= maximos.y; y++)
+				for (int x = minimos.x - 1; x <= maximos.x; x++)
+                {
+					int posX = (x - minimos.x - 1);
+					int posY = (y - minimos.y - 1) * (extension.y);
+					int posZ = (z - minimos.z - 1) * (extension.z * extension.z);
+
+					datosPuntos[posX + posY + posZ] = new Vector4(x, y, z, datos.GetValor(new Vector3Int(x, y, z)));
+				}
+
+		puntos.SetData(datosPuntos);
+
+		// creando buffer de triangulos
+
+		int numVoxels = (extension.x - 1) * (extension.y - 1) * (extension.z - 1);
+		int maxTriangleCount = numVoxels * 5;
+
+		ComputeBuffer triangulos = new ComputeBuffer(maxTriangleCount, sizeof(float) * 3 * 3, ComputeBufferType.Append);
+
+		shader.SetBuffer(kernel, "points", puntos);
+		shader.SetBuffer(kernel, "triangles", triangulos);
+		shader.SetFloat("isoLevel", m_nivelDelSuelo);
+		shader.SetInts("numPointsPerAxis", extension.x, extension.y, extension.z);
+
+		shader.Dispatch(kernel, extension.x, extension.y, extension.z);
+
+
+	}
+
 	public void GenerarMesh(Extremo extremo, ISacarDatos datos, ref MeshData preInfo)
     {
 		Inicializar(preInfo, datos);
