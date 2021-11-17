@@ -186,6 +186,12 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         m_meshColliderComponent.sharedMesh = m_meshColision;
     }
 
+    public void ClearMeshColision()
+    {
+        m_meshColision.Clear();
+        m_meshColliderComponent.sharedMesh = m_meshColision;
+    }
+
     public static void LlenarMesh(Mesh mesh, MeshData meshData)
     {
         mesh.Clear();

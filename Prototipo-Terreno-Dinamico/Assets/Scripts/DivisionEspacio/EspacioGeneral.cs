@@ -137,6 +137,9 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
 
     public void GenerarMeshColision(IRender render, Extremo rangoJugador)
     {
+        foreach (Chunk chunk in m_chunks)
+            chunk.ClearMeshColision();
+
         Extremo extremo = new Extremo(WTC(rangoJugador.m_minimo), WTC(rangoJugador.m_maximo));
 
         for (int i = extremo.m_minimo.x; i <= extremo.m_maximo.x; i++)
