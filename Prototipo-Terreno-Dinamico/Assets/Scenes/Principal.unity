@@ -402,7 +402,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_posicion: {x: 0, y: 0, z: 0}
   m_alturaMinima: 0
-  m_chunkAncho: 16
+  m_chunkAncho: 10
   m_chunkPrefab: {fileID: 745530614551460446, guid: 31fa039da3f6a3b4f9c4ee433e6ea11b, type: 3}
   m_defaultValor: 0
   m_defaultColor: {r: 1, g: 1, b: 1, a: 0}

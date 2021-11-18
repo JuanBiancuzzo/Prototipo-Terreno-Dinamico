@@ -171,7 +171,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 
     public void Renderizar(IRender render, ISacarDatos contenedor = null)
     {
-        if (!m_volumenMinimo.NecesitaActualizarse())
+        if (!NecesitaActualizarse() || m_volumenMinimo.Vacio())
         {
             if (m_volumenMinimo.Vacio())
                 m_meshData.Clear();
@@ -184,6 +184,11 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         m_meshData.Clear();
         render.GenerarMeshCompute(extremo, contenedor, ref m_meshData);
         m_volumenMinimo.EmpezarARenderizar();
+    }
+
+    public bool NecesitaActualizarse()
+    {
+        return m_volumenMinimo.NecesitaActualizarse();
     }
 
     public void RecopilarMesh(ref MeshData meshData)
