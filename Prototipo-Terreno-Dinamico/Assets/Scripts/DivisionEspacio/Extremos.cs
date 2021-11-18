@@ -13,7 +13,7 @@ public struct Extremo
             m_minimo += Vector3Int.one;
         m_maximo = maximo;
         if (!valido)
-            m_maximo -= Vector3Int.one;
+            m_maximo -= m_minimo + Vector3Int.one;
     }
 
     public Extremo Interseccion(Extremo otro)

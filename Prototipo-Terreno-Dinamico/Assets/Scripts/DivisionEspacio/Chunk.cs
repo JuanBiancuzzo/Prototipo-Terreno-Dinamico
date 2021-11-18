@@ -175,14 +175,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         ExtremosMinimos(ref extremo);
 
         m_meshData.Clear();
-        //MeshData meshData = new MeshData();
         render.GenerarMeshCompute(extremo, contenedor, ref m_meshData);
-        //LlenarMesh(m_meshVisual, meshData);
-
-        /*m_volumenMinimo.Renderizar(render, contenedor);
-
-        m_meshData.Clear();
-        m_volumenMinimo.RecopilarMesh(ref m_meshData);*/
     }
 
     public void RecopilarMesh(ref MeshData meshData)
