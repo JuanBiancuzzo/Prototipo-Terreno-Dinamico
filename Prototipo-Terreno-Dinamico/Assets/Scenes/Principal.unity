@@ -350,8 +350,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4f1445af549bf894ca38c868f5f61508, type: 2}
   m_materialSeleccionado: 0
   anchoPlancha: 0
-  tirar: 1
-  continuo: 1
+  tirar: 0
+  continuo: 0
   ponerPiso: 1
 --- !u!4 &1175692662
 Transform:
@@ -489,6 +489,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_nivelDelSuelo: 0.5
+  shader: {fileID: 7200000, guid: 9731e20783b716243923701ac5b5c44b, type: 3}
 --- !u!33 &1961341993
 MeshFilter:
   m_ObjectHideFlags: 0

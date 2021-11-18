@@ -22,7 +22,7 @@ float3 interpolateVerts(float4 v1, float4 v2) {
 
 float4 valorEnPunto(int x, int y, int z)
 {
-    int index = z * numPointsPerAxis.z * numPointsPerAxis.z + y * numPointsPerAxis.y + x;
+    int index = z * numPointsPerAxis.x * numPointsPerAxis.y + y * numPointsPerAxis.x + x;
     return points[index];
 }
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MarchingCubes : MonoBehaviour, IRender
@@ -9,7 +10,31 @@ public class MarchingCubes : MonoBehaviour, IRender
 	MeshData m_meshData;
 	ISacarDatos m_datos;
 
-	ComputeShader shader;
+	public ComputeShader shader;
+
+	struct Triangle
+	{
+	#pragma warning disable 649 // disable unassigned variable warning
+		public Vector3 a;
+		public Vector3 b;
+		public Vector3 c;
+
+		public Vector3 this[int i]
+		{
+			get
+			{
+				switch (i)
+				{
+					case 0:
+						return a;
+					case 1:
+						return b;
+					default:
+						return c;
+				}
+			}
+		}
+	}
 
 	public void GenerarMeshCompute(Extremo extremo, ISacarDatos datos, ref MeshData preInfo)
     {
@@ -27,9 +52,9 @@ public class MarchingCubes : MonoBehaviour, IRender
 			for (int y = minimos.y - 1; y <= maximos.y; y++)
 				for (int x = minimos.x - 1; x <= maximos.x; x++)
                 {
-					int posX = (x - minimos.x - 1);
-					int posY = (y - minimos.y - 1) * (extension.y);
-					int posZ = (z - minimos.z - 1) * (extension.z * extension.z);
+					int posX = (x - (minimos.x - 1));
+					int posY = (y - (minimos.y - 1)) * (extension.x);
+					int posZ = (z - (minimos.z - 1)) * (extension.x * extension.y);
 
 					datosPuntos[posX + posY + posZ] = new Vector4(x, y, z, datos.GetValor(new Vector3Int(x, y, z)));
 				}
@@ -38,7 +63,7 @@ public class MarchingCubes : MonoBehaviour, IRender
 
 		// creando buffer de triangulos
 
-		int numVoxels = (extension.x - 1) * (extension.y - 1) * (extension.z - 1);
+		int numVoxels = (extension.x) * (extension.y) * (extension.z);
 		int maxTriangleCount = numVoxels * 5;
 
 		ComputeBuffer triangulos = new ComputeBuffer(maxTriangleCount, sizeof(float) * 3 * 3, ComputeBufferType.Append);
@@ -51,6 +76,35 @@ public class MarchingCubes : MonoBehaviour, IRender
 		shader.Dispatch(kernel, extension.x, extension.y, extension.z);
 
 
+		// Get number of triangles in the triangle buffer
+		ComputeBuffer triCountBuffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.Raw);
+		ComputeBuffer.CopyCount(triangulos, triCountBuffer, 0);
+		int[] triCountArray = { 0 };
+		triCountBuffer.GetData(triCountArray);
+		int numTris = triCountArray[0];
+
+		// Get triangle data from shader
+		Triangle[] tris = new Triangle[numTris];
+		triangulos.GetData(tris, 0, 0, numTris);
+
+		Vector3[] vertices = new Vector3[numTris * 3];
+		int[] meshTriangles = new int[numTris * 3];
+
+		for (int i = 0; i < numTris; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				meshTriangles[i * 3 + j] = i * 3 + j;
+				vertices[i * 3 + j] = tris[i][j];
+			}
+		}
+
+		preInfo.m_triangulos = meshTriangles.ToList();
+		preInfo.m_vertices = vertices.ToList();
+
+		puntos.Dispose();
+		triangulos.Dispose();
+		triCountBuffer.Dispose();
 	}
 
 	public void GenerarMesh(Extremo extremo, ISacarDatos datos, ref MeshData preInfo)

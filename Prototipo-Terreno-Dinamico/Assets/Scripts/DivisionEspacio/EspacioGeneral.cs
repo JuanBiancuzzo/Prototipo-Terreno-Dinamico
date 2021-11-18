@@ -125,14 +125,24 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
 
     public void Renderizar(IRender render, ISacarDatos contenedor = null)
     {
+        Extremo extremo = new Extremo();
         foreach (Chunk chunk in m_chunks)
+            chunk.ExtremosMinimos(ref extremo);
+
+        MeshData meshData = new MeshData();
+        render.GenerarMeshCompute(extremo, this, ref meshData);
+
+        m_mesh.SetVertices(meshData.m_vertices.ToArray());
+        m_mesh.SetTriangles(meshData.m_triangulos.ToArray(), 0);
+
+        /*foreach (Chunk chunk in m_chunks)
             chunk.Renderizar(render, this);
 
         MeshData meshData = new MeshData();
         foreach (Chunk chunk in m_chunks)
             chunk.RecopilarMesh(ref meshData);
 
-        Chunk.LlenarMesh(m_mesh, meshData);
+        Chunk.LlenarMesh(m_mesh, meshData);*/
     }
 
     public void GenerarMeshColision(IRender render, Extremo rangoJugador)
@@ -190,27 +200,12 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
 
     void OnDrawGizmos()
     {
-        List<Vector3> posiciones = new List<Vector3>();
+        Extremo extremo = new Extremo();
         foreach (Chunk chunk in m_chunks)
-            posiciones.Add(WTC(chunk.m_posicion));
+            chunk.ExtremosMinimos(ref extremo);
 
-        Vector3 minimo = Vector3.zero;
-        Vector3 maximo = Vector3.zero;
-
-        foreach (Vector3 posicionChunk in posiciones)
-            for (int i = 0; i < 3; i++)
-            {
-                minimo[i] = Mathf.Min(minimo[i], posicionChunk[i] - 1);
-                maximo[i] = Mathf.Max(maximo[i], posicionChunk[i] + 1);
-            }
-
-        Vector3 posicion = (maximo + minimo) / 2f;
-        posicion.y = m_alturaMinima;
-        Vector3 extension = maximo - minimo / 2f;
-        extension += Vector3Int.one;
-        extension = extension * m_chunkAncho * 2f;
-        extension.y = 0;
-
-        Gizmos.DrawWireCube(posicion, extension);
+        Vector3Int extension = extremo.m_maximo - extremo.m_minimo + Vector3Int.one;
+        Vector3 posicion = ((Vector3)(extremo.m_maximo + extremo.m_minimo)) / 2f;
+        Gizmos.DrawWireCube(transform.position + posicion, extension);
     }
 }

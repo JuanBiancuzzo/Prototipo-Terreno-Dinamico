@@ -156,6 +156,12 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         return (contenible == null) ? defaultColor : contenible.GetColor();
     }
 
+    public void ExtremosMinimos(ref Extremo extremoMinimo)
+    {
+        foreach (Extremo extremo in m_volumenMinimo.GetExtremos())
+            extremoMinimo = extremoMinimo.Union(extremo);
+    }
+
     public void Renderizar(IRender render, ISacarDatos contenedor = null)
     {
         m_volumenMinimo.Renderizar(render, contenedor);
@@ -220,7 +226,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 
         if (m_volumenMinimo == null)
             return;
-
+        /*
         List<Extremo> extremos = m_volumenMinimo.GetExtremos();
         foreach (Extremo extremo in extremos)
         {
@@ -228,7 +234,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
             Vector3 posicion = ((Vector3)(extremo.m_maximo + extremo.m_minimo)) / 2f;
             Gizmos.DrawWireCube(transform.position + posicion, extension);
         }
-
+        */
         Gizmos.color = Color.white;
     }
 }
