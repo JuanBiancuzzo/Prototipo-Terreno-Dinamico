@@ -25,9 +25,4 @@ MonoBehaviour:
   - {x: -1, y: -1, z: 0}
   - {x: -1, y: -1, z: -1}
   m_valor: 1
-  m_color: {r: 0.9528302, g: 0.937119, b: 0.049439307, a: 0}
-  m_velocidad: {x: 0, y: 0, z: 0}
-  m_densidad: 1600
-  m_coeEstatico: 0.4
-  m_coeDinamico: 0.3
-  m_temperatura: 20
+  m_color: {r: 1, g: 0.9857083, b: 0.042452812, a: 0}

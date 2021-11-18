@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//[RequireComponent(typeof(MeshFilter))]
-//[RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(MeshRenderer))]
 public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 {
     public Vector3Int m_posicion; // posicion del centro
@@ -13,9 +13,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
     VolumenMinimo m_volumenMinimo = null;
     int m_cantidad;
 
-    MeshData m_meshData;
-
-    //Mesh m_meshVisual;
+    Mesh m_meshVisual;
     Mesh m_meshColision;
 
     MeshCollider m_meshColliderComponent;
@@ -25,7 +23,6 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 
     public void Inicializar(Vector3Int posicion, Vector3Int extension)
     {
-        m_meshData = new MeshData();
         m_posicion = posicion;
         m_extension = extension;
         m_contenido = new IContenible[extension.x * 2, extension.y * 2, extension.z * 2];
@@ -36,8 +33,8 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 
     public void Awake()
     {
-        //m_meshVisual = new Mesh();
-        //GetComponent<MeshFilter>().sharedMesh = m_meshVisual;
+        m_meshVisual = new Mesh();
+        GetComponent<MeshFilter>().sharedMesh = m_meshVisual;
 
         m_meshColision = new Mesh();
         m_meshColliderComponent = GetComponent<MeshCollider>() as MeshCollider;
@@ -174,26 +171,22 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         if (!NecesitaActualizarse() || m_volumenMinimo.Vacio())
         {
             if (m_volumenMinimo.Vacio())
-                m_meshData.Clear();
+                m_meshVisual.Clear();
             return;
         }
 
         Extremo extremo = new Extremo(Vector3Int.zero, Vector3Int.zero, false);
         ExtremosMinimos(ref extremo);
 
-        m_meshData.Clear();
-        render.GenerarMeshCompute(extremo, contenedor, ref m_meshData);
+        MeshData meshData = new MeshData();
+        render.GenerarMeshCompute(extremo, contenedor, ref meshData);
         m_volumenMinimo.EmpezarARenderizar();
+        LlenarMesh(m_meshVisual, meshData);
     }
 
     public bool NecesitaActualizarse()
     {
         return m_volumenMinimo.NecesitaActualizarse();
-    }
-
-    public void RecopilarMesh(ref MeshData meshData)
-    {
-        meshData.Sumar(m_meshData);
     }
 
     public void GenerarMeshColision(IRender render, Extremo rangoJugador, ISacarDatos contenedor)
@@ -230,6 +223,8 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 
         if (meshData.m_normales.Count > 0)
             mesh.SetNormals(meshData.m_normales);
+        else
+            mesh.RecalculateNormals();
     }
 
     public bool Vacio()

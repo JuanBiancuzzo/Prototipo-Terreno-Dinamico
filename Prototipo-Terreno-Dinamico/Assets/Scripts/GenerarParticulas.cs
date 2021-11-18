@@ -27,8 +27,8 @@ public class GenerarParticulas : MonoBehaviour
     private void Start()
     {
 		if (ponerPiso)
-			TirarPlancha(20, new Vector3Int(0, 1, 0), (int)MaterialSel.Muro);
-    }
+			TirarPlancha(50, new Vector3Int(0, 1, 0), (int)MaterialSel.Muro);
+	}
 
     void FixedUpdate()
 	{
@@ -44,7 +44,7 @@ public class GenerarParticulas : MonoBehaviour
     {
 		for (int x = -ancho; x <= ancho; x++)
 			for (int z = -ancho; z <= ancho; z++)
-				AgregarElemento(new Vector3Int(x + posicion.x, posicion.y, z + posicion.z), index);
+					AgregarElemento(new Vector3Int(x + posicion.x, posicion.y, z + posicion.z), index);
 	}
 
 	void AgregarElemento(Vector3Int posicion, int index)

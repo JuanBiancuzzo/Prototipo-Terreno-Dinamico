@@ -5,11 +5,9 @@ using UnityEngine;
 public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedorConDatos
 {
     public Vector3Int m_posicion; // posicion del centro
-    // public Vector3Int m_extension; // cantidad de chunk en esa direccion
-
     public int m_alturaMinima = 0;
 
-    [Range(1, 20)] public int m_chunkAncho;
+    [Range(10, 50)] public int m_chunkAncho;
 
     Dictionary<Vector3Int, Chunk> m_contenedores = new Dictionary<Vector3Int, Chunk>();
     List<Chunk> m_chunks = new List<Chunk>();
@@ -18,14 +16,6 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
 
     public float m_defaultValor;
     public Color m_defaultColor;
-
-    Mesh m_mesh;
-
-    public void Awake()
-    {
-        m_mesh = new Mesh();
-        GetComponent<MeshFilter>().sharedMesh = m_mesh;
-    }
 
     public bool Insertar(IContenible contenible)
     {
@@ -127,12 +117,6 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
     {
         foreach (Chunk chunk in m_chunks)
             chunk.Renderizar(render, this);
-
-        MeshData meshData = new MeshData();
-        foreach (Chunk chunk in m_chunks)
-            chunk.RecopilarMesh(ref meshData);
-
-        Chunk.LlenarMesh(m_mesh, meshData);
     }
 
     public void GenerarMeshColision(IRender render, Extremo rangoJugador)

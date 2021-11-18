@@ -16,10 +16,8 @@ public class MarchingCubes : MonoBehaviour, IRender
 	{
 		public Vector3 a;
 		public Vector4 colorA;
-
 		public Vector3 b;
 		public Vector4 colorB;
-
 		public Vector3 c;
 		public Vector4 colorC;
 
@@ -41,7 +39,7 @@ public class MarchingCubes : MonoBehaviour, IRender
 			}
 		}
 
-		public Vector4 GetColor(int i)
+		public Color GetColor(int i)
         {
 			switch (i)
 			{
@@ -53,10 +51,9 @@ public class MarchingCubes : MonoBehaviour, IRender
 					return colorC;
 			}
 		}
-
 		public Vector3 GetNormal()
         {
-			return normal * -1;
+			return normal;
         }
 	}
 

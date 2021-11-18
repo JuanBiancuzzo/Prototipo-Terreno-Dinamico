@@ -44,8 +44,10 @@ Shader "Unlit/Shader1"
                 return o;
             }
 
-            float4 frag (v2f i) : SV_Target
+            float4 frag(v2f i) : SV_Target
             {
+                //return (i.color * 8) % 8;
+
                 return i.color;
                 //return i.normals;
                 //return float4(0, 1, 0, 0.5);
