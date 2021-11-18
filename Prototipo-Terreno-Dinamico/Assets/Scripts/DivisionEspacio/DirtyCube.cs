@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DirtyCube : IRenderizable
+public class DirtyCube
 {
     Extremo m_extremos;
     List<Vector3Int> m_puntos;
@@ -68,31 +68,19 @@ public class DirtyCube : IRenderizable
         return posicionRelativa.magnitude;
     }
 
-    
-    public void Renderizar(IRender render, ISacarDatos contenedor = null)
-    {
-        if (NecesitaActualizarse())
-        {
-            m_meshData.Clear();
-            render.GenerarMesh(m_extremos, contenedor, ref m_meshData);
-        }       
-
-        EmpezarARenderizar();
-    }
-
     private void NecesitaRenderizarse()
     {
         m_necesitaActualizarse = true;
     }
 
-    private void EmpezarARenderizar()
+    public void EmpezarARenderizar()
     {
         m_necesitaActualizarse = false;
     }
 
     int cantidadSinNuevoRender = 0;
     static int cantidadMinima = 2;
-    private bool NecesitaActualizarse()
+    public bool NecesitaActualizarse()
     {
         if (!m_necesitaActualizarse)
         {

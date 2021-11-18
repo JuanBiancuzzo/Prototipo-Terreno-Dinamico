@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VolumenMinimo : IRenderizable
+public class VolumenMinimo
 {
     List<DirtyCube> m_volumenMinimo;
     float m_distanciaMaxima; // que tan separada pueden estar
@@ -48,16 +48,18 @@ public class VolumenMinimo : IRenderizable
             }
     }
 
-    public void Renderizar(IRender render, ISacarDatos contenedor = null)
+    public void EmpezarARenderizar()
     {
         foreach (DirtyCube cube in m_volumenMinimo)
-            cube.Renderizar(render, contenedor);
+            cube.EmpezarARenderizar();
     }
 
-    public void RecopilarMesh(ref MeshData meshDataIncial)
+    public bool NecesitaActualizarse()
     {
-        foreach (DirtyCube cube in m_volumenMinimo)
-            cube.RecopilarMesh(ref meshDataIncial);
+        bool seNecesitaActualizar = false;
+        for (int i = 0; i < m_volumenMinimo.Count && !seNecesitaActualizar; i++)
+            seNecesitaActualizar |= m_volumenMinimo[i].NecesitaActualizarse();
+        return seNecesitaActualizar;
     }
 
     public bool Vacio()
