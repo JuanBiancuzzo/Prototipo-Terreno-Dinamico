@@ -230,8 +230,6 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 
         if (meshData.m_normales.Count > 0)
             mesh.SetNormals(meshData.m_normales);
-        else
-            mesh.RecalculateNormals();
     }
 
     public bool Vacio()

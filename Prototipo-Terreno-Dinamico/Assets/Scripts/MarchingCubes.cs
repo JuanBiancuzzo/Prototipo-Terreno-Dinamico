@@ -14,10 +14,16 @@ public class MarchingCubes : MonoBehaviour, IRender
 
 	struct Triangle
 	{
-	#pragma warning disable 649 // disable unassigned variable warning
 		public Vector3 a;
+		public Vector4 colorA;
+
 		public Vector3 b;
+		public Vector4 colorB;
+
 		public Vector3 c;
+		public Vector4 colorC;
+
+		public Vector3 normal;
 
 		public Vector3 this[int i]
 		{
@@ -34,6 +40,24 @@ public class MarchingCubes : MonoBehaviour, IRender
 				}
 			}
 		}
+
+		public Vector4 GetColor(int i)
+        {
+			switch (i)
+			{
+				case 0:
+					return colorA;
+				case 1:
+					return colorB;
+				default:
+					return colorC;
+			}
+		}
+
+		public Vector3 GetNormal()
+        {
+			return normal * -1;
+        }
 	}
 
 	public void GenerarMeshCompute(Extremo extremo, ISacarDatos datos, ref MeshData preInfo)
@@ -46,8 +70,10 @@ public class MarchingCubes : MonoBehaviour, IRender
 		// creando buffer de puntos
 		int numPoints = extension.x * extension.y * extension.z;
 		ComputeBuffer puntos = new ComputeBuffer(numPoints, sizeof(float) * 4);
+		ComputeBuffer colores = new ComputeBuffer(numPoints, sizeof(float) * 4);
 
 		Vector4[] datosPuntos = new Vector4[numPoints];
+		Vector4[] datosColores = new Vector4[numPoints];
 		for (int z = minimos.z - 1; z < maximos.z + 2; z++)
 			for (int y = minimos.y - 1; y < maximos.y + 2; y++)
 				for (int x = minimos.x - 1; x < maximos.x + 2; x++)
@@ -55,19 +81,24 @@ public class MarchingCubes : MonoBehaviour, IRender
 					int posX = (x - (minimos.x - 1));
 					int posY = (y - (minimos.y - 1)) * (extension.x);
 					int posZ = (z - (minimos.z - 1)) * (extension.x * extension.y);
+					Vector3Int posicion = new Vector3Int(x, y, z);
 
-					datosPuntos[posX + posY + posZ] = new Vector4(x, y, z, datos.GetValor(new Vector3Int(x, y, z)));
+					datosPuntos[posX + posY + posZ] = new Vector4(x, y, z, datos.GetValor(posicion));
+					datosColores[posX + posY + posZ] = datos.GetColor(posicion);
 				}
 
 		puntos.SetData(datosPuntos);
+		colores.SetData(datosColores);
 
 		// creando buffer de triangulos
 		int numVoxels = (extension.x) * (extension.y) * (extension.z);
 		int maxTriangleCount = numVoxels * 6;
 
-		ComputeBuffer triangulos = new ComputeBuffer(maxTriangleCount, sizeof(float) * 3 * 3, ComputeBufferType.Append);
+		int tamanioTriangulos = sizeof(float) * 3 * 3 + sizeof(float) * 4 * 3 + sizeof(float) * 3;
+		ComputeBuffer triangulos = new ComputeBuffer(maxTriangleCount, tamanioTriangulos, ComputeBufferType.Append);
 
 		shader.SetBuffer(kernel, "points", puntos);
+		shader.SetBuffer(kernel, "colores", colores);
 		shader.SetBuffer(kernel, "triangles", triangulos);
 		shader.SetFloat("isoLevel", m_nivelDelSuelo);
 		shader.SetInts("numPointsPerAxis", extension.x, extension.y, extension.z);
@@ -91,9 +122,12 @@ public class MarchingCubes : MonoBehaviour, IRender
 			{
 				preInfo.m_triangulos.Add(preInfo.m_vertices.Count);
 				preInfo.m_vertices.Add(tris[i][j]);
+				preInfo.m_colores.Add(tris[i].GetColor(j));
+				preInfo.m_normales.Add(tris[i].GetNormal());
 			}
 
 		puntos.Dispose();
+		colores.Dispose();
 		triangulos.Dispose();
 		triCountBuffer.Dispose();
 	}

@@ -5,12 +5,20 @@ static const int numThreads = 8;
 
 struct Triangle {
     float3 vertexC;
+    float4 colorC;
+
     float3 vertexB;
+    float4 colorB;
+
     float3 vertexA;
+    float4 colorA;
+
+    float3 normal;
 };
 
 AppendStructuredBuffer<Triangle> triangles;
 RWStructuredBuffer<float4> points;
+RWStructuredBuffer<float4> colores;
 
 float isoLevel;
 int3 numPointsPerAxis;
@@ -20,10 +28,25 @@ float3 interpolateVerts(float4 v1, float4 v2) {
     return v1.xyz + t * (v2.xyz - v1.xyz);
 }
 
+float4 interpolateColores(float v1, float4 color1, float v2, float4 color2)
+{
+    float t = (isoLevel - v1) / (v2 - v1);
+    return color1 + t * (color2 - color1);
+}
+
+int indexEnPunto(int x, int y, int z)
+{
+    return z * numPointsPerAxis.x * numPointsPerAxis.y + y * numPointsPerAxis.x + x;
+}
+
 float4 valorEnPunto(int x, int y, int z)
 {
-    int index = z * numPointsPerAxis.x * numPointsPerAxis.y + y * numPointsPerAxis.x + x;
-    return points[index];
+    return points[indexEnPunto(x, y, z)];
+}
+
+float4 colorEnPunto(int x, int y, int z)
+{
+    return colores[indexEnPunto(x, y, z)];
 }
 
 [numthreads(numThreads, numThreads, numThreads)]
@@ -43,6 +66,17 @@ void March(int3 id : SV_DispatchThreadID)
         valorEnPunto(id.x + 1, id.y + 1, id.z),
         valorEnPunto(id.x + 1, id.y + 1, id.z + 1),
         valorEnPunto(id.x, id.y + 1, id.z + 1)
+    };
+
+    float4 cubeCornersColores[8] = {
+        colorEnPunto(id.x, id.y, id.z),
+        colorEnPunto(id.x + 1, id.y, id.z),
+        colorEnPunto(id.x + 1, id.y, id.z + 1),
+        colorEnPunto(id.x, id.y, id.z + 1),
+        colorEnPunto(id.x, id.y + 1, id.z),
+        colorEnPunto(id.x + 1, id.y + 1, id.z),
+        colorEnPunto(id.x + 1, id.y + 1, id.z + 1),
+        colorEnPunto(id.x, id.y + 1, id.z + 1)
     };
 
     // Calculate unique index for each cube configuration.
@@ -74,8 +108,16 @@ void March(int3 id : SV_DispatchThreadID)
 
         Triangle tri;
         tri.vertexA = interpolateVerts(cubeCorners[a0], cubeCorners[b0]);
+        tri.colorA = interpolateColores(cubeCorners[a0].w, cubeCornersColores[a0], cubeCorners[b0].w, cubeCornersColores[b0]);
+
         tri.vertexB = interpolateVerts(cubeCorners[a1], cubeCorners[b1]);
+        tri.colorB = interpolateColores(cubeCorners[a1].w, cubeCornersColores[a1], cubeCorners[b1].w, cubeCornersColores[b1]);
+
         tri.vertexC = interpolateVerts(cubeCorners[a2], cubeCorners[b2]);
+        tri.colorC = interpolateColores(cubeCorners[a2].w, cubeCornersColores[a2], cubeCorners[b2].w, cubeCornersColores[b2]);
+
+        tri.normal = normalize(cross(tri.vertexB - tri.vertexA, tri.vertexC - tri.vertexA));
+
         triangles.Append(tri);
     }
 }
