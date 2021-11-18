@@ -41,16 +41,16 @@ public class MarchingCubes : MonoBehaviour, IRender
 		int kernel = shader.FindKernel("March");
 
 		Vector3Int minimos = extremo.m_minimo, maximos = extremo.m_maximo;
-		Vector3Int extension = (maximos - minimos) + Vector3Int.one * 2;
+		Vector3Int extension = (maximos - minimos) + Vector3Int.one * 3;
 
 		// creando buffer de puntos
 		int numPoints = extension.x * extension.y * extension.z;
 		ComputeBuffer puntos = new ComputeBuffer(numPoints, sizeof(float) * 4);
 
 		Vector4[] datosPuntos = new Vector4[numPoints];
-		for (int z = minimos.z - 1; z <= maximos.z; z++)
-			for (int y = minimos.y - 1; y <= maximos.y; y++)
-				for (int x = minimos.x - 1; x <= maximos.x; x++)
+		for (int z = minimos.z - 1; z < maximos.z + 2; z++)
+			for (int y = minimos.y - 1; y < maximos.y + 2; y++)
+				for (int x = minimos.x - 1; x < maximos.x + 2; x++)
                 {
 					int posX = (x - (minimos.x - 1));
 					int posY = (y - (minimos.y - 1)) * (extension.x);
@@ -87,20 +87,14 @@ public class MarchingCubes : MonoBehaviour, IRender
 		Triangle[] tris = new Triangle[numTris];
 		triangulos.GetData(tris, 0, 0, numTris);
 
-		Vector3[] vertices = new Vector3[numTris * 3];
-		int[] meshTriangles = new int[numTris * 3];
-
 		for (int i = 0; i < numTris; i++)
 		{
 			for (int j = 0; j < 3; j++)
 			{
-				meshTriangles[i * 3 + j] = i * 3 + j;
-				vertices[i * 3 + j] = tris[i][j];
+				preInfo.m_triangulos.Add(preInfo.m_vertices.Count);
+				preInfo.m_vertices.Add(tris[i][j]);
 			}
 		}
-
-		preInfo.m_triangulos = meshTriangles.ToList();
-		preInfo.m_vertices = vertices.ToList();
 
 		puntos.Dispose();
 		triangulos.Dispose();
