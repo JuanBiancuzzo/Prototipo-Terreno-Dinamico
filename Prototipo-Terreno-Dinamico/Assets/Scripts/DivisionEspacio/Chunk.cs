@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//[RequireComponent(typeof(MeshFilter))]
+//[RequireComponent(typeof(MeshRenderer))]
 public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 {
     public Vector3Int m_posicion; // posicion del centro
@@ -12,6 +14,8 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
     int m_cantidad;
 
     MeshData m_meshData;
+
+    //Mesh m_meshVisual;
     Mesh m_meshColision;
 
     MeshCollider m_meshColliderComponent;
@@ -32,6 +36,9 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 
     public void Awake()
     {
+        //m_meshVisual = new Mesh();
+        //GetComponent<MeshFilter>().sharedMesh = m_meshVisual;
+
         m_meshColision = new Mesh();
         m_meshColliderComponent = GetComponent<MeshCollider>() as MeshCollider;
     }
@@ -164,10 +171,18 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 
     public void Renderizar(IRender render, ISacarDatos contenedor = null)
     {
-        m_volumenMinimo.Renderizar(render, contenedor);
+        Extremo extremo = new Extremo(Vector3Int.zero, Vector3Int.zero, false);
+        ExtremosMinimos(ref extremo);
 
         m_meshData.Clear();
-        m_volumenMinimo.RecopilarMesh(ref m_meshData);
+        //MeshData meshData = new MeshData();
+        render.GenerarMeshCompute(extremo, contenedor, ref m_meshData);
+        //LlenarMesh(m_meshVisual, meshData);
+
+        /*m_volumenMinimo.Renderizar(render, contenedor);
+
+        m_meshData.Clear();
+        m_volumenMinimo.RecopilarMesh(ref m_meshData);*/
     }
 
     public void RecopilarMesh(ref MeshData meshData)
@@ -203,8 +218,14 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         mesh.Clear();
         mesh.SetVertices(meshData.m_vertices);
         mesh.SetTriangles(meshData.m_triangulos, 0);
-        mesh.SetColors(meshData.m_colores);
-        mesh.SetNormals(meshData.m_normales);
+
+        if (meshData.m_colores.Count > 0)
+            mesh.SetColors(meshData.m_colores);
+
+        if (meshData.m_normales.Count > 0)
+            mesh.SetNormals(meshData.m_normales);
+        else
+            mesh.RecalculateNormals();
     }
 
     public bool Vacio()
@@ -226,7 +247,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 
         if (m_volumenMinimo == null)
             return;
-        /*
+        
         List<Extremo> extremos = m_volumenMinimo.GetExtremos();
         foreach (Extremo extremo in extremos)
         {
@@ -234,7 +255,15 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
             Vector3 posicion = ((Vector3)(extremo.m_maximo + extremo.m_minimo)) / 2f;
             Gizmos.DrawWireCube(transform.position + posicion, extension);
         }
-        */
+
+        /*
+        Extremo extremo = new Extremo();
+        ExtremosMinimos(ref extremo);
+
+        Vector3Int extension = extremo.m_maximo - extremo.m_minimo + Vector3Int.one * 2;
+        Vector3 posicion = ((Vector3)(extremo.m_maximo + extremo.m_minimo)) / 2f + Vector3.up / 2f;
+        Gizmos.DrawWireCube(transform.position + posicion, extension);*/
+
         Gizmos.color = Color.white;
     }
 }

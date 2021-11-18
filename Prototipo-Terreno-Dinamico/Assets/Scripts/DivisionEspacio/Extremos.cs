@@ -6,10 +6,14 @@ public struct Extremo
 {
     public Vector3Int m_minimo, m_maximo;
 
-    public Extremo(Vector3Int minimo, Vector3Int maximo)
+    public Extremo(Vector3Int minimo, Vector3Int maximo, bool valido = true)
     {
         m_minimo = minimo;
+        if (!valido)
+            m_minimo += Vector3Int.one;
         m_maximo = maximo;
+        if (!valido)
+            m_maximo -= Vector3Int.one;
     }
 
     public Extremo Interseccion(Extremo otro)
@@ -27,6 +31,9 @@ public struct Extremo
 
     public Extremo Union(Extremo otro)
     {
+        if (!Valido())
+            return otro;
+
         Vector3Int nuevoMinimo = Vector3Int.zero, nuevoMaximo = Vector3Int.zero;
 
         for (int i = 0; i < 3; i++)

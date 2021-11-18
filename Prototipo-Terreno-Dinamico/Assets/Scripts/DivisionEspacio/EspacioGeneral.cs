@@ -125,7 +125,7 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
 
     public void Renderizar(IRender render, ISacarDatos contenedor = null)
     {
-        Extremo extremo = new Extremo();
+        /*Extremo extremo = new Extremo();
         foreach (Chunk chunk in m_chunks)
             chunk.ExtremosMinimos(ref extremo);
 
@@ -133,16 +133,17 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
         render.GenerarMeshCompute(extremo, this, ref meshData);
 
         m_mesh.SetVertices(meshData.m_vertices.ToArray());
-        m_mesh.SetTriangles(meshData.m_triangulos.ToArray(), 0);
+        m_mesh.SetTriangles(meshData.m_triangulos.ToArray(), 0);*/
 
-        /*foreach (Chunk chunk in m_chunks)
+        foreach (Chunk chunk in m_chunks)
             chunk.Renderizar(render, this);
 
+        
         MeshData meshData = new MeshData();
         foreach (Chunk chunk in m_chunks)
             chunk.RecopilarMesh(ref meshData);
 
-        Chunk.LlenarMesh(m_mesh, meshData);*/
+        Chunk.LlenarMesh(m_mesh, meshData);
     }
 
     public void GenerarMeshColision(IRender render, Extremo rangoJugador)
@@ -200,12 +201,13 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
 
     void OnDrawGizmos()
     {
+        /*
         Extremo extremo = new Extremo();
         foreach (Chunk chunk in m_chunks)
             chunk.ExtremosMinimos(ref extremo);
 
         Vector3Int extension = extremo.m_maximo - extremo.m_minimo + Vector3Int.one * 2;
         Vector3 posicion = ((Vector3)(extremo.m_maximo + extremo.m_minimo)) / 2f + Vector3.up / 2f;
-        Gizmos.DrawWireCube(transform.position + posicion, extension);
+        Gizmos.DrawWireCube(transform.position + posicion, extension);*/
     }
 }

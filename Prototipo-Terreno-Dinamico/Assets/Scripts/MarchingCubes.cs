@@ -64,7 +64,7 @@ public class MarchingCubes : MonoBehaviour, IRender
 		// creando buffer de triangulos
 
 		int numVoxels = (extension.x) * (extension.y) * (extension.z);
-		int maxTriangleCount = numVoxels * 5;
+		int maxTriangleCount = numVoxels * 6;
 
 		ComputeBuffer triangulos = new ComputeBuffer(maxTriangleCount, sizeof(float) * 3 * 3, ComputeBufferType.Append);
 
@@ -85,7 +85,8 @@ public class MarchingCubes : MonoBehaviour, IRender
 
 		// Get triangle data from shader
 		Triangle[] tris = new Triangle[numTris];
-		triangulos.GetData(tris, 0, 0, numTris);
+		//triangulos.GetData(tris, 0, 0, numTris);
+		triangulos.GetData(tris);
 
 		for (int i = 0; i < numTris; i++)
 		{

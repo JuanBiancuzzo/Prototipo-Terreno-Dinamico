@@ -39,22 +39,19 @@ public class MeshData
             if (m_repetirVertices.ContainsKey(vertice))
             {
                 int index = m_repetirVertices[vertice];
-
-                /* if (m_normales[index] != otro.m_normales[i])
-                    m_normales[index] = (m_normales[index] + otro.m_normales[i]) / 2f;
-
-                if (m_colores[index] != otro.m_colores[i])
-                    m_colores[index] = (m_colores[index] + otro.m_colores[i]) / 2f; */
-
                 m_triangulos.Add(index);
                 posicionDesfasada--;
             }
             else
             {
                 m_vertices.Add(vertice);
-                m_normales.Add(otro.m_normales[i]);
                 m_triangulos.Add(otro.m_triangulos[i] + posicionDesfasada);
-                m_colores.Add(otro.m_colores[i]);
+
+                if (otro.m_normales.Count > 0)
+                    m_normales.Add(otro.m_normales[i]);
+
+                if (otro.m_colores.Count > 0)
+                    m_colores.Add(otro.m_colores[i]);
             }
         }
 
