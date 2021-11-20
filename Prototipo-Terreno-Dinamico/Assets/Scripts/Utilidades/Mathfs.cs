@@ -31,7 +31,7 @@ public static class Mathfs
         if (direccion[variable] == 0)
             return posiciones;
 
-        for (int v = 1; v <= Mathf.Abs(direccion[variable]); v++)
+        for (int v = 0; v <= Mathf.Abs(direccion[variable]); v++)
         {
             int dirAvance = (Mathf.Sign(direccion[variable]) == 1) ? 1 : -1;
             int valorVariable = inicio[variable] + v * dirAvance;

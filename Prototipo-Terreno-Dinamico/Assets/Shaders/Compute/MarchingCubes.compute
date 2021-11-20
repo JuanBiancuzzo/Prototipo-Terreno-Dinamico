@@ -17,8 +17,8 @@ struct Triangle {
 };
 
 AppendStructuredBuffer<Triangle> triangles;
-RWStructuredBuffer<float4> points;
-RWStructuredBuffer<float4> colores;
+StructuredBuffer<float4> points;
+StructuredBuffer<float4> colores;
 
 float isoLevel;
 int3 numPointsPerAxis;
@@ -28,10 +28,9 @@ float3 interpolateVerts(float4 v1, float4 v2) {
     return v1.xyz + t * (v2.xyz - v1.xyz);
 }
 
-float4 interpolateColores(float v1, float4 color1, float v2, float4 color2)
+float4 elegirColores(float v1, float4 color1, float v2, float4 color2)
 {
-    float t = (isoLevel - v1) / (v2 - v1);
-    return color1 + t * (color2 - color1);
+    return color1 + (v2 > v1) * (color2 - color1);
 }
 
 int indexEnPunto(int x, int y, int z)
@@ -108,13 +107,13 @@ void March(int3 id : SV_DispatchThreadID)
 
         Triangle tri;
         tri.vertexA = interpolateVerts(cubeCorners[a0], cubeCorners[b0]);
-        tri.colorA = interpolateColores(cubeCorners[a0].w, cubeCornersColores[a0], cubeCorners[b0].w, cubeCornersColores[b0]);
+        tri.colorA = elegirColores(cubeCorners[a0].w, cubeCornersColores[a0], cubeCorners[b0].w, cubeCornersColores[b0]);
 
         tri.vertexB = interpolateVerts(cubeCorners[a1], cubeCorners[b1]);
-        tri.colorB = interpolateColores(cubeCorners[a1].w, cubeCornersColores[a1], cubeCorners[b1].w, cubeCornersColores[b1]);
+        tri.colorB = elegirColores(cubeCorners[a1].w, cubeCornersColores[a1], cubeCorners[b1].w, cubeCornersColores[b1]);
 
         tri.vertexC = interpolateVerts(cubeCorners[a2], cubeCorners[b2]);
-        tri.colorC = interpolateColores(cubeCorners[a2].w, cubeCornersColores[a2], cubeCorners[b2].w, cubeCornersColores[b2]);
+        tri.colorC = elegirColores(cubeCorners[a2].w, cubeCornersColores[a2], cubeCorners[b2].w, cubeCornersColores[b2]);
 
         tri.normal = normalize(cross(tri.vertexB - tri.vertexA, tri.vertexC - tri.vertexA));
 
