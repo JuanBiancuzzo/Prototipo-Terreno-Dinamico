@@ -5,7 +5,8 @@ using UnityEditor;
 
 public enum MaterialSel
 {
-	Arena = 0,
+	Aire = 0,
+	Arena,
 	Agua,
 	Grava,
 	Humo,
@@ -16,7 +17,6 @@ public class GenerarParticulas : MonoBehaviour
 {
     public FallingSand simulacion;
 
-	public List<MaterialParticula> m_materiales;
 	public MaterialSel m_materialSeleccionado;
 
 	public int anchoPlancha = 2;
@@ -27,7 +27,7 @@ public class GenerarParticulas : MonoBehaviour
     private void Start()
     {
 		if (ponerPiso)
-			TirarPlancha(50, new Vector3Int(0, 1, 0), (int)MaterialSel.Muro);
+			TirarPlancha(50, new Vector3Int(0, 1, 0), (int)MaterialSel.Arena);
 	}
 
     void FixedUpdate()
@@ -49,16 +49,18 @@ public class GenerarParticulas : MonoBehaviour
 
 	void AgregarElemento(Vector3Int posicion, int index)
 	{
-		if (m_materiales.Count == 0)
-			return;
-
-		MaterialParticula materialReferencia = m_materiales[index];
-		if (materialReferencia == null)
-			return;
-
-		MaterialParticula material = materialReferencia.Clone(posicion);
-		simulacion.Insertar(material);
+		simulacion.Insertar(GetElemento(posicion, index));
 	}
+
+	private Elemento GetElemento(Vector3Int posicion, int index)
+    {
+		switch(index)
+        {
+			case 0: return new Aire(posicion);
+			case 1: return new Arena(posicion);
+			default: return new Aire(posicion);
+        }
+    }
 
 	void OnDrawGizmos()
     {

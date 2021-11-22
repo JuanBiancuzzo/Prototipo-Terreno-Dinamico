@@ -4,44 +4,65 @@ using System.Collections.Generic;
 
 public abstract class Elemento : IContenible
 {
-    Vector3Int m_posicion, m_velocidad, m_aceleracion;
-    int m_densidad, m_temperatura, m_filtracion, m_iluminacion;
-    int m_ficDinamica, m_ficEstatica;
-    Vector3Int m_estabilidad;
+    static Vector3Int gravedad = new Vector3Int(0, -1, 0);
 
-    // tener un callback al falling sand, para que sepa que necesita actualizarse
-    Action<Elemento> necesitoActualizar;
+    public Vector3Int m_posicion, m_velocidad, m_aceleracion;
+    protected int m_densidad, m_temperatura, m_iluminacion;
 
-    float m_valor;
-    Color m_color;
+    protected float m_valor;
+    protected Color m_color;
+
+    protected bool m_cambiePosicion, m_colisiono;
+
+    public Elemento(Vector3Int posicion)
+    {
+        m_posicion = posicion;
+        m_velocidad = Vector3Int.zero;
+        m_aceleracion = Vector3Int.zero;
+        m_densidad = 1;
+        m_temperatura = 273;
+        m_iluminacion = 0;
+
+        m_valor = 0f;
+        m_color = new Color(0, 0, 0, 1);
+    }
 
     public void Avanzar(IContenedorConDatos mapa, int dt)
     {
+        m_cambiePosicion = false;
+        m_colisiono = false;
         ActualizarVelocidad(dt);
 
         List<Vector3Int> posiciones = PosicionesEnMovimiento(dt);
         Vector3Int direccion = Direccion(dt);
 
-        for (int i = 0; i < posiciones.Count; i++)
+        foreach (Vector3Int posicion in posiciones)
         {
-            ActualizarAlrededores(posiciones[i], direccion, mapa);
+            ActualizarAlrededores(posicion, direccion, mapa);
 
-            Elemento elemento = (Elemento)mapa.EnPosicion(posiciones[i]);
-            if (elemento == null)
+            Elemento elemento = (Elemento)mapa.EnPosicion(posicion);
+            bool puedoIntercambiar = true;
+            if (elemento != null)
+                puedoIntercambiar = elemento.Intercambiar(this, dt);
+
+            if (!puedoIntercambiar)
             {
-                ActualizarPosicion(posiciones[i]);
-                continue;
+                m_colisiono = true;
+                break;
             }
 
-            bool pudeIntercambiar = Intercambiar(elemento, dt);
-            if (!pudeIntercambiar)
+            puedoIntercambiar = mapa.Intercambiar(m_posicion, posicion);
+            if (!puedoIntercambiar)
+            {
+                m_colisiono = true;
                 break;
+            }
 
-            ActualizarPosicion(posiciones[i]);
+            m_cambiePosicion = true;
         }
 
         if (Reacciona())
-            necesitoActualizar.Invoke(this);
+            NecesitoActualizar(this);
     }
 
     private void ActualizarAlrededores(Vector3Int posicion, Vector3Int direccion, IContenedorConDatos mapa)
@@ -49,19 +70,23 @@ public abstract class Elemento : IContenible
         List<Vector3Int> posibilidades;
 
         if (direccion == Vector3.zero)
+        {
             posibilidades = new List<Vector3Int>
             {
                 new Vector3Int(0, 1, 0), new Vector3Int(0, -1, 0),
                 new Vector3Int(1, 0, 0), new Vector3Int(-1, 0, 0),
                 new Vector3Int(0, 0, 1), new Vector3Int(0, 0, -1)
             };
+        }
         else
+        {
             posibilidades = AlrededoresDeDireccion(direccion);
+        }
 
         foreach (Vector3Int def in posibilidades)
         {
             Elemento elemento = (Elemento)mapa.EnPosicion(def + posicion);
-            elemento?.necesitoActualizar(elemento);
+            elemento?.NecesitoActualizar(elemento);
         }
     }
 
@@ -85,9 +110,15 @@ public abstract class Elemento : IContenible
      * algo de mayor densidad, y tambien tener en cuenta que uno
      * puede dejar pasar un material que tenga cierta velocidad
      */
-    protected abstract bool Intercambiar(Elemento elemento, int dt);
+    protected virtual bool Intercambiar(Elemento elemento, int dt)
+    {
+        return true;
+    }
 
-    protected abstract bool Reacciona();
+    protected virtual bool Reacciona()
+    {
+        return false;
+    }
 
     public void AplicarAceleracion(Vector3Int aceleracionNueva)
     {
@@ -96,7 +127,8 @@ public abstract class Elemento : IContenible
 
     protected void ActualizarVelocidad(int dt)
     {
-        m_velocidad += m_aceleracion * dt;
+        m_velocidad += (m_aceleracion + gravedad) * dt;
+        m_aceleracion.Set(0, 0, 0);
     }
 
     protected List<Vector3Int> PosicionesEnMovimiento(int dt)
@@ -105,8 +137,7 @@ public abstract class Elemento : IContenible
         Vector3Int direccion = m_velocidad * dt;
         Vector3Int final = inicio + direccion;
 
-        List<Vector3Int> resultado = Mathfs.PosicionesEntre(inicio, final);
-        return (resultado.Count > 0) ? resultado : null;
+        return Mathfs.PosicionesEntre(inicio, final);
     }
 
     private Vector3Int Direccion(int dt)
@@ -119,22 +150,22 @@ public abstract class Elemento : IContenible
         return velocidad;
     }
 
-    public float GetValor()
+    public override float GetValor()
     {
         return m_valor;
     }
 
-    public Color GetColor()
+    public override Color GetColor()
     {
         return m_color;
     }
 
-    public Vector3Int Posicion()
+    public override Vector3Int Posicion()
     {
         return m_posicion;
     }
 
-    public void ActualizarPosicion(Vector3Int posicionNueva)
+    public override void ActualizarPosicion(Vector3Int posicionNueva)
     {
         m_posicion = posicionNueva;
     }

@@ -1,12 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public interface IContenible : ITenerDatos
+public abstract class IContenible : ITenerDatos
 {
-    public Vector3Int Posicion();
+    public event Action<IContenible> necesitoActualizar;
 
-    public void ActualizarPosicion(Vector3Int posicionNueva);
+    public void NecesitoActualizar(IContenible contenible)
+    {
+        necesitoActualizar?.Invoke(contenible);
+    }
+
+    public abstract Vector3Int Posicion();
+
+    public abstract void ActualizarPosicion(Vector3Int posicionNueva);
+
+    public abstract float GetValor();
+
+    public abstract Color GetColor();
 }
 
 public interface IContenedor

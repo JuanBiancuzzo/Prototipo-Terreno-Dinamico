@@ -1,11 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedorConDatos
 {
     public Vector3Int m_posicion; // posicion del centro
-    public int m_alturaMinima = 0;
+    public int m_alturaMinima = 0, m_alturaMaxima = 100;
 
     [Range(10, 50)] public int m_chunkAncho;
 
@@ -87,7 +86,7 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
 
     public bool EnRango(Vector3Int posicion)
     {
-        return posicion.y > m_alturaMinima;
+        return posicion.y > m_alturaMinima && posicion.y < m_alturaMaxima;
     }
 
     public bool EnRango(IContenible contenible)

@@ -5,46 +5,28 @@ using UnityEngine;
 public class FallingSand : MonoBehaviour
 {
     public EspacioGeneral m_mapa = null;
-    List<MaterialParticula> m_paraActualizar = new List<MaterialParticula>();
+    List<Elemento> m_paraActualizar = new List<Elemento>();
 
     public static float m_default = 0f;
     public static Color m_defaultColor = new Color(1f, 1f, 1f, 1f);
 
     public MarchingCubes render;
-    public float dt = 0.1f;
+    public int dt = 1;
 
-    int cantidad = 0;
     void FixedUpdate()
     {
-        if (cantidad % 5 == 0)
-            Avanzar();
-        cantidad++;
-    }
-
-    private void AgregarSinRepetir<T>(List<T> lista, T elemento)
-    {
-        foreach (T material in lista)
-            if (material.Equals(elemento))
-                return;
-        lista.Add(elemento);
+        Avanzar();
     }
 
     public void Avanzar()
     {
-        List<MaterialParticula> nuevosParaActualizarse = new List<MaterialParticula>();
-
-        foreach (MaterialParticula material in m_paraActualizar)
-        {
-            List<MaterialParticula> paraActualizarse = new List<MaterialParticula>();
-            material.Avanzar(m_mapa, ref paraActualizarse);
-
-            foreach (MaterialParticula necesitaActualizarse in paraActualizarse)
-                AgregarSinRepetir<MaterialParticula>(nuevosParaActualizarse, necesitaActualizarse);
-        }
-
+        List<Elemento> actualizarEstaIteracion = new List<Elemento>();
+        foreach (Elemento elemento in m_paraActualizar)
+            actualizarEstaIteracion.Add(elemento);
         m_paraActualizar.Clear();
-        foreach (MaterialParticula material in nuevosParaActualizarse)
-            m_paraActualizar.Add(material);
+
+        foreach (Elemento elemento in actualizarEstaIteracion)
+            elemento.Avanzar(m_mapa, dt);
 
         Renderizar();
     }
@@ -64,13 +46,30 @@ public class FallingSand : MonoBehaviour
         return posicion - transform.position;
     }
 
-    public void Insertar(MaterialParticula material)
+    public void Insertar(Elemento elemento)
     {
         if (m_mapa == null)
             return;
 
-        if (m_mapa.Insertar(material) && material.SeActualiza())
-            m_paraActualizar.Add(material);
+        bool sePudoInsertar = m_mapa.Insertar(elemento);
+        if (!sePudoInsertar)
+            return;
+
+        ContenibleNecesitaActualizarse(elemento);
+        elemento.necesitoActualizar += ContenibleNecesitaActualizarse;
+    }
+
+    private void ContenibleNecesitaActualizarse(IContenible elemento)
+    {
+        AgregarSinRepetir(m_paraActualizar, (Elemento) elemento);
+    }
+
+    private void AgregarSinRepetir<T>(List<T> lista, T elemento)
+    {
+        foreach (T e in lista)
+            if (e.Equals(elemento))
+                return;
+        lista.Add(elemento);
     }
 
     public static bool EsDefault(Color color)
