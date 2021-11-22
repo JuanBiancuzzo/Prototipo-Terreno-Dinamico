@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class VolumenMinimo
 {
-    List<DirtyCube> m_volumenMinimo;
+    List<DirtyCube> m_dirtyCubes;
     float m_distanciaMaxima; // que tan separada pueden estar
 
     public VolumenMinimo(float distanciaMaxima)
     {
-        m_volumenMinimo = new List<DirtyCube>();
+        m_dirtyCubes = new List<DirtyCube>();
         m_distanciaMaxima = distanciaMaxima;
     }
 
@@ -28,21 +28,21 @@ public class VolumenMinimo
 
         cuboParaEliminar.Eliminar(punto);
         if (cuboParaEliminar.Vacio())
-            m_volumenMinimo.Remove(cuboParaEliminar);
+            m_dirtyCubes.Remove(cuboParaEliminar);
     }
 
     private void Optimizar()
     {
-        for (int i = 0; i < m_volumenMinimo.Count; i++)
-            for (int j = i + 1; j < m_volumenMinimo.Count; j++)
+        for (int i = 0; i < m_dirtyCubes.Count; i++)
+            for (int j = i + 1; j < m_dirtyCubes.Count; j++)
             {
-                DirtyCube primero = m_volumenMinimo[i];
-                DirtyCube segundo = m_volumenMinimo[j];
+                DirtyCube primero = m_dirtyCubes[i];
+                DirtyCube segundo = m_dirtyCubes[j];
 
                 if (primero.Intersecta(segundo))
                 {
                     primero.Merge(segundo);
-                    m_volumenMinimo.Remove(segundo);
+                    m_dirtyCubes.Remove(segundo);
                     return;
                 }
             }
@@ -50,27 +50,27 @@ public class VolumenMinimo
 
     public void EmpezarARenderizar()
     {
-        foreach (DirtyCube cube in m_volumenMinimo)
+        foreach (DirtyCube cube in m_dirtyCubes)
             cube.EmpezarARenderizar();
     }
 
     public bool NecesitaActualizarse()
     {
         bool seNecesitaActualizar = false;
-        for (int i = 0; i < m_volumenMinimo.Count && !seNecesitaActualizar; i++)
-            seNecesitaActualizar |= m_volumenMinimo[i].NecesitaActualizarse();
+        for (int i = 0; i < m_dirtyCubes.Count && !seNecesitaActualizar; i++)
+            seNecesitaActualizar |= m_dirtyCubes[i].NecesitaActualizarse();
         return seNecesitaActualizar;
     }
 
     public bool Vacio()
     {
-        return m_volumenMinimo.Count == 0;
+        return m_dirtyCubes.Count == 0;
     }
 
     public List<Extremo> GetExtremos()
     {
         List<Extremo> extremos = new List<Extremo>();
-        foreach (DirtyCube cube in m_volumenMinimo)
+        foreach (DirtyCube cube in m_dirtyCubes)
             extremos.Add(cube.GetExtremos());
         return extremos;
     }
@@ -78,7 +78,7 @@ public class VolumenMinimo
     private DirtyCube CuboContienePunto(Vector3Int punto)
     {
         DirtyCube cuboFinal = null;
-        foreach (DirtyCube cubo in m_volumenMinimo)
+        foreach (DirtyCube cubo in m_dirtyCubes)
             if (cubo.ContienePunto(punto))
                 cuboFinal = cubo;
         return cuboFinal;
@@ -89,12 +89,12 @@ public class VolumenMinimo
         if (Vacio())
             return CrearCubo();
 
-        DirtyCube masCercano = m_volumenMinimo[0];
+        DirtyCube masCercano = m_dirtyCubes[0];
         if (masCercano.PuntoDentroDelCubo(punto))
             return masCercano;
 
         float distanciaMinima = masCercano.DistanciaAlPunto(punto);
-        foreach (DirtyCube cubo in m_volumenMinimo)
+        foreach (DirtyCube cubo in m_dirtyCubes)
         {
             if (cubo.PuntoDentroDelCubo(punto))
             {
@@ -117,7 +117,7 @@ public class VolumenMinimo
     private DirtyCube CrearCubo()
     {
         DirtyCube cubo = new DirtyCube();
-        m_volumenMinimo.Add(cubo);
+        m_dirtyCubes.Add(cubo);
         return cubo;
     }
 }
