@@ -9,16 +9,4 @@ public class Aire : Gaseoso
         m_valor = 0f;
         m_color = new Color(0, 0, 0, 0);
     }
-
-    protected override bool Intercambiar(Elemento elemento, int dt)
-    {
-        return true;
-    }
-
-    protected override bool Reacciona()
-    {
-        return false;
-    }
-
-
 }

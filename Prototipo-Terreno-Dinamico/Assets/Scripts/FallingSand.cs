@@ -13,9 +13,14 @@ public class FallingSand : MonoBehaviour
     public MarchingCubes render;
     public int dt = 1;
 
+    public int m_velocidadSimulacion = 5;
+    int contador = 0;
     void FixedUpdate()
     {
-        Avanzar();
+        if (contador == 0)
+            Avanzar();
+
+        contador = (contador + 1) % m_velocidadSimulacion;
     }
 
     public void Avanzar()

@@ -47,6 +47,29 @@ public static class Mathfs
         return posiciones;
     }
 
+    public static IEnumerable<Vector3Int> PosicioneEntreYield(Vector3Int inicio, Vector3Int fin)
+    {
+        Vector3Int direccion = fin - inicio;
+        int variable = MayorComponente(direccion);
+
+        if (direccion[variable] != 0)
+        {
+            for (int v = 1; v <= Mathf.Abs(direccion[variable]); v++)
+            {
+                int dirAvance = (Mathf.Sign(direccion[variable]) == 1) ? 1 : -1;
+                int valorVariable = inicio[variable] + v * dirAvance;
+                Vector3Int posicionNueva = new Vector3Int();
+                for (int i = 0; i < 3; i++)
+                {
+                    float valor = ((float)direccion[i] * (valorVariable - inicio[variable])) / direccion[variable] + inicio[i];
+                    posicionNueva[i] = (i == variable) ? valorVariable : Mathf.CeilToInt(valor);
+                }
+
+                yield return posicionNueva;
+            }
+        }
+    }
+
     public static int MayorComponente(Vector3Int vector)
     {
         int x = Mathf.Abs(vector.x), y = Mathf.Abs(vector.y), z = Mathf.Abs(vector.z);

@@ -249,7 +249,7 @@ MonoBehaviour:
   m_materialSeleccionado: 1
   anchoPlancha: 0
   tirar: 1
-  continuo: 1
+  continuo: 0
   ponerPiso: 0
 --- !u!4 &1175692662
 Transform:
@@ -259,7 +259,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1175692660}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.83, y: 65.3, z: 3.24}
+  m_LocalPosition: {x: 0, y: 30, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -332,6 +332,7 @@ MonoBehaviour:
   m_mapa: {fileID: 1961341988}
   render: {fileID: 1961341992}
   dt: 1
+  m_velocidadSimulacion: 7
 --- !u!114 &1961341992
 MonoBehaviour:
   m_ObjectHideFlags: 0
