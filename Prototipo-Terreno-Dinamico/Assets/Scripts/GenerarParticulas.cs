@@ -7,10 +7,7 @@ public enum MaterialSel
 {
 	Aire = 0,
 	Arena,
-	Agua,
-	Grava,
-	Humo,
-	Muro
+	Grava
 }
 
 public class GenerarParticulas : MonoBehaviour
@@ -58,6 +55,7 @@ public class GenerarParticulas : MonoBehaviour
         {
 			case 0: return new Aire(posicion);
 			case 1: return new Arena(posicion);
+			case 2: return new Grava(posicion);
 			default: return new Aire(posicion);
         }
     }
