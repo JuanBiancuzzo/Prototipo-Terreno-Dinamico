@@ -58,18 +58,19 @@ public abstract class Solido : Elemento
         while (tiempoRestante > 0)
         {
             Vector3Int direccion = DireccionVelocidad(dt);
-            if (direccion == Vector3Int.zero)
-                break;
 
             float promedioTiempo = 0;
             for (int i = 0; i < 3; i++)
                 if (direccion[i] != 0)
-                    promedioTiempo += (direccion[i] * dt) /(float)m_velocidad[i];
+                    promedioTiempo += (Mathf.Abs(direccion[i]) * dt) /(float)Mathf.Abs(m_velocidad[i]);
             promedioTiempo = promedioTiempo / 3f;
 
-            tiempoRestante -= promedioTiempo;
 
+            tiempoRestante -= promedioTiempo;
             yield return m_posicion + direccion;
+            
+            if (promedioTiempo <= 0.01f)
+                break;
         }
     }
 
