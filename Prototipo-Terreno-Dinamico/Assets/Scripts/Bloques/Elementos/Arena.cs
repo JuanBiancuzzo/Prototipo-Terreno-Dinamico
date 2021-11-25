@@ -12,6 +12,12 @@ public class Arena : Solido
 
     public override void ActuarEnOtro(Solido elemento, int dt)
     {
+        // modificar su velocidad para q se caiga a los costados
+        foreach (Vector3Int desfase in BuscarPosicionesDisponibles())
+        {
+            m_velocidad += desfase;
+            break;
+        }
     }
 
     public override bool Reacciona(IContenedorConDatos mapa)
