@@ -99,6 +99,7 @@ public class MarchingCubes : MonoBehaviour, IRender
 		shader.SetBuffer(kernel, "triangles", triangulos);
 		shader.SetFloat("isoLevel", m_nivelDelSuelo);
 		shader.SetInts("numPointsPerAxis", extension.x, extension.y, extension.z);
+		shader.SetInt("nivelDetalle", 1);
 
 		shader.Dispatch(kernel, extension.x, extension.y, extension.z);
 

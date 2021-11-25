@@ -23,6 +23,8 @@ StructuredBuffer<float4> colores;
 float isoLevel;
 int3 numPointsPerAxis;
 
+int nivelDetalle;
+
 float3 interpolateVerts(float4 v1, float4 v2) {
     float t = (isoLevel - v1.w) / (v2.w - v1.w);
     return v1.xyz + t * (v2.xyz - v1.xyz);
@@ -51,31 +53,31 @@ float4 colorEnPunto(int x, int y, int z)
 [numthreads(numThreads, numThreads, numThreads)]
 void March(int3 id : SV_DispatchThreadID)
 {
-    if (id.x >= numPointsPerAxis.x - 1 || id.y >= numPointsPerAxis.y - 1 || id.z >= numPointsPerAxis.z - 1) {
+    if (id.x >= numPointsPerAxis.x - nivelDetalle || id.y >= numPointsPerAxis.y - nivelDetalle || id.z >= numPointsPerAxis.z - nivelDetalle) {
         return;
     }
 
     // 8 corners of the current cube
     float4 cubeCorners[8] = {
         valorEnPunto(id.x, id.y, id.z),
-        valorEnPunto(id.x + 1, id.y, id.z),
-        valorEnPunto(id.x + 1, id.y, id.z + 1),
-        valorEnPunto(id.x, id.y, id.z + 1),
-        valorEnPunto(id.x, id.y + 1, id.z),
-        valorEnPunto(id.x + 1, id.y + 1, id.z),
-        valorEnPunto(id.x + 1, id.y + 1, id.z + 1),
-        valorEnPunto(id.x, id.y + 1, id.z + 1)
+        valorEnPunto(id.x + nivelDetalle, id.y, id.z),
+        valorEnPunto(id.x + nivelDetalle, id.y, id.z + nivelDetalle),
+        valorEnPunto(id.x, id.y, id.z + nivelDetalle),
+        valorEnPunto(id.x, id.y + nivelDetalle, id.z),
+        valorEnPunto(id.x + nivelDetalle, id.y + nivelDetalle, id.z),
+        valorEnPunto(id.x + nivelDetalle, id.y + nivelDetalle, id.z + nivelDetalle),
+        valorEnPunto(id.x, id.y + nivelDetalle, id.z + nivelDetalle)
     };
 
     float4 cubeCornersColores[8] = {
         colorEnPunto(id.x, id.y, id.z),
-        colorEnPunto(id.x + 1, id.y, id.z),
-        colorEnPunto(id.x + 1, id.y, id.z + 1),
-        colorEnPunto(id.x, id.y, id.z + 1),
-        colorEnPunto(id.x, id.y + 1, id.z),
-        colorEnPunto(id.x + 1, id.y + 1, id.z),
-        colorEnPunto(id.x + 1, id.y + 1, id.z + 1),
-        colorEnPunto(id.x, id.y + 1, id.z + 1)
+        colorEnPunto(id.x + nivelDetalle, id.y, id.z),
+        colorEnPunto(id.x + nivelDetalle, id.y, id.z + nivelDetalle),
+        colorEnPunto(id.x, id.y, id.z + nivelDetalle),
+        colorEnPunto(id.x, id.y + nivelDetalle, id.z),
+        colorEnPunto(id.x + nivelDetalle, id.y + nivelDetalle, id.z),
+        colorEnPunto(id.x + nivelDetalle, id.y + nivelDetalle, id.z + nivelDetalle),
+        colorEnPunto(id.x, id.y + nivelDetalle, id.z + nivelDetalle)
     };
 
     // Calculate unique index for each cube configuration.
@@ -106,13 +108,13 @@ void March(int3 id : SV_DispatchThreadID)
         int b2 = cornerIndexBFromEdge[triangulation[cubeIndex][i + 2]];
 
         Triangle tri;
-        tri.vertexA = interpolateVerts(cubeCorners[a0], cubeCorners[b0]);
+        tri.vertexA = interpolateVerts(cubeCorners[a0], cubeCorners[b0]) * nivelDetalle;
         tri.colorA = elegirColores(cubeCorners[a0].w, cubeCornersColores[a0], cubeCorners[b0].w, cubeCornersColores[b0]);
 
-        tri.vertexB = interpolateVerts(cubeCorners[a1], cubeCorners[b1]);
+        tri.vertexB = interpolateVerts(cubeCorners[a1], cubeCorners[b1]) * nivelDetalle;
         tri.colorB = elegirColores(cubeCorners[a1].w, cubeCornersColores[a1], cubeCorners[b1].w, cubeCornersColores[b1]);
 
-        tri.vertexC = interpolateVerts(cubeCorners[a2], cubeCorners[b2]);
+        tri.vertexC = interpolateVerts(cubeCorners[a2], cubeCorners[b2]) * nivelDetalle;
         tri.colorC = elegirColores(cubeCorners[a2].w, cubeCornersColores[a2], cubeCorners[b2].w, cubeCornersColores[b2]);
 
         tri.normal = normalize(cross(tri.vertexB - tri.vertexA, tri.vertexC - tri.vertexA));
