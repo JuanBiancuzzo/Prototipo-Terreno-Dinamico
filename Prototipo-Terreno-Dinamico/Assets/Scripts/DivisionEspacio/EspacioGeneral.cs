@@ -112,10 +112,10 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
         return (chunk == null) ? m_defaultColor : chunk.GetColor(posicion, m_defaultColor);
     }
 
-    public void Renderizar(IRender render, ISacarDatos contenedor = null)
+    public void Renderizar(IRender render, ISacarDatos contenedor = null, bool overrideActualizacion = false)
     {
         foreach (Chunk chunk in m_chunks)
-            chunk.Renderizar(render, this);
+            chunk.Renderizar(render, this, overrideActualizacion);
     }
 
     public void GenerarMeshColision(IRender render, Extremo rangoJugador)

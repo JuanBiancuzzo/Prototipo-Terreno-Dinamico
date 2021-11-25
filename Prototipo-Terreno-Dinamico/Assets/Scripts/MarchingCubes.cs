@@ -57,11 +57,12 @@ public class MarchingCubes : MonoBehaviour, IRender
         }
 	}
 
-	public void GenerarMeshCompute(Extremo extremo, ISacarDatos datos, ref MeshData preInfo)
+	public void GenerarMeshCompute(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, int LOD = 1)
     {
 		int kernel = shader.FindKernel("March");
 
-		Vector3Int minimos = extremo.m_minimo, maximos = extremo.m_maximo;
+		Vector3Int minimos = Vector3Int.FloorToInt((Vector3)extremo.m_minimo / LOD);
+		Vector3Int maximos = Vector3Int.FloorToInt((Vector3)extremo.m_maximo / LOD);
 		Vector3Int extension = (maximos - minimos) + Vector3Int.one * 3;
 
 		// creando buffer de puntos
@@ -71,16 +72,17 @@ public class MarchingCubes : MonoBehaviour, IRender
 
 		Vector4[] datosPuntos = new Vector4[numPoints];
 		Vector4[] datosColores = new Vector4[numPoints];
-		for (int z = minimos.z - 1; z < maximos.z + 2; z++)
-			for (int y = minimos.y - 1; y < maximos.y + 2; y++)
-				for (int x = minimos.x - 1; x < maximos.x + 2; x++)
+		for (int z = minimos.z - 1; z <= maximos.z + 1; z++)
+			for (int y = minimos.y - 1; y <= maximos.y + 1; y++)
+				for (int x = minimos.x - 1; x <= maximos.x + 1; x++)
                 {
 					int posX = (x - (minimos.x - 1));
 					int posY = (y - (minimos.y - 1)) * (extension.x);
 					int posZ = (z - (minimos.z - 1)) * (extension.x * extension.y);
-					Vector3Int posicion = new Vector3Int(x, y, z);
 
-					datosPuntos[posX + posY + posZ] = new Vector4(x, y, z, datos.GetValor(posicion));
+					Vector3Int posicion = new Vector3Int(x * LOD, y * LOD, z * LOD);
+
+					datosPuntos[posX + posY + posZ] = new Vector4(posicion.x, posicion.y, posicion.z, datos.GetValor(posicion));
 					datosColores[posX + posY + posZ] = datos.GetColor(posicion);
 				}
 
@@ -99,7 +101,6 @@ public class MarchingCubes : MonoBehaviour, IRender
 		shader.SetBuffer(kernel, "triangles", triangulos);
 		shader.SetFloat("isoLevel", m_nivelDelSuelo);
 		shader.SetInts("numPointsPerAxis", extension.x, extension.y, extension.z);
-		shader.SetInt("nivelDetalle", 1);
 
 		shader.Dispatch(kernel, extension.x, extension.y, extension.z);
 
@@ -130,14 +131,14 @@ public class MarchingCubes : MonoBehaviour, IRender
 		triCountBuffer.Dispose();
 	}
 
-	public void GenerarMesh(Extremo extremo, ISacarDatos datos, ref MeshData preInfo)
+	public void GenerarMesh(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, int LOD = 1)
     {
 		Inicializar(preInfo, datos);
 		Vector3Int minimos = extremo.m_minimo, maximos = extremo.m_maximo;
 
-		for (int x = minimos.x - 1; x <= maximos.x; x++)
-			for (int y = minimos.y - 1; y <= maximos.y; y++)
-				for (int z = minimos.z - 1; z <= maximos.z; z++)
+		for (int x = minimos.x - LOD; x < maximos.x + LOD; x += LOD)
+			for (int y = minimos.y - LOD; y < maximos.y + LOD; y += LOD)
+				for (int z = minimos.z - LOD; z < maximos.z + LOD; z += LOD)
 					GenerarCubo(x, y, z);
 
 		CargarDatos(ref preInfo);

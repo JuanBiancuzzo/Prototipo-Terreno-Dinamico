@@ -166,14 +166,15 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
             extremoMinimo = extremoMinimo.Union(extremo);
     }
 
-    public void Renderizar(IRender render, ISacarDatos contenedor = null)
+    public void Renderizar(IRender render, ISacarDatos contenedor = null, bool overrideActualizacion = false)
     {
-        if (!NecesitaActualizarse() || m_volumenMinimo.Vacio())
-        {
-            if (m_volumenMinimo.Vacio())
-                m_meshVisual.Clear();
-            return;
-        }
+        if (!overrideActualizacion)
+            if (!NecesitaActualizarse() || m_volumenMinimo.Vacio())
+            {
+                if (m_volumenMinimo.Vacio())
+                    m_meshVisual.Clear();
+                return;
+            }
 
         Extremo extremo = new Extremo(Vector3Int.zero, Vector3Int.zero, false);
         ExtremosMinimos(ref extremo);
