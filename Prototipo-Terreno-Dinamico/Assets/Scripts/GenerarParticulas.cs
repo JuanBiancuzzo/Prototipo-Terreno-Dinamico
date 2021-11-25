@@ -7,7 +7,8 @@ public enum MaterialSel
 {
 	Aire = 0,
 	Arena,
-	Grava
+	Grava,
+	Concreto
 }
 
 public class GenerarParticulas : MonoBehaviour
@@ -32,7 +33,7 @@ public class GenerarParticulas : MonoBehaviour
 		if (!tirar)
 			return;
 
-		TirarPlancha(anchoPlancha, Vector3Int.FloorToInt(transform.position + Vector3.up), (int)m_materialSeleccionado);
+		TirarPlancha(anchoPlancha, Vector3Int.FloorToInt(transform.position), (int)m_materialSeleccionado);
 		if (!continuo)
 			tirar = false;
 	}
@@ -56,6 +57,7 @@ public class GenerarParticulas : MonoBehaviour
 			case 0: return new Aire(posicion);
 			case 1: return new Arena(posicion);
 			case 2: return new Grava(posicion);
+			case 3: return new Concreto(posicion);
 			default: return new Aire(posicion);
         }
     }
