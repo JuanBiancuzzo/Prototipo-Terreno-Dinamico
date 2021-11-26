@@ -16,7 +16,7 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
     public float m_defaultValor;
     public Color m_defaultColor;
 
-    public bool Insertar(IContenible contenible)
+    public bool Insertar(Elemento contenible)
     {
         if (contenible == null)
             return false;
@@ -28,7 +28,7 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
         return ChunkValidoEnPosicion(posicion).Insertar(contenible);
     }
 
-    public IContenible Eliminar(Vector3Int posicion)
+    public Elemento Eliminar(Vector3Int posicion)
     {
         if (!EnRango(posicion))
             return null;
@@ -37,7 +37,7 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
         return (chunk == null) ? null : chunk.Eliminar(posicion); 
     }
 
-    public IContenible Eliminar(IContenible contenible)
+    public Elemento Eliminar(Elemento contenible)
     {
         return (contenible == null) ? null : Eliminar(contenible.Posicion());
     }
@@ -50,8 +50,8 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
         if (WTC(origen) == WTC(destino))
             return ChunkEnPosicion(origen).Intercambiar(origen, destino);
 
-        IContenible contenibleOrigen = Eliminar(origen);
-        IContenible contenibleDestino = Eliminar(destino);
+        Elemento contenibleOrigen = Eliminar(origen);
+        Elemento contenibleDestino = Eliminar(destino);
 
         if (contenibleOrigen != null)
         {
@@ -68,14 +68,14 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
         return contenibleOrigen != null || contenibleDestino != null;
     }
 
-    public bool Intercambiar(IContenible contenibleOrigen, IContenible contenibleDestino)
+    public bool Intercambiar(Elemento contenibleOrigen, Elemento contenibleDestino)
     {
         if (contenibleOrigen == null || contenibleDestino == null)
             return false;
         return Intercambiar(contenibleOrigen.Posicion(), contenibleDestino.Posicion());
     }
 
-    public IContenible EnPosicion(Vector3Int posicion)
+    public Elemento EnPosicion(Vector3Int posicion)
     {
         if (!EnRango(posicion))
             return null;
@@ -89,7 +89,7 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
         return posicion.y > m_alturaMinima && posicion.y < m_alturaMaxima;
     }
 
-    public bool EnRango(IContenible contenible)
+    public bool EnRango(Elemento contenible)
     {
         return (contenible == null) ? false : EnRango(contenible.Posicion());
     }

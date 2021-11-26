@@ -29,7 +29,7 @@ public abstract class Solido : Elemento
         {
             Vector3Int posicionAnterior = m_posicion;
 
-            Elemento elemento = (Elemento)mapa.EnPosicion(posicion);
+            Elemento elemento = mapa.EnPosicion(posicion);
             if (elemento == null)
             {
                 mapa.Intercambiar(m_posicion, posicion);
@@ -128,63 +128,12 @@ public abstract class Solido : Elemento
         }
     }
 
-    /*
-    protected virtual IEnumerable<Vector3Int> PosicionesEnMovimiento(IContenedorConDatos mapa, int dt)
-    {
-        Vector3Int inicio = m_posicion;
-        Vector3Int final = inicio + m_velocidad * dt;
-        Vector3Int direccion = final - inicio;
-        int variable = Mathfs.MayorComponente(direccion);
-
-        Vector3Int desfase = new Vector3Int(0, 0, 0);
-
-        if (direccion[variable] != 0)
-        {
-            int desvios = 0;
-
-            for (int v = 1; v <= Mathf.Abs(direccion[variable]) + desvios; v++)
-            {
-                int dirAvance = (Mathf.Sign(direccion[variable]) == 1) ? 1 : -1;
-                int valorVariable = inicio[variable] + v * dirAvance;
-                Vector3Int posicionNueva = new Vector3Int();
-                for (int i = 0; i < 3; i++)
-                {
-                    float valor = ((float)direccion[i] * (valorVariable - inicio[variable])) / direccion[variable] + inicio[i];
-                    posicionNueva[i] = (i == variable) ? valorVariable : Mathf.CeilToInt(valor);
-                }
-
-                posicionNueva += desfase;
-
-                bool sePuedeMover = ElementoDejaIntercambiarEn(mapa, posicionNueva, dt);
-
-                yield return posicionNueva;
-
-                if (sePuedeMover)
-                    continue;
-
-                foreach (Vector3Int des in BuscarPosicionesDisponibles())
-                {
-                    if (!ElementoDejaIntercambiarEn(mapa, posicionNueva + des, dt))
-                        continue;
-
-                    yield return posicionNueva + des;
-
-                    desfase += des;
-                    desvios++;
-                    break;
-                }
-
-                break;
-            }
-        }
-    }*/
-
     protected bool ElementoDejaIntercambiarEn(IContenedorConDatos mapa, Vector3Int posicion, int dt)
     {
         if (!mapa.EnRango(posicion))
             return false;
 
-        Elemento elemento = (Elemento)mapa.EnPosicion(posicion);
+        Elemento elemento = mapa.EnPosicion(posicion);
         return elemento == null || elemento.PermitoIntercambiar(this, dt);
     }
 

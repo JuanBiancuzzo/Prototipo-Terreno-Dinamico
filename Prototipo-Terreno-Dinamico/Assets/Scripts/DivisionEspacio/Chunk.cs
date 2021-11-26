@@ -9,7 +9,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
     public Vector3Int m_posicion; // posicion del centro
     Vector3Int m_extension; // "radio" del cuadrado
 
-    IContenible[,,] m_contenido;
+    Elemento[,,] m_contenido;
     VolumenMinimo m_volumenMinimo = null;
     int m_cantidad;
 
@@ -25,7 +25,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
     {
         m_posicion = posicion;
         m_extension = extension;
-        m_contenido = new IContenible[extension.x * 2, extension.y * 2, extension.z * 2];
+        m_contenido = new Elemento[extension.x * 2, extension.y * 2, extension.z * 2];
 
         m_volumenMinimo = new VolumenMinimo(m_distanciaMinima);
         m_cantidad = 0;
@@ -40,7 +40,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         m_meshColliderComponent = GetComponent<MeshCollider>() as MeshCollider;
     }
 
-    public bool Insertar(IContenible contenible)
+    public bool Insertar(Elemento contenible)
     {
         if (contenible == null)
             return false;
@@ -49,7 +49,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         if (!EnRango(posicion))
             return false;
 
-        IContenible enEspacio = EnPosicion(posicion);
+        Elemento enEspacio = EnPosicion(posicion);
         if (enEspacio != null)
             return false;
 
@@ -63,12 +63,12 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         return true;
     }
 
-    public IContenible Eliminar(Vector3Int posicion)
+    public Elemento Eliminar(Vector3Int posicion)
     {
         if (!EnRango(posicion))
             return null;
 
-        IContenible enEspacio = EnPosicion(posicion);
+        Elemento enEspacio = EnPosicion(posicion);
         if (enEspacio == null)
             return null;
 
@@ -82,7 +82,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         return enEspacio;
     }
 
-    public IContenible Eliminar(IContenible contenible)
+    public Elemento Eliminar(Elemento contenible)
     {
         return (contenible == null) ? null : Eliminar(contenible.Posicion());
     }
@@ -92,8 +92,8 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         if (!EnRango(origen) || !EnRango(destino))
             return false;
 
-        IContenible contenibleOrigen = Eliminar(origen);
-        IContenible contenibleDestino = Eliminar(destino);
+        Elemento contenibleOrigen = Eliminar(origen);
+        Elemento contenibleDestino = Eliminar(destino);
 
         if (contenibleOrigen != null)
         {
@@ -110,14 +110,14 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         return contenibleOrigen != null || contenibleDestino != null;
     }
 
-    public bool Intercambiar(IContenible contenibleOrigen, IContenible contenibleDestino)
+    public bool Intercambiar(Elemento contenibleOrigen, Elemento contenibleDestino)
     {
         if (contenibleOrigen == null || contenibleDestino == null)
             return false;
         return Intercambiar(contenibleOrigen.Posicion(), contenibleDestino.Posicion());
     }
 
-    public IContenible EnPosicion(Vector3Int posicion)
+    public Elemento EnPosicion(Vector3Int posicion)
     {
         if (!EnRango(posicion))
             return null;
@@ -135,7 +135,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         return true;
     }
 
-    public bool EnRango(IContenible contenible)
+    public bool EnRango(Elemento contenible)
     {
         return (contenible == null) ? false : EnRango(contenible.Posicion());
     }
@@ -146,7 +146,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
             return defaultValor;
 
         posicion = WTM(posicion);
-        IContenible contenible = m_contenido[posicion.x, posicion.y, posicion.z];
+        Elemento contenible = m_contenido[posicion.x, posicion.y, posicion.z];
         return (contenible == null) ? defaultValor : contenible.GetValor();
     }
 
@@ -156,7 +156,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
             return defaultColor;
 
         posicion = WTM(posicion);
-        IContenible contenible = m_contenido[posicion.x, posicion.y, posicion.z];
+        Elemento contenible = m_contenido[posicion.x, posicion.y, posicion.z];
         return (contenible == null) ? defaultColor : contenible.GetColor();
     }
 
