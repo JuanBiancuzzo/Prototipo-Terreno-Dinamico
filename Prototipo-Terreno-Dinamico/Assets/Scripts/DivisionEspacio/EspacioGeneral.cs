@@ -135,6 +135,8 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
                 }
     }
 
+    
+
     private Vector3Int WTC(Vector3Int posicionMundo)
     {
         Vector3Int posicionFinal = Vector3Int.FloorToInt((Vector3) posicionMundo / m_chunkAncho);

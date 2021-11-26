@@ -19,8 +19,12 @@ public class CuerpoEnMundo : MonoBehaviour
         if (m_mundo == null)
             return;
 
-        CalcularExtremo();
+        PedirColision();
+    }
 
+    void PedirColision()
+    {
+        CalcularExtremo();
         m_mundo.GenerarMeshColision(m_extremo);
     }
 
