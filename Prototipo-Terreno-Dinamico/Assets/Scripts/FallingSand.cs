@@ -14,6 +14,7 @@ public class FallingSand : MonoBehaviour
     public int dt = 1;
 
     public int m_velocidadSimulacion = 5;
+
     int contador = 0;
     void FixedUpdate()
     {
@@ -44,6 +45,11 @@ public class FallingSand : MonoBehaviour
     public void GenerarMeshColision(Extremo rangoJugador)
     {
         m_mapa.GenerarMeshColision(render, rangoJugador);
+    }
+
+    public void AgregarJugador(Transform jugador, List<int> LODLevels)
+    {
+        m_mapa.AgregarJugador(jugador, LODLevels);
     }
 
     public Vector3 PosicionEnMundo(Vector3 posicion)

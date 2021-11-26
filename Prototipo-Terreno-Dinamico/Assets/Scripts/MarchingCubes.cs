@@ -67,6 +67,9 @@ public class MarchingCubes : MonoBehaviour, IRender
 
 		// creando buffer de puntos
 		int numPoints = extension.x * extension.y * extension.z;
+		if (numPoints == 0)
+			return;
+
 		ComputeBuffer puntos = new ComputeBuffer(numPoints, sizeof(float) * 4);
 		ComputeBuffer colores = new ComputeBuffer(numPoints, sizeof(float) * 4);
 

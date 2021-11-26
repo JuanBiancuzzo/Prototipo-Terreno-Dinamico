@@ -182,8 +182,13 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
             extremoMinimo = extremoMinimo.Union(extremo);
     }
 
-    public void Renderizar(IRender render, ISacarDatos contenedor = null, bool overrideActualizacion = false)
+    int LODAnterior = 1;
+    public void Renderizar(IRender render, ISacarDatos contenedor = null, int LOD = 1, bool overrideActualizacion = false)
     {
+        if (LOD != LODAnterior)
+            overrideActualizacion = true;
+        LODAnterior = LOD;
+
         if (!overrideActualizacion)
             if (!NecesitaActualizarse() || m_volumenMinimo.Vacio())
             {
@@ -196,7 +201,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         ExtremosMinimos(ref extremo);
 
         MeshData meshData = new MeshData();
-        render.GenerarMeshCompute(extremo, contenedor, ref meshData);
+        render.GenerarMeshCompute(extremo, contenedor, ref meshData, LOD);
         m_volumenMinimo.EmpezarARenderizar();
         LlenarMesh(m_meshVisual, meshData);
     }

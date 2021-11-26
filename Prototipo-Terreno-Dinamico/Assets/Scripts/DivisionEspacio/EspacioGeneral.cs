@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,19 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
     List<Chunk> m_chunks = new List<Chunk>();
 
     public GameObject m_chunkPrefab;
+
+    struct Jugador
+    {
+        public Transform transform;
+        public List<int> LODLevels;
+
+        public Jugador(Transform jugador, List<int> LODLevels)
+        {
+            this.transform = jugador;
+            this.LODLevels = LODLevels;
+        }
+    }
+    List<Jugador> m_jugadores = new List<Jugador>();
 
     public float m_defaultValor;
     public Color m_defaultColor;
@@ -84,6 +98,12 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
         return (chunk == null) ? null : chunk.EnPosicion(posicion); 
     }
 
+    private bool EnRangoChunk(Vector3Int posicion)
+    {
+        return posicion.y >= 0;
+        //return posicion.y > m_alturaMaxima / m_chunkAncho && posicion.y < m_alturaMaxima / m_chunkAncho;
+    }
+
     public bool EnRango(Vector3Int posicion)
     {
         return posicion.y > m_alturaMinima && posicion.y < m_alturaMaxima;
@@ -112,10 +132,56 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
         return (chunk == null) ? m_defaultColor : chunk.GetColor(posicion, m_defaultColor);
     }
 
-    public void Renderizar(IRender render, ISacarDatos contenedor = null, bool overrideActualizacion = false)
+    public void AgregarJugador(Transform jugador, List<int> LODLevels)
     {
-        foreach (Chunk chunk in m_chunks)
-            chunk.Renderizar(render, this, overrideActualizacion);
+        m_jugadores.Add(new Jugador(jugador, LODLevels));
+    }
+    public void Renderizar(IRender render, ISacarDatos contenedor = null, int LOD = 1, bool overrideActualizacion = false)
+    {
+        /*foreach (Chunk chunk in m_chunks)
+            chunk.Renderizar(render, this, overrideActualizacion);*/
+
+        foreach (Jugador jugador in m_jugadores)
+        {
+            Vector3Int posicion = WTC(Vector3Int.FloorToInt(jugador.transform.position));
+            int distancia = 0, LODActual = 1;
+
+            foreach (int extension in jugador.LODLevels)
+            {
+                int extensionTotal = distancia + extension;
+                Vector3Int vExtension = new Vector3Int(extensionTotal, extensionTotal, extensionTotal);
+                Vector3Int vDistancia = new Vector3Int(distancia, distancia, distancia);
+
+                Extremo extremo = new Extremo(posicion - vExtension, posicion + vExtension);
+
+                List<Chunk> chunksActualizar = AlgoRaro(extremo, posicion + vDistancia);
+
+                //Debug.Log("Level of detail: " + LODActual + ", y tiene " + chunksActualizar.Count);
+                foreach (Chunk chunk in chunksActualizar)
+                    chunk.Renderizar(render, this, LODActual);
+
+                distancia += extension;
+                LODActual++;
+            }
+        }
+    }
+
+    private List<Chunk> AlgoRaro(Extremo extremo, Vector3Int distanciaMinima)
+    {
+        Func<int, int, bool> Afuera = (valor, maximo) => valor < -maximo || maximo <= valor;
+
+        List<Chunk> lista = new List<Chunk>();
+        for (int i = extremo.m_minimo.x; i < extremo.m_maximo.x; i++)
+            for (int j = extremo.m_minimo.y; j < extremo.m_maximo.y; j++)
+                for (int k = extremo.m_minimo.z; k < extremo.m_maximo.z; k++)
+                    if (Afuera(i, distanciaMinima.x) || Afuera(j, distanciaMinima.y) || Afuera(k, distanciaMinima.z))
+                    {
+                        Vector3Int posicion = new Vector3Int(i, j, k);
+                        if (EnRangoChunk(posicion))
+                            lista.Add(ChunkValidoEnPosicionRelativa(posicion));
+                    }
+
+        return lista;
     }
 
     public void GenerarMeshColision(IRender render, Extremo rangoJugador)
@@ -152,6 +218,11 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
     private Chunk ChunkValidoEnPosicion(Vector3Int posicionMundo)
     {
         Vector3Int posicion = WTC(posicionMundo);
+        return ChunkValidoEnPosicionRelativa(posicion);
+    }
+
+    private Chunk ChunkValidoEnPosicionRelativa(Vector3Int posicion)
+    {
         return (m_contenedores.ContainsKey(posicion)) ? m_contenedores[posicion] : CrearChunk(posicion);
     }
 
