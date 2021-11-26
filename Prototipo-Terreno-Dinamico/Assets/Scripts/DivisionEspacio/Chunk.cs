@@ -21,7 +21,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
     [Space]
     public float m_distanciaMinima = 10f;
 
-    public void Inicializar(Vector3Int posicion, Vector3Int extension)
+    public void Inicializar(Vector3Int posicion, Vector3Int extension, Vector2Int extremo)
     {
         m_posicion = posicion;
         m_extension = extension;
@@ -29,6 +29,21 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 
         m_volumenMinimo = new VolumenMinimo(m_distanciaMinima);
         m_cantidad = 0;
+
+        for (int x = posicion.x - extension.x; x < posicion.x + extension.x; x++)
+            for (int z = posicion.z - extension.z; z < posicion.z + extension.z; z++)
+            {
+                float alturaNormalizado = Mathf.Clamp(Mathf.PerlinNoise(x / 20f, z / 20f) + 0.5f, 0, 1);
+                int altura = Mathf.FloorToInt(Mathf.Lerp(extremo.x, extension.y, alturaNormalizado));
+
+                for (int y = posicion.y - extension.y; y < posicion.y + extension.y; y++)
+                    if (y < altura)
+                        Insertar(new Concreto(new Vector3Int(x, y, z)));
+                    else if (y == altura)
+                        Insertar(new Arena(new Vector3Int(x, y, z)));
+                    else
+                        Insertar(new Aire(new Vector3Int(x, y, z)));
+            }
     }
 
     public void Awake()
@@ -52,8 +67,9 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         Elemento enEspacio = EnPosicion(posicion);
         if (enEspacio != null)
             return false;
-
-        m_volumenMinimo.Insertar(posicion);
+        
+        if (contenible.Visible())
+            m_volumenMinimo.Insertar(posicion);
 
         posicion = WTM(posicion); // Cambiamos la posicion para que sea relativa a la matriz
         m_contenido[posicion.x, posicion.y, posicion.z] = contenible;

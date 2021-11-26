@@ -42,6 +42,11 @@ public abstract class Elemento : IContenible
     {
     }
 
+    public virtual bool Visible()
+    {
+        return true;
+    }
+
     // como afecta el hecho de lo ultimo que hicimos - tal vez no sea necesario
     public abstract bool Reacciona(IContenedorConDatos mapa);
 

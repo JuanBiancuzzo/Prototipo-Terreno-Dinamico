@@ -9,4 +9,9 @@ public class Aire : Gaseoso
         m_valor = 0f;
         m_color = new Color(0, 0, 0, 0);
     }
+
+    public override bool Visible()
+    {
+        return false;
+    }
 }
