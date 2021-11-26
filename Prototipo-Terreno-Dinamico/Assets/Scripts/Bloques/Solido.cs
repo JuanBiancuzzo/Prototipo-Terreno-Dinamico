@@ -58,19 +58,32 @@ public abstract class Solido : Elemento
         while (tiempoRestante > 0)
         {
             Vector3Int direccion = DireccionVelocidad(dt);
-
-            float promedioTiempo = 0;
-            for (int i = 0; i < 3; i++)
-                if (direccion[i] != 0)
-                    promedioTiempo += (Mathf.Abs(direccion[i]) * dt) /(float)Mathf.Abs(m_velocidad[i]);
-            promedioTiempo = promedioTiempo / 3f;
-
+            float promedioTiempo = TiempoPorDireccion(direccion, dt);
 
             tiempoRestante -= promedioTiempo;
+
+            Vector3Int posicionNueva = m_posicion + direccion;
+            bool sePuedeMover = ElementoDejaIntercambiarEn(mapa, posicionNueva, dt);
+
             yield return m_posicion + direccion;
             
             if (promedioTiempo <= 0.01f)
                 break;
+
+            if (sePuedeMover)
+                continue;
+
+            foreach (Vector3Int des in BuscarPosicionesDisponibles())
+            {
+                if (!ElementoDejaIntercambiarEn(mapa, posicionNueva + des, dt))
+                    continue;
+
+                tiempoRestante -= TiempoPorDireccion(des, dt);
+                yield return posicionNueva + des;
+                break;
+            }
+
+            break;
         }
     }
 
@@ -86,6 +99,16 @@ public abstract class Solido : Elemento
                 direccion[i] = (int)Mathf.Sign(m_velocidad[i]);
 
         return direccion;
+    }
+
+    private float TiempoPorDireccion(Vector3Int direccion, int dt)
+    {
+        float promedioTiempo = 0;
+        for (int i = 0; i < 3; i++)
+            if (direccion[i] != 0)
+                promedioTiempo += (Mathf.Abs(direccion[i]) * dt) / (float)Mathf.Abs(m_velocidad[i]);
+        promedioTiempo = promedioTiempo / 3f;
+        return promedioTiempo;
     }
 
     protected IEnumerable<Vector3Int> BuscarPosicionesDisponibles()

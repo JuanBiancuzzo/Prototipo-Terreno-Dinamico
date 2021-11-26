@@ -25,7 +25,7 @@ public class GenerarParticulas : MonoBehaviour
     private void Start()
     {
 		if (ponerPiso)
-			TirarPlancha(50, new Vector3Int(0, 1, 0), (int)MaterialSel.Arena);
+			TirarPlancha(50, new Vector3Int(0, 1, 0), (int)MaterialSel.Concreto);
 	}
 
     void FixedUpdate()

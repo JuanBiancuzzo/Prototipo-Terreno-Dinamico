@@ -48,7 +48,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_posicion: {x: 0, y: 0, z: 0}
   m_distanciaMinima: 5
-  LOD: 2
 --- !u!64 &8956321453816409033
 MeshCollider:
   m_ObjectHideFlags: 0
