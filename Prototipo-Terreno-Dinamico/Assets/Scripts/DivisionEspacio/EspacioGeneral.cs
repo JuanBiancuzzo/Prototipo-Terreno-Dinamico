@@ -149,6 +149,7 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
             foreach (int extension in jugador.LODLevels)
             {
                 int extensionTotal = distancia + extension;
+
                 Vector3Int vExtension = new Vector3Int(extensionTotal, extensionTotal, extensionTotal);
                 Vector3Int vDistancia = new Vector3Int(distancia, distancia, distancia);
 
@@ -156,7 +157,6 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
 
                 List<Chunk> chunksActualizar = AlgoRaro(extremo, posicion + vDistancia);
 
-                //Debug.Log("Level of detail: " + LODActual + ", y tiene " + chunksActualizar.Count);
                 foreach (Chunk chunk in chunksActualizar)
                     chunk.Renderizar(render, this, LODActual);
 
@@ -236,7 +236,7 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
         chunkObjeto.name = posicionChunk.ToString();
 
         Chunk chunkFinal = chunkObjeto.GetComponent(typeof(Chunk)) as Chunk;
-        chunkFinal.Inicializar(posicion, extension, new Vector2Int(m_alturaMinima, m_alturaMaxima));
+        chunkFinal.Inicializar(posicion, extension, m_alturaMinima, m_alturaMaxima);
 
         m_contenedores.Add(posicionChunk, chunkFinal);
         m_chunks.Add(chunkFinal);

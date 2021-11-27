@@ -24,15 +24,13 @@ public class VerElMundo : MonoBehaviour
     private void OnDrawGizmos()
     {
         if (m_mundo != null)
-            anchoChunk = m_mundo.m_mapa.m_chunkAncho;
+            anchoChunk = m_mundo.m_mapa.m_chunkAncho * 2;
 
         int distancia = 0;
         foreach (int LOD in LODLevels)
         {
             distancia += LOD * anchoChunk;
-            Gizmos.DrawWireCube(Vector3Int.FloorToInt(transform.position), new Vector3(distancia, 0, distancia));
+            Gizmos.DrawWireCube(Vector3Int.FloorToInt(transform.position), new Vector3(distancia, distancia, distancia));
         }
-
     }
-
 }

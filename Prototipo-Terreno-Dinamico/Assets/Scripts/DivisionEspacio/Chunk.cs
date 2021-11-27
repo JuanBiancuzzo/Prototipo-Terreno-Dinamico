@@ -21,7 +21,7 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
     [Space]
     public float m_distanciaMinima = 10f;
 
-    public void Inicializar(Vector3Int posicion, Vector3Int extension, Vector2Int extremo)
+    public void Inicializar(Vector3Int posicion, Vector3Int extension, int alturaMinima, int alturaMaxima)
     {
         m_posicion = posicion;
         m_extension = extension;
@@ -33,8 +33,8 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         for (int x = posicion.x - extension.x; x < posicion.x + extension.x; x++)
             for (int z = posicion.z - extension.z; z < posicion.z + extension.z; z++)
             {
-                float alturaNormalizado = Mathf.Clamp(Mathf.PerlinNoise(x / 20f, z / 20f) + 0.5f, 0, 1);
-                int altura = Mathf.FloorToInt(Mathf.Lerp(extremo.x, extension.y, alturaNormalizado));
+                float alturaNormalizado = Mathf.PerlinNoise(x / 40f, z / 40f) / 2;
+                int altura = Mathf.FloorToInt(Mathf.Lerp(alturaMinima, alturaMaxima, alturaNormalizado));
 
                 for (int y = posicion.y - extension.y; y < posicion.y + extension.y; y++)
                     if (y < altura)
@@ -74,7 +74,8 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         posicion = WTM(posicion); // Cambiamos la posicion para que sea relativa a la matriz
         m_contenido[posicion.x, posicion.y, posicion.z] = contenible;
 
-        m_cantidad++;
+        if (contenible.Visible())
+            m_cantidad++;
 
         return true;
     }
@@ -93,7 +94,8 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         posicion = WTM(posicion); // Cambiamos la posicion para que sea relativa a la matriz
         m_contenido[posicion.x, posicion.y, posicion.z] = null;
 
-        m_cantidad--;
+        if (enEspacio.Visible())
+            m_cantidad--;
 
         return enEspacio;
     }
@@ -268,14 +270,14 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 
         if (m_volumenMinimo == null)
             return;
-        
+        /*
         List<Extremo> extremos = m_volumenMinimo.GetExtremos();
         foreach (Extremo extremo in extremos)
         {
             Vector3Int extension = extremo.m_maximo - extremo.m_minimo + Vector3Int.one;
             Vector3 posicion = ((Vector3)(extremo.m_maximo + extremo.m_minimo)) / 2f;
             Gizmos.DrawWireCube(transform.position + posicion, extension);
-        }
+        } */
 
         /*
         Extremo extremo = new Extremo();
