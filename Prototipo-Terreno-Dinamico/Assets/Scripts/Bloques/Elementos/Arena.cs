@@ -6,7 +6,7 @@ public class Arena : Solido
 {
     public Arena(Vector3Int posicion) : base(posicion)
     {
-        m_valor = 1f;
+        m_densidad = 50;
         m_color = new Color(1, 0.88f, 0.29f, 1);
     }
 

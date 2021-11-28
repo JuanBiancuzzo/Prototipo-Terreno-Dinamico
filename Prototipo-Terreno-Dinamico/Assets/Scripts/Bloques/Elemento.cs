@@ -6,10 +6,11 @@ public abstract class Elemento : IContenible
 {
     static Vector3Int gravedad = new Vector3Int(0, -1, 0);
 
+    static int m_minimoValor = 0, m_maximoValor = 100;
+
     public Vector3Int m_posicion, m_velocidad, m_aceleracion;
     protected int m_densidad, m_temperatura, m_iluminacion;
 
-    protected float m_valor;
     protected Color m_color;
 
     public Elemento(Vector3Int posicion)
@@ -17,11 +18,10 @@ public abstract class Elemento : IContenible
         m_posicion = posicion;
         m_velocidad = Vector3Int.zero;
         m_aceleracion = Vector3Int.zero;
-        m_densidad = 1;
+        m_densidad = 50;
         m_temperatura = 273;
         m_iluminacion = 0;
 
-        m_valor = 0f;
         m_color = new Color(0, 0, 0, 1);
     }
 
@@ -80,10 +80,15 @@ public abstract class Elemento : IContenible
 
     public override float GetValor()
     {
-        return m_valor;
+        return (Visible()) ? Mathf.InverseLerp(m_minimoValor, m_maximoValor, m_densidad) : 0.0f; 
     }
 
     public override Color GetColor()
+    {
+        return ModificarColor();
+    }
+
+    protected virtual Color ModificarColor()
     {
         return m_color;
     }

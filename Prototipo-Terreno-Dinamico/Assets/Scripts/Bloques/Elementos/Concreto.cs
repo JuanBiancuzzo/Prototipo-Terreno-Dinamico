@@ -6,7 +6,7 @@ public class Concreto : Solido
 {
     public Concreto(Vector3Int posicion) : base(posicion)
     {
-        m_valor = 1f;
+        m_densidad = 100;
         m_color = new Color(.75f, .75f, .75f, 1);
     }
 

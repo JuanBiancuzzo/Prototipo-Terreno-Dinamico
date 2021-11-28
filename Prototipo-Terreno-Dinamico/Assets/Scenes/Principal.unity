@@ -411,7 +411,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db4a64c0d46d8fc48a49616ea5f7a808, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_nivelDelSuelo: 0.5
+  m_nivelDelSuelo: 0.01
   shader: {fileID: 7200000, guid: 9731e20783b716243923701ac5b5c44b, type: 3}
 --- !u!1 &2008809718
 GameObject:
