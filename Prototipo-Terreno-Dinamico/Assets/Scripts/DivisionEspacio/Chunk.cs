@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +6,7 @@ using UnityEngine;
 public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 {
     public Vector3Int m_posicion; // posicion del centro
+    public IGenerador m_generador;
     Vector3Int m_extension; // "radio" del cuadrado
 
     Elemento[,,] m_contenido;
@@ -33,17 +33,25 @@ public class Chunk : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
         for (int x = posicion.x - extension.x; x < posicion.x + extension.x; x++)
             for (int z = posicion.z - extension.z; z < posicion.z + extension.z; z++)
             {
-                float alturaNormalizado = Mathf.PerlinNoise(x / 40f, z / 40f) / 2;
-                int altura = Mathf.FloorToInt(Mathf.Lerp(alturaMinima, alturaMaxima, alturaNormalizado));
+                int altura = m_generador.ValorEnPosicion(x, z, alturaMinima, alturaMaxima);
 
                 for (int y = posicion.y - extension.y; y < posicion.y + extension.y; y++)
-                    if (y < altura)
-                        Insertar(new Concreto(new Vector3Int(x, y, z)));
-                    else if (y == altura)
-                        Insertar(new Arena(new Vector3Int(x, y, z)));
-                    else
-                        Insertar(new Aire(new Vector3Int(x, y, z)));
+                    Insertar(ElementoPorAltura(x, y, z, altura));
             }
+    }
+
+    private Elemento ElementoPorAltura(int x, int y, int z, int altura)
+    {
+        Elemento elemento;
+
+        if (y < altura)
+            elemento = new Concreto(new Vector3Int(x, y, z));
+        else if (y == altura)
+            elemento = new Arena(new Vector3Int(x, y, z));
+        else
+            elemento = new Aire(new Vector3Int(x, y, z));
+
+        return elemento;
     }
 
     public void Awake()
