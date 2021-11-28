@@ -47,10 +47,10 @@ public class FallingSand : MonoBehaviour
         m_mapa.GenerarMeshColision(render, rangoJugador);
     }
 
-    public void AgregarJugador(Transform jugador, List<int> LODLevels)
+    /*public void AgregarJugador(Transform jugador, List<int> LODLevels)
     {
         m_mapa.AgregarJugador(jugador, LODLevels);
-    }
+    }*/
 
     public Vector3 PosicionEnMundo(Vector3 posicion)
     {

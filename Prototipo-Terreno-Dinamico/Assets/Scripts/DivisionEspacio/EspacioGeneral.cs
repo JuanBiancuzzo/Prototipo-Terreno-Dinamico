@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedorConDatos
 {
-    public Vector3Int m_posicion; // posicion del centro
-    public int m_alturaMinima = 0, m_alturaMaxima = 100;
+    //public Vector3Int m_posicion; // posicion del centro
+    Vector3Int m_posicion => Vector3Int.FloorToInt(transform.position);
+    //public int m_alturaMinima = 0, m_alturaMaxima = 100;
+    public Extremo m_extremo;
 
     [Range(10, 50)] public int m_chunkAncho;
 
@@ -14,7 +16,18 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
 
     public GameObject m_chunkPrefab;
 
-    struct Jugador
+    private void Start()
+    {
+        Vector3Int minimo = m_extremo.m_minimo;
+        Vector3Int maximo = m_extremo.m_maximo;
+
+        for (int x = minimo.x; x < maximo.x; x++)
+            for (int y = minimo.y; y < maximo.y; y++)
+                for (int z = minimo.z; z < maximo.z; z++)
+                    CrearChunk(new Vector3Int(x, y, z));
+    }
+
+    /*struct Jugador
     {
         public Transform transform;
         public List<int> LODLevels;
@@ -25,7 +38,7 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
             this.LODLevels = LODLevels;
         }
     }
-    List<Jugador> m_jugadores = new List<Jugador>();
+    List<Jugador> m_jugadores = new List<Jugador>();*/
 
     public float m_defaultValor;
     public Color m_defaultColor;
@@ -98,15 +111,17 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
         return (chunk == null) ? null : chunk.EnPosicion(posicion); 
     }
 
-    private bool EnRangoChunk(Vector3Int posicion)
+    public Vector3Int PosicionRelativa(Vector3Int posicion)
     {
-        return posicion.y >= 0;
-        //return posicion.y > m_alturaMaxima / m_chunkAncho && posicion.y < m_alturaMaxima / m_chunkAncho;
+        return posicion - m_posicion;
     }
 
     public bool EnRango(Vector3Int posicion)
     {
-        return posicion.y > m_alturaMinima && posicion.y < m_alturaMaxima;
+        for (int i = 0; i < 3; i++)
+            if (posicion[i] > m_extremo.m_maximo[i] && posicion[i] < m_extremo.m_minimo[i])
+                return false;
+        return true;
     }
 
     public bool EnRango(Elemento contenible)
@@ -132,16 +147,19 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
         return (chunk == null) ? m_defaultColor : chunk.GetColor(posicion, m_defaultColor);
     }
 
-    public void AgregarJugador(Transform jugador, List<int> LODLevels)
+    /*public void AgregarJugador(Transform jugador, List<int> LODLevels)
     {
         m_jugadores.Add(new Jugador(jugador, LODLevels));
-    }
-    public void Renderizar(IRender render, ISacarDatos contenedor = null, int LOD = 1, bool overrideActualizacion = false)
-    {
-        /*foreach (Chunk chunk in m_chunks)
-            chunk.Renderizar(render, this, overrideActualizacion);*/
+    }*/
 
-        foreach (Jugador jugador in m_jugadores)
+    public void Renderizar(IRender render, ISacarDatos contenedor = null)
+    {
+        foreach (Chunk chunk in m_chunks)
+            chunk.Renderizar(render, this);       
+    }
+
+    /*
+     foreach (Jugador jugador in m_jugadores)
         {
             Vector3Int posicion = WTC(Vector3Int.FloorToInt(jugador.transform.position));
             int distancia = 0, LODActual = 1;
@@ -163,9 +181,8 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
                 distancia += extension;
                 LODActual++;
             }
-        }
-    }
-
+        }  
+     
     private List<Chunk> AlgoRaro(Extremo extremo, Vector3Int distanciaMinima)
     {
         Func<int, int, bool> Afuera = (valor, maximo) => valor < -maximo || maximo <= valor;
@@ -182,7 +199,7 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
                     }
 
         return lista;
-    }
+    }*/
 
     public void GenerarMeshColision(IRender render, Extremo rangoJugador)
     {
@@ -228,6 +245,9 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
 
     private Chunk CrearChunk(Vector3Int posicionChunk)
     {
+        if (m_contenedores.ContainsKey(posicionChunk))
+            return m_contenedores[posicionChunk];
+
         Vector3Int posicion = posicionChunk * m_chunkAncho + Vector3Int.one * (m_chunkAncho / 2);
         Vector3Int extension = new Vector3Int(m_chunkAncho / 2, m_chunkAncho / 2, m_chunkAncho / 2);
 
@@ -236,11 +256,19 @@ public class EspacioGeneral : MonoBehaviour, IContenedorRenderizable, IContenedo
         chunkObjeto.name = posicionChunk.ToString();
 
         Chunk chunkFinal = chunkObjeto.GetComponent(typeof(Chunk)) as Chunk;
-        chunkFinal.Inicializar(posicion, extension, m_alturaMinima, m_alturaMaxima);
+        chunkFinal.Inicializar(posicion, extension, m_extremo.m_minimo.y * m_chunkAncho, m_extremo.m_maximo.y * m_chunkAncho);
 
         m_contenedores.Add(posicionChunk, chunkFinal);
         m_chunks.Add(chunkFinal);
 
         return chunkFinal;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Vector3Int extension = ( m_extremo.m_maximo - m_extremo.m_minimo ) * m_chunkAncho;
+        Vector3Int posicion = ( m_extremo.m_maximo + m_extremo.m_minimo ) * ( m_chunkAncho / 2 );
+
+        Gizmos.DrawWireCube(posicion + m_posicion, extension);
     }
 }

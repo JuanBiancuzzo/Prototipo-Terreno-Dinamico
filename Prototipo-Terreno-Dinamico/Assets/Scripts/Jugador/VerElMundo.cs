@@ -17,8 +17,8 @@ public class VerElMundo : MonoBehaviour
         foreach (int LOD in LODLevels)
             m_distanciaRender += LOD;
 
-        if (m_mundo != null)
-            m_mundo.AgregarJugador(transform, LODLevels);
+        /*if (m_mundo != null)
+            m_mundo.AgregarJugador(transform, LODLevels);*/
     }
 
     private void OnDrawGizmos()

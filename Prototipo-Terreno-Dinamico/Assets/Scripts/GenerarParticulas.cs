@@ -20,13 +20,6 @@ public class GenerarParticulas : MonoBehaviour
 	public int anchoPlancha = 2;
 	public bool tirar = true;
 	public bool continuo = false;
-	public bool ponerPiso = true;
-
-    private void Start()
-    {
-		if (ponerPiso)
-			TirarPlancha(50, new Vector3Int(0, 1, 0), (int)MaterialSel.Concreto);
-	}
 
     void FixedUpdate()
 	{
@@ -47,7 +40,7 @@ public class GenerarParticulas : MonoBehaviour
 
 	void AgregarElemento(Vector3Int posicion, int index)
 	{
-		simulacion.Insertar(GetElemento(posicion, index));
+		simulacion.Insertar(GetElemento(simulacion.m_mapa.PosicionRelativa(posicion), index));
 	}
 
 	private Elemento GetElemento(Vector3Int posicion, int index)
