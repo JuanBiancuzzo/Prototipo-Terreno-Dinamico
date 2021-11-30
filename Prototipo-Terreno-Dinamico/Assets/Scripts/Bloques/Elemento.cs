@@ -39,6 +39,39 @@ public abstract class Elemento
 
     public abstract void Desplazar();
 
+    protected void DesplazarEntreExtremos(Extremo extremo)
+    {
+        List<Elemento> elementoDelMismoElemento = new List<Elemento>();
+
+        Vector3Int minimo = extremo.m_minimo, maximo = extremo.m_maximo;
+
+        for (int x = minimo.x; x <= maximo.x; x++)
+            for (int y = minimo.y; y <= maximo.y; y++)
+                for (int z = minimo.z; z <= maximo.z; z++)
+                {
+                    if (x == 0 && z == 0 && y == 0)
+                        continue;
+
+                    Elemento elemento = m_mundo.EnPosicion(m_posicion + new Vector3Int(x, y, z));
+                    if (elemento != null && MismoElemento(elemento) && elemento.MaximoParaRecibir() > 0)
+                        elementoDelMismoElemento.Add(elemento);
+                }
+
+        elementoDelMismoElemento.Sort((a, b) => b.m_densidad.CompareTo(a.m_densidad));
+
+        for (int i = 0; i < elementoDelMismoElemento.Count; i++)
+        {
+            Elemento elemento = elementoDelMismoElemento[i];
+
+            int cantidadADar = DarCantidad(m_densidad / (elementoDelMismoElemento.Count - i));
+            int cantidadExtra = elemento.Agregar(cantidadADar);
+            Agregar(cantidadExtra);
+        }
+
+        if (m_densidad > 0)
+            Debug.LogError("Se esta perdiendo: " + m_densidad + " densidad");
+    }
+
     public abstract int CantidadADar();
 
     public virtual int DarCantidad(int cantidad)

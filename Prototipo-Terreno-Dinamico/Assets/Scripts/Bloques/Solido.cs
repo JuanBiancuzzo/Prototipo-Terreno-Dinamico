@@ -99,33 +99,8 @@ public abstract class Solido : Elemento
 
     public override void Desplazar()
     {
-        List<Elemento> elementoDelMismoElemento = new List<Elemento>();
-
-        for (int x = -1; x <= 1; x++)
-            for (int y = -1; y <= 0; y++)
-                for (int z = -1; z <= 1; z++)
-                {
-                    if (x == 0 && z == 0 && y == 0)
-                        continue;
-
-                    Elemento elemento = m_mundo.EnPosicion(m_posicion + new Vector3Int(x, y, z));
-                    if (elemento != null && MismoElemento(elemento) && elemento.MaximoParaRecibir() > 0)
-                        elementoDelMismoElemento.Add(elemento);
-                }
-
-        elementoDelMismoElemento.Sort((a, b) => b.m_densidad.CompareTo(a.m_densidad));
-
-        for (int i = 0; i < elementoDelMismoElemento.Count; i++)
-        {
-            Elemento elemento = elementoDelMismoElemento[i];
-
-            int cantidadADar = DarCantidad(m_densidad / (elementoDelMismoElemento.Count - i));
-            int cantidadExtra = elemento.Agregar(cantidadADar);
-            Agregar(cantidadExtra);
-        }
-
-        if (m_densidad > 0)
-            Debug.LogError("Se esta perdiendo: " + m_densidad + " densidad");
+        Extremo extremo = new Extremo(new Vector3Int(-1, -1, -1), new Vector3Int(1, 0, 1));
+        DesplazarEntreExtremos(extremo);
     }
 
     public override bool PermiteDesplazar()
