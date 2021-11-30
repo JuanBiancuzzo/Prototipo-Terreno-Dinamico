@@ -49,7 +49,12 @@ public class Mundo : IConetenedorGeneral
         for (int x = 0; x < m_extension.x; x++)
             for (int y = 0; y < m_extension.y; y++)
                 for (int z = 0; z < m_extension.z; z++)
-                    yield return m_elementos[x, y, z];
+                {
+                    Elemento elemento = m_elementos[x, y, z];
+                    if (elemento == null)
+                        continue;
+                    yield return elemento;
+                }
     }
 
     public override bool Insertar(Elemento elemento)
@@ -83,7 +88,7 @@ public class Mundo : IConetenedorGeneral
         if (!EnRango(posicion))
             return null;
 
-        Elemento elementoConMayorDensidad = ElementoConMayorDensidad(posicion);
+        Elemento elementoConMayorDensidad = Elemento.ElementoConMayorDensidad(posicion, this);
         if (elementoConMayorDensidad == null)
             return null;
 
@@ -132,7 +137,7 @@ public class Mundo : IConetenedorGeneral
         return m_elementos[posicionRelativa.x, posicionRelativa.y, posicionRelativa.z];
     }
 
-    private void AgregarEnPosicion(Vector3Int posicion, Elemento elemento)
+    public void AgregarEnPosicion(Vector3Int posicion, Elemento elemento)
     {
         Vector3Int posicionRelativa = PosicionRelativa(posicion);
         m_elementos[posicionRelativa.x, posicionRelativa.y, posicionRelativa.z] = elemento;
@@ -155,25 +160,6 @@ public class Mundo : IConetenedorGeneral
     private Vector3Int PosicionRelativa(Vector3Int posicionMundo)
     {
         return posicionMundo + m_extremo.m_minimo;
-    }
-
-    public Elemento ElementoConMayorDensidad(Vector3Int posicion)
-    {
-        Elemento elementoConMayorDensidad = null;
-
-        for (int x = -1; x <= 1; x++)
-            for (int y = -1; y <= 1; y++)
-                for (int z = -1; z <= 1; z++)
-                {
-                    Vector3Int desfase = new Vector3Int(x, y, z);
-                    if (!EnRango(posicion + desfase))
-                        continue;
-
-                    Elemento elemento = EnPosicion(posicion + desfase);
-                    elementoConMayorDensidad = Elemento.ElementoConMayorDensidad(elementoConMayorDensidad, elemento);
-                }
-
-        return elementoConMayorDensidad;
     }
 
     public override Color GetColor(Vector3Int posicion, Color defaultColor = default)

@@ -22,6 +22,9 @@ public abstract class Solido : Elemento
 
     public override void Avanzar(int dt)
     {
+        if (Vacio())
+            return;
+
         ActualizarVelocidad(dt);
 
         foreach (Vector3Int desfase in Opciones())
@@ -34,8 +37,10 @@ public abstract class Solido : Elemento
             {
                 Solido solido = (Solido)elemento;
 
+                if (solido.MaximoParaRecibir() == 0)
+                    continue;
+
                 int cantidadADar = CantidadADar();
-                m_densidad -= cantidadADar;
                 int cantidadExtra = solido.Agregar(cantidadADar);
                 Agregar(cantidadExtra);
 
@@ -81,44 +86,20 @@ public abstract class Solido : Elemento
         }
     }
 
-    protected virtual int CantidadADar()
-    {
-        int cantidad = Mathf.Abs(m_velocidad) * 5;
-        return DarCantidad(cantidad);
-    }
-
-    protected virtual int DarCantidad(int cantidad)
-    {
-        cantidad = Mathf.Max(cantidad, m_densidad);
-        //m_densidad -= cantidad;
-        return cantidad;
-    }
-
     protected void ActualizarVelocidad(int dt)
     {
         m_velocidad += m_aceleracion * dt;
     }
 
-    protected int Agregar(int cantidadDensidad)
+    public override int CantidadADar()
     {
-        int resto = Mathf.Max(m_minimoValor, m_densidad + cantidadDensidad - m_maximoValor);
-
-        if (m_densidad + cantidadDensidad <= m_maximoValor)
-            m_densidad += cantidadDensidad - resto;
-        else
-            m_densidad = m_maximoValor;
-
-        return resto;
-    }
-
-    protected int MaximoParaRecibir()
-    {
-        return m_maximoValor - m_densidad;
+        int cantidad = (Mathf.Abs(m_velocidad) + 1) * 25;
+        return DarCantidad(cantidad);
     }
 
     public override void Desplazar()
     {
-        List<Solido> solidos = new List<Solido>();
+        List<Elemento> elementoDelMismoElemento = new List<Elemento>();
 
         for (int x = -1; x <= 1; x++)
             for (int y = -1; y <= 0; y++)
@@ -128,29 +109,28 @@ public abstract class Solido : Elemento
                         continue;
 
                     Elemento elemento = m_mundo.EnPosicion(m_posicion + new Vector3Int(x, y, z));
-                    if (elemento != null && MismoElemento(elemento))
-                        solidos.Add((Solido)elemento);
+                    if (elemento != null && MismoElemento(elemento) && elemento.MaximoParaRecibir() > 0)
+                        elementoDelMismoElemento.Add(elemento);
                 }
 
-        //solidos.Sort((a, b) => a.m_densidad.CompareTo(b.m_densidad));
+        elementoDelMismoElemento.Sort((a, b) => b.m_densidad.CompareTo(a.m_densidad));
 
-        for (int i = 0; i < solidos.Count; i++)
+        for (int i = 0; i < elementoDelMismoElemento.Count; i++)
         {
-            Solido solido = solidos[i];
+            Elemento elemento = elementoDelMismoElemento[i];
 
-            int cantidadADar = m_densidad / (solidos.Count - i);
-            m_densidad -= cantidadADar;
-            int cantidadExtra = solido.Agregar(cantidadADar);
+            int cantidadADar = DarCantidad(m_densidad / (elementoDelMismoElemento.Count - i));
+            int cantidadExtra = elemento.Agregar(cantidadADar);
             Agregar(cantidadExtra);
         }
 
         if (m_densidad > 0)
-            Debug.LogError("Mas densidad de lo que deberia");
+            Debug.LogError("Se esta perdiendo: " + m_densidad + " densidad");
     }
 
     public override bool PermiteDesplazar()
     {
-        List<Solido> solidos = new List<Solido>();
+        List<Elemento> elementoDelMismoElemento = new List<Elemento>();
 
         for (int x = -1; x <= 1; x++)
             for (int y = -1; y <= 0; y++)
@@ -160,15 +140,15 @@ public abstract class Solido : Elemento
                         continue;
 
                     Elemento elemento = m_mundo.EnPosicion(m_posicion + new Vector3Int(x, y, z));
-                    if (elemento != null && MismoElemento(elemento))
-                        solidos.Add((Solido)elemento);
+                    if (elemento != null && MismoElemento(elemento) && elemento.MaximoParaRecibir() > 0)
+                        elementoDelMismoElemento.Add(elemento);
                 }
 
         int cantidadAdimitida = 0;
-        foreach (Solido solido in solidos)
-            cantidadAdimitida += solido.MaximoParaRecibir();
+        foreach (Elemento elemento in elementoDelMismoElemento)
+            cantidadAdimitida += elemento.MaximoParaRecibir();
 
-        return m_densidad < cantidadAdimitida;
+        return m_densidad < cantidadAdimitida * 0.9f;
     }
 
     public override bool PermiteIntercambiar()

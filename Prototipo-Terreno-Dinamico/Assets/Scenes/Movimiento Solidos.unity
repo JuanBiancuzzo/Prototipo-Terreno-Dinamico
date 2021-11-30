@@ -356,7 +356,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1122030941}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.1, y: 6.55, z: 4.85}
+  m_LocalPosition: {x: 5.1, y: 7.9, z: 4.85}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -377,7 +377,7 @@ MonoBehaviour:
   simulacion: {fileID: 781101051}
   m_materialSeleccionado: 1
   anchoPlancha: 0
-  tirar: 0
+  tirar: 1
   continuo: 0
 --- !u!114 &1251544941 stripped
 MonoBehaviour:
@@ -511,7 +511,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3364518771323100234, guid: b97c5b1b6e4d0db4d98688739bbfefd5, type: 3}
       propertyPath: m_nivelDelSuelo
-      value: 0.25
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 3364518771323100235, guid: b97c5b1b6e4d0db4d98688739bbfefd5, type: 3}
       propertyPath: m_Name

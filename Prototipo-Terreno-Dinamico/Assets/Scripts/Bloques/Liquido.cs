@@ -17,6 +17,9 @@ public abstract class Liquido : Elemento
 
     public override void Avanzar(int dt)
     {
+        if (Vacio())
+            return;
+
         ActualizarVelocidad(dt);
 
         foreach (Vector3Int desfase in Opciones())
@@ -75,39 +78,20 @@ public abstract class Liquido : Elemento
         }
     }
 
-    protected virtual int CantidadADar()
-    {
-        int cantidad = Mathf.Abs(m_velocidad) * 5;
-        cantidad = Mathf.Max(cantidad, m_densidad);
-        m_densidad -= cantidad;
-        return cantidad;
-    }
-
     protected void ActualizarVelocidad(int dt)
     {
         m_velocidad += m_aceleracion * dt;
     }
 
-    protected int Agregar(int cantidadDensidad)
+    public override int CantidadADar()
     {
-        int resto = Mathf.Max(0, m_densidad + cantidadDensidad - m_maximoValor);
-
-        if (m_densidad + cantidadDensidad < m_maximoValor)
-            m_densidad += cantidadDensidad;
-        else
-            m_densidad = m_maximoValor;
-
-        return resto;
-    }
-
-    protected int MaximoParaRecibir()
-    {
-        return m_maximoValor - m_densidad;
+        int cantidad = Mathf.Abs(m_velocidad) * 5;
+        return DarCantidad(cantidad);
     }
 
     public override void Desplazar()
     {
-        List<Liquido> liquidos = new List<Liquido>();
+        List<Elemento> elementoDelMismoElemento = new List<Elemento>();
 
         for (int x = -1; x <= 1; x++)
             for (int y = -1; y <= 1; y++)
@@ -117,17 +101,18 @@ public abstract class Liquido : Elemento
                         continue;
 
                     Elemento elemento = m_mundo.EnPosicion(m_posicion + new Vector3Int(x, y, z));
-                    if (elemento != null && MismoElemento(elemento))
-                        liquidos.Add((Liquido)elemento);
+                    if (elemento != null && MismoElemento(elemento) && elemento.MaximoParaRecibir() > 0)
+                        elementoDelMismoElemento.Add(elemento);
                 }
 
-        for (int i = 0; i < liquidos.Count; i++)
-        {
-            Liquido liquido = liquidos[i];
+        elementoDelMismoElemento.Sort((a, b) => b.m_densidad.CompareTo(a.m_densidad));
 
-            int cantidadADar = m_densidad / (liquidos.Count - i);
-            m_densidad -= cantidadADar;
-            int cantidadExtra = liquido.Agregar(cantidadADar);
+        for (int i = 0; i < elementoDelMismoElemento.Count; i++)
+        {
+            Elemento elemento = elementoDelMismoElemento[i];
+
+            int cantidadADar = DarCantidad(m_densidad / (elementoDelMismoElemento.Count - i));
+            int cantidadExtra = elemento.Agregar(cantidadADar);
             Agregar(cantidadExtra);
         }
 
@@ -137,7 +122,7 @@ public abstract class Liquido : Elemento
 
     public override bool PermiteDesplazar()
     {
-        List<Liquido> liquidos = new List<Liquido>();
+        List<Elemento> elementoDelMismoElemento = new List<Elemento>();
 
         for (int x = -1; x <= 1; x++)
             for (int y = -1; y <= 1; y++)
@@ -147,13 +132,13 @@ public abstract class Liquido : Elemento
                         continue;
 
                     Elemento elemento = m_mundo.EnPosicion(m_posicion + new Vector3Int(x, y, z));
-                    if (elemento != null && MismoElemento(elemento))
-                        liquidos.Add((Liquido)elemento);
+                    if (elemento != null && MismoElemento(elemento) && elemento.MaximoParaRecibir() > 0)
+                        elementoDelMismoElemento.Add(elemento);
                 }
 
         int cantidadAdimitida = 0;
-        foreach (Liquido liquido in liquidos)
-            cantidadAdimitida += liquido.MaximoParaRecibir();
+        foreach (Elemento elemento in elementoDelMismoElemento)
+            cantidadAdimitida += elemento.MaximoParaRecibir();
 
         return m_densidad < cantidadAdimitida;
     }

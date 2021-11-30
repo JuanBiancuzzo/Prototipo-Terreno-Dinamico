@@ -6,10 +6,14 @@ public abstract class Gaseoso : Elemento
 {
     protected Gaseoso(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
+        m_densidad = 5;
     }
 
     public override void Avanzar(int dt)
     {
+        if (Vacio())
+            return;
+
         foreach (Vector3Int desfase in Opciones())
         {
             Elemento elemento = m_mundo.EnPosicion(m_posicion + desfase);
@@ -20,7 +24,7 @@ public abstract class Gaseoso : Elemento
                 continue;
 
             Gaseoso gaseoso = (Gaseoso)elemento;
-            if (Elemento.ElementoConMayorDensidad(gaseoso, this) == gaseoso)
+            if (Elemento.ComparacionEntreElemento(gaseoso, this) == gaseoso)
                 continue;
 
             elemento.Intercambiar(this);
@@ -49,7 +53,7 @@ public abstract class Gaseoso : Elemento
 
     public override void Desplazar()
     {
-        List<Gaseoso> gaseosos = new List<Gaseoso>();
+        List<Elemento> elementoDelMismoElemento = new List<Elemento>();
 
         for (int x = -1; x <= 1; x++)
             for (int y = -1; y <= 1; y++)
@@ -59,17 +63,18 @@ public abstract class Gaseoso : Elemento
                         continue;
 
                     Elemento elemento = m_mundo.EnPosicion(m_posicion + new Vector3Int(x, y, z));
-                    if (elemento != null && MismoElemento(elemento))
-                        gaseosos.Add((Gaseoso)elemento);
+                    if (elemento != null && MismoElemento(elemento) && elemento.MaximoParaRecibir() > 0)
+                        elementoDelMismoElemento.Add(elemento);
                 }
 
-        for (int i = 0; i < gaseosos.Count; i++)
-        {
-            Gaseoso gaseoso = gaseosos[i];
+        elementoDelMismoElemento.Sort((a, b) => b.m_densidad.CompareTo(a.m_densidad));
 
-            int cantidadADar = m_densidad / (gaseosos.Count - i);
-            m_densidad -= cantidadADar;
-            int cantidadExtra = gaseoso.Agregar(cantidadADar);
+        for (int i = 0; i < elementoDelMismoElemento.Count; i++)
+        {
+            Elemento elemento = elementoDelMismoElemento[i];
+
+            int cantidadADar = DarCantidad(m_densidad / (elementoDelMismoElemento.Count - i));
+            int cantidadExtra = elemento.Agregar(cantidadADar);
             Agregar(cantidadExtra);
         }
 
@@ -100,29 +105,10 @@ public abstract class Gaseoso : Elemento
         return m_densidad < cantidadAdimitida;
     }
 
-    protected virtual int CantidadADar()
+    public override int CantidadADar()
     {
-        int cantidad = m_densidad / 4;
-        cantidad = Mathf.Max(cantidad, m_densidad);
-        m_densidad -= cantidad;
-        return cantidad;
-    }
-
-    protected int Agregar(int cantidadDensidad)
-    {
-        int resto = Mathf.Max(0, m_densidad + cantidadDensidad - m_maximoValor);
-
-        if (m_densidad + cantidadDensidad < m_maximoValor)
-            m_densidad += cantidadDensidad;
-        else
-            m_densidad = m_maximoValor;
-
-        return resto;
-    }
-
-    protected int MaximoParaRecibir()
-    {
-        return m_maximoValor - m_densidad;
+        int cantidad = m_densidad / 5;
+        return DarCantidad(cantidad);
     }
 
     public override bool PermiteIntercambiar()
