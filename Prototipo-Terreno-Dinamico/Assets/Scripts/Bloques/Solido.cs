@@ -4,17 +4,200 @@ using UnityEngine;
 
 public abstract class Solido : Elemento
 {
+    protected const int gravedad = -1;
+
+    protected int m_velocidad, m_aceleracion;
     protected Vector3Int m_estabilidad;
     protected int m_ficDinamica, m_ficEstatica, m_filtracion;
 
-    protected Solido(Vector3Int posicion) : base(posicion)
+    protected Solido(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
         m_estabilidad = Vector3Int.zero;
         m_ficDinamica = 2;
         m_ficEstatica = 4;
         m_filtracion = 1;
+        m_velocidad = 0;
+        m_aceleracion = 0;
     }
 
+    public override void Avanzar(int dt)
+    {
+        ActualizarVelocidad(dt);
+
+        foreach (Vector3Int desfase in Opciones())
+        {
+            Elemento elemento = m_mundo.EnPosicion(m_posicion + desfase);
+            if (elemento == null)
+                continue;
+
+            if (MismoElemento(elemento))
+            {
+                Solido solido = (Solido)elemento;
+
+                int cantidadADar = CantidadADar();
+                m_densidad -= cantidadADar;
+                int cantidadExtra = solido.Agregar(cantidadADar);
+                Agregar(cantidadExtra);
+
+                if (cantidadExtra > 0)
+                    continue;
+            }
+            else if (elemento.PermiteDesplazar())
+            {
+                elemento.Desplazar();
+                Elemento remplazo = Expandir(m_posicion + desfase);
+                m_mundo.Insertar(remplazo);
+            } 
+            else if (elemento.PermiteIntercambiar())
+            {
+                elemento.Intercambiar(this);
+            }
+            else
+            {
+                continue;
+            }
+
+            break;
+        }
+    }
+
+    private IEnumerable<Vector3Int> Opciones()
+    {
+        yield return new Vector3Int(0, -1, 0);
+
+        List<Vector3Int> diagonales = new List<Vector3Int>()
+        {
+            new Vector3Int( 1, -1, 1),  new Vector3Int(1, -1, 0), new Vector3Int( 1, -1, -1),
+            new Vector3Int( 0, -1, 1),                            new Vector3Int( 0, -1, -1),
+            new Vector3Int(-1, -1, 1), new Vector3Int(-1, -1, 0), new Vector3Int(-1, -1, -1)
+        };
+
+        int opciones = diagonales.Count;
+        for (int i = 0; i < opciones; i++)
+        {
+            int index = Random.Range(0, diagonales.Count - 1);
+            yield return diagonales[index];
+            diagonales.RemoveAt(index);
+        }
+    }
+
+    protected virtual int CantidadADar()
+    {
+        int cantidad = Mathf.Abs(m_velocidad) * 5;
+        return DarCantidad(cantidad);
+    }
+
+    protected virtual int DarCantidad(int cantidad)
+    {
+        cantidad = Mathf.Max(cantidad, m_densidad);
+        //m_densidad -= cantidad;
+        return cantidad;
+    }
+
+    protected void ActualizarVelocidad(int dt)
+    {
+        m_velocidad += m_aceleracion * dt;
+    }
+
+    protected int Agregar(int cantidadDensidad)
+    {
+        int resto = Mathf.Max(m_minimoValor, m_densidad + cantidadDensidad - m_maximoValor);
+
+        if (m_densidad + cantidadDensidad <= m_maximoValor)
+            m_densidad += cantidadDensidad - resto;
+        else
+            m_densidad = m_maximoValor;
+
+        return resto;
+    }
+
+    protected int MaximoParaRecibir()
+    {
+        return m_maximoValor - m_densidad;
+    }
+
+    public override void Desplazar()
+    {
+        List<Solido> solidos = new List<Solido>();
+
+        for (int x = -1; x <= 1; x++)
+            for (int y = -1; y <= 0; y++)
+                for (int z = -1; z <= 1; z++)
+                {
+                    if (x == 0 && z == 0 && y == 0)
+                        continue;
+
+                    Elemento elemento = m_mundo.EnPosicion(m_posicion + new Vector3Int(x, y, z));
+                    if (elemento != null && MismoElemento(elemento))
+                        solidos.Add((Solido)elemento);
+                }
+
+        //solidos.Sort((a, b) => a.m_densidad.CompareTo(b.m_densidad));
+
+        for (int i = 0; i < solidos.Count; i++)
+        {
+            Solido solido = solidos[i];
+
+            int cantidadADar = m_densidad / (solidos.Count - i);
+            m_densidad -= cantidadADar;
+            int cantidadExtra = solido.Agregar(cantidadADar);
+            Agregar(cantidadExtra);
+        }
+
+        if (m_densidad > 0)
+            Debug.LogError("Mas densidad de lo que deberia");
+    }
+
+    public override bool PermiteDesplazar()
+    {
+        List<Solido> solidos = new List<Solido>();
+
+        for (int x = -1; x <= 1; x++)
+            for (int y = -1; y <= 0; y++)
+                for (int z = -1; z <= 1; z++)
+                {
+                    if (x == 0 && z == 0 && y == 0)
+                        continue;
+
+                    Elemento elemento = m_mundo.EnPosicion(m_posicion + new Vector3Int(x, y, z));
+                    if (elemento != null && MismoElemento(elemento))
+                        solidos.Add((Solido)elemento);
+                }
+
+        int cantidadAdimitida = 0;
+        foreach (Solido solido in solidos)
+            cantidadAdimitida += solido.MaximoParaRecibir();
+
+        return m_densidad < cantidadAdimitida;
+    }
+
+    public override bool PermiteIntercambiar()
+    {
+        return false;
+    }
+
+    public override bool MismoTipo(Elemento elemento)
+    {
+        return elemento.MismoTipo(this);
+    }
+
+    public override bool MismoTipo(Solido solido)
+    {
+        return true;
+    }
+
+    public override bool MismoTipo(Liquido liquido)
+    {
+        return false;
+    }
+
+    public override bool MismoTipo(Gaseoso gaseoso)
+    {
+        return false;
+    }
+
+
+    /*
     public override void ActuanEnElemento(Elemento elemento, int dt)
     {
         elemento.ActuarEnOtro(this, dt);
@@ -47,7 +230,9 @@ public abstract class Solido : Elemento
         }
 
         if (Reacciona(mapa))
-            NecesitoActualizar(this);
+        {
+            //NecesitoActualizar(this);
+        }
     }
 
     
@@ -166,7 +351,9 @@ public abstract class Solido : Elemento
             if (elemento == null)
                 continue;
             if (elemento.Reacciona(mapa))
-                elemento.NecesitoActualizar(elemento);
+            {
+                //elemento.NecesitoActualizar(elemento);
+            }
         }
     }
 
@@ -192,5 +379,5 @@ public abstract class Solido : Elemento
         velocidad.Clamp(min, max);
 
         return velocidad;
-    }
+    }*/
 }

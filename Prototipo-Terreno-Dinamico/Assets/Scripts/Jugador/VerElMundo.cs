@@ -24,7 +24,8 @@ public class VerElMundo : MonoBehaviour
     private void OnDrawGizmos()
     {
         if (m_mundo != null)
-            anchoChunk = m_mundo.m_mapa.m_chunkAncho * 2;
+            anchoChunk = 10 * 2;
+            //anchoChunk = m_mundo.m_mapa.m_chunkAncho * 2;
 
         int distancia = 0;
         foreach (int LOD in LODLevels)

@@ -4,19 +4,25 @@ using UnityEngine;
 
 public class Concreto : Solido
 {
-    public Concreto(Vector3Int posicion) : base(posicion)
+    public Concreto (Vector3Int posicion, IConetenedorGeneral mundo) : base (posicion, mundo)
     {
-        m_densidad = 100;
-        m_color = new Color(.75f, .75f, .75f, 1);
+        m_color = new Color(0.75f, 0.75f, 0.75f, 1);
+        id = 2;
     }
 
-    public override bool Reacciona(IContenedorConDatos mapa)
+    public override void Avanzar(int dt)
     {
-        return false;
     }
 
-    protected override IEnumerable<Vector3Int> PosicionesEnMovimiento(IContenedorConDatos mapa, int dt)
+    public override Elemento Expandir(Vector3Int posicion)
     {
-        yield return m_posicion;
+        Concreto arenaNueva = new Concreto(posicion, m_mundo);
+        arenaNueva.m_densidad = m_densidad / 2;
+        m_densidad /= 2;
+        return arenaNueva;
+    }
+
+    public override void Reaccionar()
+    {
     }
 }

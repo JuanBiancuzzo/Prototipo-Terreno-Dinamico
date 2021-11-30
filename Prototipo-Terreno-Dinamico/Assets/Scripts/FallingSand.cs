@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FallingSand : MonoBehaviour
 {
-    public EspacioGeneral m_mapa = null;
+    public IConetenedorGeneral m_mapa = null;
     List<Elemento> m_paraActualizar = new List<Elemento>();
 
     public static float m_default = 0f;
@@ -26,13 +26,13 @@ public class FallingSand : MonoBehaviour
 
     public void Avanzar()
     {
-        List<Elemento> actualizarEstaIteracion = new List<Elemento>();
+        /*List<Elemento> actualizarEstaIteracion = new List<Elemento>();
         foreach (Elemento elemento in m_paraActualizar)
             actualizarEstaIteracion.Add(elemento);
-        m_paraActualizar.Clear();
+        m_paraActualizar.Clear(); */
 
-        foreach (Elemento elemento in actualizarEstaIteracion)
-            elemento.Avanzar(m_mapa, dt);
+        foreach (Elemento elemento in m_mapa.ElementoParaActualizar())
+            elemento.Avanzar(dt);
 
         Renderizar();
     }
@@ -44,7 +44,7 @@ public class FallingSand : MonoBehaviour
 
     public void GenerarMeshColision(Extremo rangoJugador)
     {
-        m_mapa.GenerarMeshColision(render, rangoJugador);
+        //m_mapa.GenerarMeshColision(render, rangoJugador);
     }
 
     /*public void AgregarJugador(Transform jugador, List<int> LODLevels)
@@ -57,22 +57,23 @@ public class FallingSand : MonoBehaviour
         return posicion - transform.position;
     }
 
-    public void Insertar(Elemento elemento)
+    public bool Insertar(Elemento elemento)
     {
         if (m_mapa == null)
-            return;
+            return false;
 
         bool sePudoInsertar = m_mapa.Insertar(elemento);
         if (!sePudoInsertar)
-            return;
+            return false;
 
         ContenibleNecesitaActualizarse(elemento);
-        elemento.necesitoActualizar += ContenibleNecesitaActualizarse;
+        return true;
+        //elemento.necesitoActualizar += ContenibleNecesitaActualizarse;
     }
 
-    private void ContenibleNecesitaActualizarse(IContenible elemento)
+    private void ContenibleNecesitaActualizarse(Elemento elemento)
     {
-        AgregarSinRepetir(m_paraActualizar, (Elemento) elemento);
+        AgregarSinRepetir(m_paraActualizar, elemento);
     }
 
     private void AgregarSinRepetir<T>(List<T> lista, T elemento)

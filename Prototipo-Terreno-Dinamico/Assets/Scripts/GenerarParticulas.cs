@@ -34,22 +34,26 @@ public class GenerarParticulas : MonoBehaviour
     {
 		for (int x = -ancho; x <= ancho; x++)
 			for (int z = -ancho; z <= ancho; z++)
-					AgregarElemento(new Vector3Int(x + posicion.x, posicion.y, z + posicion.z), index);
+				if (!AgregarElemento(new Vector3Int(x + posicion.x, posicion.y, z + posicion.z), index))
+				{
+					//Debug.Log("No se inserto");
+				}
 	}
 
-	void AgregarElemento(Vector3Int posicion, int index)
+	bool AgregarElemento(Vector3Int posicion, int index)
 	{
-		simulacion.Insertar(GetElemento(simulacion.m_mapa.PosicionRelativa(posicion), index));
+		Elemento elemento = GetElemento(posicion, index);
+		return simulacion.Insertar(elemento);
 	}
 
 	private Elemento GetElemento(Vector3Int posicion, int index)
     {
 		switch(index)
         {
-			case 0: return new Aire(posicion);
-			case 1: return new Arena(posicion);
-			case 2: return new Concreto(posicion);
-			default: return new Aire(posicion);
+			case 0: return new Aire(posicion, simulacion.m_mapa);
+			case 1: return new Arena(posicion, simulacion.m_mapa);
+			case 2: return new Concreto(posicion, simulacion.m_mapa);
+			default: return new Aire(posicion, simulacion.m_mapa);
         }
     }
 
