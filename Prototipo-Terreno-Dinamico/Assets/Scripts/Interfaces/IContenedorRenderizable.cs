@@ -23,6 +23,7 @@ public abstract class IContenedorConDatos : MonoBehaviour, ISacarDatos, IContene
     public abstract bool EnRango(Vector3Int posicion);
     public abstract bool EnRango(Elemento elemento);
     public abstract Color GetColor(Vector3Int posicion, TipoMaterial tipoMaterial, Color defaultColor = default);
+    public abstract int GetIluminacion(Vector3Int posicion, TipoMaterial tipoMaterial, int defaultIluminacion = 0);
     public abstract float GetValor(Vector3Int posicion, TipoMaterial tipoMaterial, float defaultValor = 0);
     public abstract bool Insertar(Elemento elemento);
     public abstract bool Intercambiar(Vector3Int origen, Vector3Int destino);
@@ -38,6 +39,7 @@ public abstract class IConetenedorGeneral : MonoBehaviour, IContenedor, ISacarDa
     public abstract bool EnRango(Elemento elemento);
     public abstract Color GetColor(Vector3Int posicion, TipoMaterial tipoMaterial, Color defaultColor = default);
     public abstract float GetValor(Vector3Int posicion, TipoMaterial tipoMaterial, float defaultValor = 0);
+    public abstract int GetIluminacion(Vector3Int posicion, TipoMaterial tipoMaterial, int defaultIluminacion = 0);
     public abstract bool Insertar(Elemento elemento);
     public abstract bool Reemplazar(Elemento elemento, Elemento reemplazo);
     public abstract bool Intercambiar(Vector3Int origen, Vector3Int destino);

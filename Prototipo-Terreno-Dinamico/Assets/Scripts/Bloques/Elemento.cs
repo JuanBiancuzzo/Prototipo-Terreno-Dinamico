@@ -6,6 +6,8 @@ public abstract class Elemento : ITenerDatos
 {
     static protected int m_minimoValor = 0, m_maximoValor = 100;
     static protected int m_minimoLuz = 0, m_maximoLuz = 15;
+
+    static int m_defualtIluminacion = 0;
     static float m_defaultValor = 0;
     static Color m_defualtColor = Color.white;
 
@@ -13,7 +15,7 @@ public abstract class Elemento : ITenerDatos
 
     public Vector3Int m_posicion;
 
-    public int m_densidad;
+    public int m_concentracion;
     public ValorTemporal m_temperatura, m_iluminacion;
 
     protected Color m_color;
@@ -27,7 +29,7 @@ public abstract class Elemento : ITenerDatos
         m_color = new Color(0, 0, 0, 1);
         m_mundo = mundo;
 
-        m_densidad = 25;
+        m_concentracion = 25;
         m_temperatura = new ValorTemporal(291);
         m_iluminacion = new ValorTemporal(0);
     }
@@ -133,42 +135,42 @@ public abstract class Elemento : ITenerDatos
                         elementoDelMismoElemento.Add(elemento);
                 }
 
-        elementoDelMismoElemento.Sort((a, b) => b.m_densidad.CompareTo(a.m_densidad));
+        elementoDelMismoElemento.Sort((a, b) => b.m_concentracion.CompareTo(a.m_concentracion));
 
         for (int i = 0; i < elementoDelMismoElemento.Count; i++)
         {
             Elemento elemento = elementoDelMismoElemento[i];
 
-            int cantidadADar = DarCantidad(m_densidad / (elementoDelMismoElemento.Count - i));
+            int cantidadADar = DarCantidad(m_concentracion / (elementoDelMismoElemento.Count - i));
             int cantidadExtra = elemento.Agregar(cantidadADar);
             Agregar(cantidadExtra);
         }
 
-        if (m_densidad > 0)
-            Debug.LogError("Se esta perdiendo: " + m_densidad + " densidad");
+        if (m_concentracion > 0)
+            Debug.LogError("Se esta perdiendo: " + m_concentracion + " densidad");
     }
 
     public abstract int CantidadADar();
 
     public virtual int DarCantidad(int cantidad)
     {
-        cantidad = Mathf.Min(cantidad, m_densidad);
-        m_densidad -= cantidad;
+        cantidad = Mathf.Min(cantidad, m_concentracion);
+        m_concentracion -= cantidad;
         return cantidad;
     }
 
     public virtual int Agregar(int cantidadDensidad)
     {
-        m_densidad += cantidadDensidad;
-        int resto = m_densidad - m_maximoValor;
+        m_concentracion += cantidadDensidad;
+        int resto = m_concentracion - m_maximoValor;
         if (resto > 0)
-            m_densidad = m_maximoValor;
+            m_concentracion = m_maximoValor;
         return (resto < 0) ? 0 : resto;
     }
 
     public virtual int MaximoParaRecibir()
     {
-        return m_maximoValor - m_densidad;
+        return m_maximoValor - m_concentracion;
     }
 
     // tal vez tener un metodo que en globe la idea de que un elemento quiere estar en esa posicion
@@ -181,7 +183,7 @@ public abstract class Elemento : ITenerDatos
 
     public bool Vacio()
     {
-        return m_densidad == 0;
+        return m_concentracion == 0;
     }
 
     public bool MismoElemento(Elemento elemento)
@@ -197,15 +199,15 @@ public abstract class Elemento : ITenerDatos
 
     public virtual void DividirAtributos(Elemento otro)
     {
-        otro.m_densidad = m_densidad / 2;
-        m_densidad -= otro.m_densidad;
+        otro.m_concentracion = m_concentracion / 2;
+        m_concentracion -= otro.m_concentracion;
         otro.m_iluminacion = m_iluminacion;
         otro.Actualizado();
     }
 
     public void IgualarAtributos(Elemento otro)
     {
-        otro.m_densidad = m_densidad;
+        otro.m_concentracion = m_concentracion;
         otro.m_temperatura = m_temperatura;
         otro.m_iluminacion = m_iluminacion;
     }
@@ -227,55 +229,35 @@ public abstract class Elemento : ITenerDatos
 
     public float GetValor(TipoMaterial tipoMaterial)
     {
-        switch (tipoMaterial)
-        {
-            case TipoMaterial.Opaco:
-                if (!(Visible() && !Translucido()))
-                    return m_defaultValor;
-                break;
-            case TipoMaterial.Translucido:
-                if (!(Visible() && Translucido()))
-                    return m_defaultValor;
-                break;
-            case TipoMaterial.Trnasparente:
-                if (Visible())
-                    return m_defaultValor;
-                break;
-        }
+        if (DarDefualt(tipoMaterial))
+            return m_defaultValor;
 
-        float t = Mathf.InverseLerp(m_minimoValor, m_maximoValor, m_densidad);
+        float t = Mathf.InverseLerp(m_minimoValor, m_maximoValor, m_concentracion);
         return Mathf.Lerp(0.19f, 1f, t);
     }
 
     public Color GetColor(TipoMaterial tipoMaterial)
     {
+        return (DarDefualt(tipoMaterial)) ? m_defualtColor : ModificarColor();
+    }
+
+    public int GetIluminacion(TipoMaterial tipoMaterial)
+    {
+        return (DarDefualt(tipoMaterial)) ? m_defualtIluminacion : m_iluminacion.Valor();
+    }
+
+    private bool DarDefualt(TipoMaterial tipoMaterial)
+    {
+        bool seTieneQueDar = false;
+
         switch (tipoMaterial)
         {
-            case TipoMaterial.Opaco:
-                if (!(Visible() && !Translucido()))
-                    return m_defualtColor;
-                break;
-            case TipoMaterial.Translucido:
-                if (!(Visible() && Translucido()))
-                    return m_defualtColor;
-                break;
-            case TipoMaterial.Trnasparente:
-                if (Visible())
-                    return m_defualtColor;
-                break;
+            case TipoMaterial.Opaco: seTieneQueDar = !(Visible() && !Translucido()); break;
+            case TipoMaterial.Translucido: seTieneQueDar = !(Visible() && Translucido()); break;
+            case TipoMaterial.Trnasparente: seTieneQueDar = Visible(); break;
         }
 
-        Color colorFinal = ModificarColor();
-
-        if (!Emisor())
-        {
-            float luz = Mathf.InverseLerp(m_minimoLuz, m_maximoLuz, m_iluminacion.Valor());
-            float alpha = colorFinal.a;
-            colorFinal *= luz;
-            colorFinal.a = alpha;
-        }
-
-        return colorFinal;
+        return seTieneQueDar;
     }
 
     protected virtual Color ModificarColor()
@@ -303,10 +285,10 @@ public abstract class Elemento : ITenerDatos
         if (e2 == null)
             return e1;
 
-        return (e1.m_densidad > e2.m_densidad) ? e1 : e2;
+        return (e1.m_concentracion > e2.m_concentracion) ? e1 : e2;
     }
 
-    public static Elemento ElementoConMayorDensidad(Vector3Int posicion, IConetenedorGeneral mundo, Elemento excepcion = null)
+    public static Elemento ElementoConMayorConcentracion(Vector3Int posicion, IConetenedorGeneral mundo, Elemento excepcion = null)
     {
         Elemento elementoConMayorDensidad = null;
 
@@ -326,83 +308,4 @@ public abstract class Elemento : ITenerDatos
 
         return elementoConMayorDensidad;
     }
-
-    /*
-    public abstract void Avanzar(IContenedorConDatos mapa, int dt);
-
-    // afectar a al elemento que tenemos en el camino
-    public abstract void ActuanEnElemento(Elemento elemento, int dt);
-
-    public virtual void ActuarEnOtro(Solido elemento, int dt)
-    {
-    }
-
-    public virtual void ActuarEnOtro(Liquido elemento, int dt)
-    {
-    }
-
-    public virtual void ActuarEnOtro(Gaseoso elemento, int dt)
-    {
-    }
-
-    public virtual bool Visible()
-    {
-        return true;
-    }
-
-    // como afecta el hecho de lo ultimo que hicimos - tal vez no sea necesario
-    public abstract bool Reacciona(IContenedorConDatos mapa);
-
-    // si dejamos pasar un elemento
-    public virtual bool PermitoIntercambiar(Solido elemento, int dt)
-    {
-        return false;
-    }
-
-    public virtual bool PermitoIntercambiar(Liquido elemento, int dt)
-    {
-        return false;
-    }
-
-    public virtual bool PermitoIntercambiar(Gaseoso elemento, int dt)
-    {
-        return false;
-    }
-
-
-    public void AplicarAceleracion(Vector3Int aceleracionNueva)
-    {
-        m_aceleracion += aceleracionNueva;
-    }
-
-    protected void ActualizarVelocidad(int dt)
-    {
-        m_velocidad += (m_aceleracion + gravedad) * dt;
-        m_aceleracion *= 0;
-    }
-
-    public override float GetValor()
-    {
-        return (Visible()) ? Mathf.InverseLerp(m_minimoValor, m_maximoValor, m_densidad) : 0.0f; 
-    }
-
-    public override Color GetColor()
-    {
-        return ModificarColor();
-    }
-
-    protected virtual Color ModificarColor()
-    {
-        return m_color;
-    }
-
-    public override Vector3Int Posicion()
-    {
-        return m_posicion;
-    }
-
-    public override void ActualizarPosicion(Vector3Int posicionNueva)
-    {
-        m_posicion = posicionNueva;
-    }*/
 }

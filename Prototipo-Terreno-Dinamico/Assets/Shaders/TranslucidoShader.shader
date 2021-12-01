@@ -25,6 +25,7 @@ Shader "Unlit/TranslucidoShader"
             {
                 float4 vertex : POSITION;
                 float4 color : COLOR;
+                float2 uv : TEXCOORD0;
             };
 
             struct v2f
@@ -37,7 +38,11 @@ Shader "Unlit/TranslucidoShader"
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
+                float a = v.color.a;
+                v.color *= v.uv.x;
+                v.color.a = a;
                 o.color = v.color;
+
                 return o;
             }
 

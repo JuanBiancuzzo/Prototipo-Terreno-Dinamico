@@ -8,7 +8,7 @@ public class Concreto : Solido
     {
         m_color = new Color(0.75f, 0.75f, 0.75f, 1);
         id = 2;
-        m_densidad = 100;
+        m_concentracion = 100;
     }
 
     public override void Avanzar(int dt)

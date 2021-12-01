@@ -6,12 +6,15 @@ static const int numThreads = 8;
 struct Triangle {
     float3 vertexC;
     float4 colorC;
+    float iluminacionC;
 
     float3 vertexB;
     float4 colorB;
+    float iluminacionB;
 
     float3 vertexA;
     float4 colorA;
+    float iluminacionA;
 
     float3 normal;
 };
@@ -19,6 +22,7 @@ struct Triangle {
 AppendStructuredBuffer<Triangle> triangles;
 StructuredBuffer<float4> points;
 StructuredBuffer<float4> colores;
+StructuredBuffer<float> iluminaciones;
 
 float isoLevel;
 int3 numPointsPerAxis;
@@ -31,6 +35,11 @@ float3 interpolateVerts(float4 v1, float4 v2) {
 float4 elegirColores(float v1, float4 color1, float v2, float4 color2)
 {
     return color1 + (v2 > v1) * (color2 - color1);
+}
+
+float elegirLuz(float v1, float luz1, float v2, float luz2)
+{
+    return luz1 + (v2 > v1) * (luz2 - luz1);
 }
 
 int indexEnPunto(int x, int y, int z)
@@ -46,6 +55,16 @@ float4 valorEnPunto(int x, int y, int z)
 float4 colorEnPunto(int x, int y, int z)
 {
     return colores[indexEnPunto(x, y, z)];
+}
+
+float invLerp(float from, float to, float value)
+{
+    return (value - from) / (to - from);
+}
+
+float luzEnPunto(int x, int y, int z)
+{
+    return invLerp(0, 15, iluminaciones[indexEnPunto(x, y, z)]);
 }
 
 [numthreads(numThreads, numThreads, numThreads)]
@@ -78,6 +97,17 @@ void March(int3 id : SV_DispatchThreadID)
         colorEnPunto(id.x, id.y + 1, id.z + 1)
     };
 
+    float cubeCornersLuz[8] = {
+        luzEnPunto(id.x, id.y, id.z),
+        luzEnPunto(id.x + 1, id.y, id.z),
+        luzEnPunto(id.x + 1, id.y, id.z + 1),
+        luzEnPunto(id.x, id.y, id.z + 1),
+        luzEnPunto(id.x, id.y + 1, id.z),
+        luzEnPunto(id.x + 1, id.y + 1, id.z),
+        luzEnPunto(id.x + 1, id.y + 1, id.z + 1),
+        luzEnPunto(id.x, id.y + 1, id.z + 1)
+    };
+
     // Calculate unique index for each cube configuration.
     // There are 256 possible values
     // A value of 0 means cube is entirely inside surface; 255 entirely outside.
@@ -96,27 +126,41 @@ void March(int3 id : SV_DispatchThreadID)
     for (int i = 0; triangulation[cubeIndex][i] != -1; i += 3) {
         // Get indices of corner points A and B for each of the three edges
         // of the cube that need to be joined to form the triangle.
-        int a0 = cornerIndexAFromEdge[triangulation[cubeIndex][i]];
-        int b0 = cornerIndexBFromEdge[triangulation[cubeIndex][i]];
-
-        int a1 = cornerIndexAFromEdge[triangulation[cubeIndex][i + 1]];
-        int b1 = cornerIndexBFromEdge[triangulation[cubeIndex][i + 1]];
-
-        int a2 = cornerIndexAFromEdge[triangulation[cubeIndex][i + 2]];
-        int b2 = cornerIndexBFromEdge[triangulation[cubeIndex][i + 2]];
-
         Triangle tri;
-        tri.vertexA = interpolateVerts(cubeCorners[a0], cubeCorners[b0]);
-        tri.colorA = elegirColores(cubeCorners[a0].w, cubeCornersColores[a0], cubeCorners[b0].w, cubeCornersColores[b0]);
 
-        tri.vertexB = interpolateVerts(cubeCorners[a1], cubeCorners[b1]);
-        tri.colorB = elegirColores(cubeCorners[a1].w, cubeCornersColores[a1], cubeCorners[b1].w, cubeCornersColores[b1]);
+        for (int j = 0; j < 3; j++)
+        {
+            int a = cornerIndexAFromEdge[triangulation[cubeIndex][i + j]];
+            int b = cornerIndexBFromEdge[triangulation[cubeIndex][i + j]];
 
-        tri.vertexC = interpolateVerts(cubeCorners[a2], cubeCorners[b2]);
-        tri.colorC = elegirColores(cubeCorners[a2].w, cubeCornersColores[a2], cubeCorners[b2].w, cubeCornersColores[b2]);
+            float3 posicion = interpolateVerts(cubeCorners[a], cubeCorners[b]);
+            float4 color = elegirColores(cubeCorners[a].w, cubeCornersColores[a], cubeCorners[b].w, cubeCornersColores[b]);
+            float iluminacion = elegirLuz(cubeCorners[a].w, cubeCornersLuz[a], cubeCorners[b].w, cubeCornersLuz[b]);
+
+            if (j == 0)
+            {
+                tri.vertexA = posicion;
+                tri.colorA = color;
+                tri.iluminacionA = iluminacion;
+            }
+            else if (j == 1)
+            {
+                tri.vertexB = posicion;
+                tri.colorB = color;
+                tri.iluminacionB = iluminacion;
+            }
+            else
+            {
+                tri.vertexC = posicion;
+                tri.colorC = color;
+                tri.iluminacionC = iluminacion;
+            }
+        }
 
         tri.normal = normalize(cross(tri.vertexB - tri.vertexA, tri.vertexC - tri.vertexA));
 
         triangles.Append(tri);
     }
 }
+
+

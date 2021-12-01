@@ -23,7 +23,7 @@ Shader "Unlit/OpacoShader"
                 float4 vertex : POSITION;
                 float4 color : COLOR;
                 //float4 normals : NORMAL;
-                // float2 uv : TEXCOORD0;
+                float2 uv : TEXCOORD0;
             };
 
             struct v2f
@@ -37,7 +37,7 @@ Shader "Unlit/OpacoShader"
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.color = v.color;
+                o.color = v.color * v.uv.x;
                 //o.normals = v.normals;
                 return o;
             }

@@ -126,7 +126,7 @@ public abstract class Solido : Elemento
         foreach (Elemento elemento in elementoDelMismoElemento)
             cantidadAdimitida += elemento.MaximoParaRecibir();
 
-        return m_densidad < cantidadAdimitida * 0.9f;
+        return m_concentracion < cantidadAdimitida * 0.9f;
     }
 
     public override bool PermiteIntercambiar()

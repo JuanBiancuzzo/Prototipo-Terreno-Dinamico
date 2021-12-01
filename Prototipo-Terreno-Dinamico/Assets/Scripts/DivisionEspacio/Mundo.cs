@@ -73,9 +73,9 @@ public class Mundo : IConetenedorGeneral
             return true;
         }
 
-        if (elemento.MismoElemento(elementoEnPosicion) && elementoEnPosicion.MaximoParaRecibir() >= elemento.m_densidad)
+        if (elemento.MismoElemento(elementoEnPosicion) && elementoEnPosicion.MaximoParaRecibir() >= elemento.m_concentracion)
         {
-            int cantidadExtra = elementoEnPosicion.Agregar(elemento.m_densidad);
+            int cantidadExtra = elementoEnPosicion.Agregar(elemento.m_concentracion);
             if (cantidadExtra > 0)
                 Debug.LogWarning("Algo esta funcionando mal aca");
         }
@@ -94,7 +94,7 @@ public class Mundo : IConetenedorGeneral
         if (!EnRango(posicion))
             return null;
 
-        Elemento elementoConMayorDensidad = Elemento.ElementoConMayorDensidad(posicion, this);
+        Elemento elementoConMayorDensidad = Elemento.ElementoConMayorConcentracion(posicion, this);
         if (elementoConMayorDensidad == null)
             return null;
 
@@ -203,17 +203,29 @@ public class Mundo : IConetenedorGeneral
         return elemento.GetValor(tipoMaterial);
     }
 
+    public override int GetIluminacion(Vector3Int posicion, TipoMaterial tipoMaterial, int defaultIluminacion = 0)
+    {
+        if (!EnRango(posicion))
+            return defaultIluminacion;
+
+        Elemento elemento = EnPosicion(posicion);
+        if (elemento == null)
+            return defaultIluminacion;
+
+        return elemento.GetIluminacion(tipoMaterial);
+    }
+
     public override void Renderizar(IRender render, ISacarDatos contenedor = null)
     {
         MeshData meshDataOpaco = new MeshData();
         render.GenerarMeshCompute(m_extremo, this, ref meshDataOpaco, TipoMaterial.Opaco);
         Mesh meshOpaco = new Mesh();
-        RellenarMesh(meshOpaco, meshDataOpaco);
+        meshDataOpaco.RellenarMesh(meshOpaco);
 
         MeshData meshDataTranslucido = new MeshData();
         render.GenerarMeshCompute(m_extremo, this, ref meshDataTranslucido, TipoMaterial.Translucido);
         Mesh meshTranslucido = new Mesh();
-        RellenarMesh(meshTranslucido, meshDataTranslucido);
+        meshDataTranslucido.RellenarMesh(meshTranslucido);
 
         List<CombineInstance> finalCombiner = new List<CombineInstance>();
         foreach ( Mesh mesh in new List<Mesh> { meshOpaco, meshTranslucido } )
@@ -225,20 +237,6 @@ public class Mundo : IConetenedorGeneral
             finalCombiner.Add ( ci );
         }
         m_mesh.CombineMeshes(finalCombiner.ToArray(), false);
-    }
-
-    private void RellenarMesh(Mesh mesh, MeshData meshData, int submesh = 0)
-    {
-        mesh.Clear();
-        mesh.SetVertices(meshData.m_vertices);
-        mesh.SetTriangles(meshData.m_triangulos, submesh);
-        if (meshData.m_colores.Count > 0)
-            mesh.SetColors(meshData.m_colores);
-
-        if (meshData.m_normales.Count > 0)
-            mesh.SetNormals(meshData.m_normales);
-        else
-            mesh.RecalculateNormals();
     }
 
     private void OnDrawGizmos()

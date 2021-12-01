@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,13 @@ public class MarchingCubes : MonoBehaviour, IRender
 	{
 		public Vector3 a;
 		public Vector4 colorA;
+		public float iluminacionA;
 		public Vector3 b;
 		public Vector4 colorB;
+		public float iluminacionB;
 		public Vector3 c;
 		public Vector4 colorC;
+		public float iluminacionC;
 
 		public Vector3 normal;
 
@@ -56,7 +60,22 @@ public class MarchingCubes : MonoBehaviour, IRender
         {
 			return normal;
         }
-	}
+
+        public  Vector2 GetIluminacion(int i)
+        {
+			Vector2 uv = new Vector2(0, 0);
+			switch (i)
+			{
+				case 0:
+					uv.x = iluminacionA; break;
+				case 1:
+					uv.x = iluminacionB; break;
+				default:
+					uv.x = iluminacionC; break;
+			}
+			return uv;
+		}
+    }
 
 	public void GenerarMeshCompute(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, TipoMaterial tipoMaterial = TipoMaterial.Opaco, int LOD = 1)
     {
@@ -74,9 +93,11 @@ public class MarchingCubes : MonoBehaviour, IRender
 
 		ComputeBuffer puntos = new ComputeBuffer(numPoints, sizeof(float) * 4);
 		ComputeBuffer colores = new ComputeBuffer(numPoints, sizeof(float) * 4);
+		ComputeBuffer iluminaciones = new ComputeBuffer(numPoints, sizeof(float));
 
 		Vector4[] datosPuntos = new Vector4[numPoints];
 		Vector4[] datosColores = new Vector4[numPoints];
+		float[] datosIluminaciones = new float[numPoints];
 		for (int z = minimos.z - 1; z <= maximos.z + 1; z++)
 			for (int y = minimos.y - 1; y <= maximos.y + 1; y++)
 				for (int x = minimos.x - 1; x <= maximos.x + 1; x++)
@@ -89,20 +110,23 @@ public class MarchingCubes : MonoBehaviour, IRender
 
 					datosPuntos[posX + posY + posZ] = new Vector4(posicion.x, posicion.y, posicion.z, datos.GetValor(posicion, m_tipoMaterial));
 					datosColores[posX + posY + posZ] = datos.GetColor(posicion, m_tipoMaterial);
+					datosIluminaciones[posX + posY + posZ] = datos.GetIluminacion(posicion, m_tipoMaterial);
 				}
 
 		puntos.SetData(datosPuntos);
 		colores.SetData(datosColores);
+		iluminaciones.SetData(datosIluminaciones);
 
 		// creando buffer de triangulos
 		int numVoxels = (extension.x) * (extension.y) * (extension.z);
 		int maxTriangleCount = numVoxels * 6;
 
-		int tamanioTriangulos = sizeof(float) * 3 * 3 + sizeof(float) * 4 * 3 + sizeof(float) * 3;
+		int tamanioTriangulos = sizeof(float) * 3 * 3 + sizeof(float) * 4 * 3 + sizeof(float) * 3 + 3 * sizeof(float);
 		ComputeBuffer triangulos = new ComputeBuffer(maxTriangleCount, tamanioTriangulos, ComputeBufferType.Append);
 
 		shader.SetBuffer(kernel, "points", puntos);
 		shader.SetBuffer(kernel, "colores", colores);
+		shader.SetBuffer(kernel, "iluminaciones", iluminaciones);
 		shader.SetBuffer(kernel, "triangles", triangulos);
 		shader.SetFloat("isoLevel", m_nivelDelSuelo);
 		shader.SetInts("numPointsPerAxis", extension.x, extension.y, extension.z);
@@ -128,10 +152,12 @@ public class MarchingCubes : MonoBehaviour, IRender
 				preInfo.m_vertices.Add(tris[i][j]);
 				preInfo.m_colores.Add(tris[i].GetColor(j));
 				preInfo.m_normales.Add(tris[i].GetNormal());
+				preInfo.m_uv.Add(tris[i].GetIluminacion(j));
 			}
 
 		puntos.Dispose();
 		colores.Dispose();
+		iluminaciones.Dispose();
 		triangulos.Dispose();
 		triCountBuffer.Dispose();
 	}

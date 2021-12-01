@@ -6,7 +6,7 @@ public abstract class Gaseoso : Elemento
 {
     protected Gaseoso(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
-        m_densidad = 5;
+        m_concentracion = 5;
     }
 
     public override void Avanzar(int dt)
@@ -77,12 +77,12 @@ public abstract class Gaseoso : Elemento
         foreach (Gaseoso gaseoso in gaseosos)
             cantidadAdimitida += gaseoso.MaximoParaRecibir();
 
-        return m_densidad < cantidadAdimitida;
+        return m_concentracion < cantidadAdimitida;
     }
 
     public override int CantidadADar()
     {
-        int cantidad = m_densidad / 5;
+        int cantidad = m_concentracion / 5;
         return DarCantidad(cantidad);
     }
 

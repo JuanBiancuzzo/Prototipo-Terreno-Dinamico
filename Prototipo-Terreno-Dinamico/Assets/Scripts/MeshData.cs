@@ -8,6 +8,7 @@ public class MeshData
     public List<Color> m_colores;
     public List<int> m_triangulos;
     public List<Vector3> m_normales;
+    public List<Vector2> m_uv;
     public Dictionary<Vector3, int> m_repetirVertices;
 
     public MeshData()
@@ -16,6 +17,7 @@ public class MeshData
         m_colores = new List<Color>();
         m_triangulos = new List<int>();
         m_normales = new List<Vector3>();
+        m_uv = new List<Vector2>();
         m_repetirVertices = new Dictionary<Vector3, int>();
     }
 
@@ -25,6 +27,7 @@ public class MeshData
         m_colores.Clear();
         m_triangulos.Clear();
         m_normales.Clear();
+        m_uv.Clear();
         m_repetirVertices.Clear();
     }
 
@@ -59,12 +62,20 @@ public class MeshData
             m_triangulos.Add(otro.m_triangulos[i] + posicionDesfasada);
     }
 
-    public void SumaSimple(MeshData otro, bool sumarTriangulos = true)
+    public void RellenarMesh(Mesh mesh, int submesh = 0)
     {
-        m_vertices.AddRange(otro.m_vertices);
-        m_colores.AddRange(otro.m_colores);
-        if (sumarTriangulos)
-            m_triangulos.AddRange(otro.m_triangulos);
-        m_normales.AddRange(otro.m_normales);
+        mesh.Clear();
+        mesh.SetVertices(m_vertices);
+        mesh.SetTriangles(m_triangulos, submesh);
+        if (m_colores.Count > 0)
+            mesh.SetColors(m_colores);
+
+        if (m_uv.Count > 0)
+            mesh.SetUVs(0, m_uv);
+
+        if (m_normales.Count > 0)
+            mesh.SetNormals(m_normales);
+        else
+            mesh.RecalculateNormals();
     }
 }

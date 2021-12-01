@@ -8,7 +8,7 @@ public class Hielo : Solido
     {
         m_color = new Color(1, 1, 1, 1);
         id = 3;
-        m_densidad = 100;
+        m_concentracion = 100;
     }
 
     public override void Avanzar(int dt)
