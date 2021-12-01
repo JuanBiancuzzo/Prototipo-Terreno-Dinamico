@@ -9,6 +9,7 @@ public class MarchingCubes : MonoBehaviour, IRender
 
 	MeshData m_meshData;
 	ISacarDatos m_datos;
+	public TipoMaterial m_tipoMaterial;
 
 	public ComputeShader shader;
 
@@ -57,8 +58,9 @@ public class MarchingCubes : MonoBehaviour, IRender
         }
 	}
 
-	public void GenerarMeshCompute(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, int LOD = 1)
+	public void GenerarMeshCompute(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, TipoMaterial tipoMaterial = TipoMaterial.Opaco, int LOD = 1)
     {
+		m_tipoMaterial = tipoMaterial;
 		int kernel = shader.FindKernel("March");
 
 		Vector3Int minimos = Vector3Int.FloorToInt((Vector3)extremo.m_minimo / LOD);
@@ -85,8 +87,8 @@ public class MarchingCubes : MonoBehaviour, IRender
 
 					Vector3Int posicion = new Vector3Int(x * LOD, y * LOD, z * LOD);
 
-					datosPuntos[posX + posY + posZ] = new Vector4(posicion.x, posicion.y, posicion.z, datos.GetValor(posicion));
-					datosColores[posX + posY + posZ] = datos.GetColor(posicion);
+					datosPuntos[posX + posY + posZ] = new Vector4(posicion.x, posicion.y, posicion.z, datos.GetValor(posicion, m_tipoMaterial));
+					datosColores[posX + posY + posZ] = datos.GetColor(posicion, m_tipoMaterial);
 				}
 
 		puntos.SetData(datosPuntos);
@@ -134,9 +136,9 @@ public class MarchingCubes : MonoBehaviour, IRender
 		triCountBuffer.Dispose();
 	}
 
-	public void GenerarMesh(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, int LOD = 1)
+	public void GenerarMesh(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, TipoMaterial tipoMaterial = TipoMaterial.Opaco, int LOD = 1)
     {
-		Inicializar(preInfo, datos);
+		Inicializar(preInfo, datos, tipoMaterial);
 		Vector3Int minimos = extremo.m_minimo, maximos = extremo.m_maximo;
 
 		for (int x = minimos.x - LOD; x < maximos.x + LOD; x += LOD)
@@ -147,10 +149,11 @@ public class MarchingCubes : MonoBehaviour, IRender
 		CargarDatos(ref preInfo);
     }
 
-	public void Inicializar(MeshData preInformacion, ISacarDatos datos)
+	public void Inicializar(MeshData preInformacion, ISacarDatos datos, TipoMaterial tipoMaterial)
 	{
 		m_meshData = preInformacion;
 		m_datos = datos;
+		m_tipoMaterial = tipoMaterial;
 	}
 
 	public void CargarDatos(ref MeshData preInformacion)
@@ -219,8 +222,8 @@ public class MarchingCubes : MonoBehaviour, IRender
 
 	private Color ColorMedio(Vector3Int posicionA, Vector3Int posicionB)
     {
-		Color colorA = m_datos.GetColor(posicionA);
-		Color colorB = m_datos.GetColor(posicionB);
+		Color colorA = m_datos.GetColor(posicionA, m_tipoMaterial);
+		Color colorB = m_datos.GetColor(posicionB, m_tipoMaterial);
 
 		if (FallingSand.EsDefault(colorA))
 			return colorB;
@@ -235,7 +238,7 @@ public class MarchingCubes : MonoBehaviour, IRender
     {
 		float[] valores = new float[8];
 		for (int i = 0; i < 8; i++)
-			valores[i] = m_datos.GetValor(listaDePosiciones[i]);
+			valores[i] = m_datos.GetValor(listaDePosiciones[i], m_tipoMaterial);
 		return valores;
     }
 

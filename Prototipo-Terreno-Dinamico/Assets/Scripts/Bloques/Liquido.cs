@@ -32,7 +32,7 @@ public abstract class Liquido : Elemento
             if (elemento == null)
                 continue;
 
-            if (MismoElemento(elemento))
+            if (MismoElemento(elemento) && elemento.MaximoParaRecibir() > 0)
             {
                 Liquido solido = (Liquido)elemento;
 
@@ -151,5 +151,10 @@ public abstract class Liquido : Elemento
         base.DividirAtributos(otro);
         Liquido liquido = (Liquido)otro;
         liquido.m_velocidad = m_velocidad;
+    }
+
+    public override bool Translucido()
+    {
+        return true;
     }
 }

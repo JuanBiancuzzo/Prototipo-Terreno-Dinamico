@@ -7,7 +7,7 @@ public abstract class IContenible : ITenerDatos
 
     public abstract void ActualizarPosicion(Vector3Int posicionNueva);
 
-    public abstract float GetValor();
+    public abstract float GetValor(TipoMaterial tipoMaterial);
 
-    public abstract Color GetColor();
+    public abstract Color GetColor(TipoMaterial tipoMaterial);
 }

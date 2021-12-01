@@ -4,14 +4,14 @@ using UnityEngine;
 
 public interface ISacarDatos
 {
-    float GetValor(Vector3Int posicion, float defaultValor = 0f);
+    float GetValor(Vector3Int posicion, TipoMaterial tipoMaterial, float defaultValor = 0f);
 
-    Color GetColor(Vector3Int posicion, Color defaultColor = new Color());
+    Color GetColor(Vector3Int posicion, TipoMaterial tipoMaterial, Color defaultColor = new Color());
 }
 
 public interface ITenerDatos
 {
-    float GetValor();
+    float GetValor(TipoMaterial tipoMaterial);
 
-    Color GetColor();
+    Color GetColor(TipoMaterial tipoMaterial);
 }

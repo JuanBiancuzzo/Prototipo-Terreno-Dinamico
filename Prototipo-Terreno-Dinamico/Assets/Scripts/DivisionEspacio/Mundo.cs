@@ -179,7 +179,7 @@ public class Mundo : IConetenedorGeneral
         return posicionMundo + m_extremo.m_minimo;
     }
 
-    public override Color GetColor(Vector3Int posicion, Color defaultColor = default)
+    public override Color GetColor(Vector3Int posicion, TipoMaterial tipoMaterial, Color defaultColor = default)
     {
         if (!EnRango(posicion))
             return defaultColor;
@@ -188,10 +188,10 @@ public class Mundo : IConetenedorGeneral
         if (elemento == null)
             return defaultColor;
 
-        return elemento.GetColor();
+        return elemento.GetColor(tipoMaterial);
     }
 
-    public override float GetValor(Vector3Int posicion, float defaultValor = 0)
+    public override float GetValor(Vector3Int posicion, TipoMaterial tipoMaterial, float defaultValor = 0)
     {
         if (!EnRango(posicion))
             return defaultValor;
@@ -200,25 +200,45 @@ public class Mundo : IConetenedorGeneral
         if (elemento == null)
             return defaultValor;
 
-        return elemento.GetValor();
+        return elemento.GetValor(tipoMaterial);
     }
 
     public override void Renderizar(IRender render, ISacarDatos contenedor = null)
     {
-        MeshData meshData = new MeshData();
-        render.GenerarMeshCompute(m_extremo, this, ref meshData);
+        MeshData meshDataOpaco = new MeshData();
+        render.GenerarMeshCompute(m_extremo, this, ref meshDataOpaco, TipoMaterial.Opaco);
+        Mesh meshOpaco = new Mesh();
+        RellenarMesh(meshOpaco, meshDataOpaco);
 
-        m_mesh.Clear();
-        m_mesh.SetVertices(meshData.m_vertices);
-        m_mesh.SetTriangles(meshData.m_triangulos, 0);
+        MeshData meshDataTranslucido = new MeshData();
+        render.GenerarMeshCompute(m_extremo, this, ref meshDataTranslucido, TipoMaterial.Translucido);
+        Mesh meshTranslucido = new Mesh();
+        RellenarMesh(meshTranslucido, meshDataTranslucido);
 
+        List<CombineInstance> finalCombiner = new List<CombineInstance>();
+        foreach ( Mesh mesh in new List<Mesh> { meshOpaco, meshTranslucido } )
+        {
+            CombineInstance ci = new CombineInstance();
+            ci.mesh = mesh;
+            ci.subMeshIndex = 0;
+            ci.transform = Matrix4x4.identity;
+            finalCombiner.Add ( ci );
+        }
+        m_mesh.CombineMeshes(finalCombiner.ToArray(), false);
+    }
+
+    private void RellenarMesh(Mesh mesh, MeshData meshData, int submesh = 0)
+    {
+        mesh.Clear();
+        mesh.SetVertices(meshData.m_vertices);
+        mesh.SetTriangles(meshData.m_triangulos, submesh);
         if (meshData.m_colores.Count > 0)
-            m_mesh.SetColors(meshData.m_colores);
+            mesh.SetColors(meshData.m_colores);
 
         if (meshData.m_normales.Count > 0)
-            m_mesh.SetNormals(meshData.m_normales);
+            mesh.SetNormals(meshData.m_normales);
         else
-            m_mesh.RecalculateNormals();
+            mesh.RecalculateNormals();
     }
 
     private void OnDrawGizmos()

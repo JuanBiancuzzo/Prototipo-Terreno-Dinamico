@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: FallingSandMaterial
+  m_Name: Opaco
   m_Shader: {fileID: 4800000, guid: 5ede21f0577fa9a47b40e4e992fe6894, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4

@@ -2,9 +2,11 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 
-public abstract class Elemento
+public abstract class Elemento : ITenerDatos
 {
     static protected int m_minimoValor = 0, m_maximoValor = 100;
+    static float m_defaultValor = 0;
+    static Color m_defualtColor = Color.white;
 
     protected uint id;
 
@@ -188,13 +190,51 @@ public abstract class Elemento
         return true;
     }
 
-    public float GetValor()
+    public virtual bool Translucido()
     {
-        return (Visible()) ? Mathf.InverseLerp(m_minimoValor, m_maximoValor, m_densidad) : 0.0f;
+        return false;
     }
 
-    public Color GetColor()
+    public float GetValor(TipoMaterial tipoMaterial)
     {
+        switch (tipoMaterial)
+        {
+            case TipoMaterial.Opaco:
+                if (!(Visible() && !Translucido()))
+                    return m_defaultValor;
+                break;
+            case TipoMaterial.Translucido:
+                if (!(Visible() && Translucido()))
+                    return m_defaultValor;
+                break;
+            case TipoMaterial.Trnasparente:
+                if (Visible())
+                    return m_defaultValor;
+                break;
+        }
+
+        float t = Mathf.InverseLerp(m_minimoValor, m_maximoValor, m_densidad);
+        return Mathf.Lerp(0.19f, 1f, t);
+    }
+
+    public Color GetColor(TipoMaterial tipoMaterial)
+    {
+        switch (tipoMaterial)
+        {
+            case TipoMaterial.Opaco:
+                if (!(Visible() && !Translucido()))
+                    return m_defualtColor;
+                break;
+            case TipoMaterial.Translucido:
+                if (!(Visible() && Translucido()))
+                    return m_defualtColor;
+                break;
+            case TipoMaterial.Trnasparente:
+                if (Visible())
+                    return m_defualtColor;
+                break;
+        }
+
         return ModificarColor();
     }
 

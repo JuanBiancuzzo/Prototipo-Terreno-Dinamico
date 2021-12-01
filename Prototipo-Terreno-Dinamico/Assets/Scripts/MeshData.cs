@@ -58,4 +58,13 @@ public class MeshData
         for (int i = otro.m_vertices.Count; i < otro.m_triangulos.Count; i++)
             m_triangulos.Add(otro.m_triangulos[i] + posicionDesfasada);
     }
+
+    public void SumaSimple(MeshData otro, bool sumarTriangulos = true)
+    {
+        m_vertices.AddRange(otro.m_vertices);
+        m_colores.AddRange(otro.m_colores);
+        if (sumarTriangulos)
+            m_triangulos.AddRange(otro.m_triangulos);
+        m_normales.AddRange(otro.m_normales);
+    }
 }
