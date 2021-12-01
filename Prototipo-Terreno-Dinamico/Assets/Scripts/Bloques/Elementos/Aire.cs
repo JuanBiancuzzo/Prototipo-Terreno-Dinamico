@@ -12,10 +12,9 @@ public class Aire : Gaseoso
 
     public override Elemento Expandir(Vector3Int posicion)
     {
-        Aire arenaNueva = new Aire(posicion, m_mundo);
-        arenaNueva.m_densidad = m_densidad / 2;
-        m_densidad /= 2;
-        return arenaNueva;
+        Aire aireNueva = new Aire(posicion, m_mundo);
+        base.DividirAtributos(aireNueva);
+        return aireNueva;
     }
 
     public override bool Visible()

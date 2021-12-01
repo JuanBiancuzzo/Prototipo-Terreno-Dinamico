@@ -8,6 +8,7 @@ public class Concreto : Solido
     {
         m_color = new Color(0.75f, 0.75f, 0.75f, 1);
         id = 2;
+        m_densidad = 100;
     }
 
     public override void Avanzar(int dt)
@@ -16,10 +17,9 @@ public class Concreto : Solido
 
     public override Elemento Expandir(Vector3Int posicion)
     {
-        Concreto arenaNueva = new Concreto(posicion, m_mundo);
-        arenaNueva.m_densidad = m_densidad / 2;
-        m_densidad /= 2;
-        return arenaNueva;
+        Concreto concretoNueva = new Concreto(posicion, m_mundo);
+        base.DividirAtributos(concretoNueva);
+        return concretoNueva;
     }
 
     public override void Reaccionar()

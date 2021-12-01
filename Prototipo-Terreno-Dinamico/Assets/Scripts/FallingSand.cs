@@ -5,7 +5,6 @@ using UnityEngine;
 public class FallingSand : MonoBehaviour
 {
     public IConetenedorGeneral m_mapa = null;
-    List<Elemento> m_paraActualizar = new List<Elemento>();
 
     public static float m_default = 0f;
     public static Color m_defaultColor = new Color(1f, 1f, 1f, 1f);
@@ -26,15 +25,20 @@ public class FallingSand : MonoBehaviour
 
     public void Avanzar()
     {
-        /*List<Elemento> actualizarEstaIteracion = new List<Elemento>();
-        foreach (Elemento elemento in m_paraActualizar)
-            actualizarEstaIteracion.Add(elemento);
-        m_paraActualizar.Clear(); */
-
         foreach (Elemento elemento in m_mapa.ElementoParaActualizar())
-            elemento.Avanzar(dt);
+            if (!elemento.EstaActualizado())
+            {
+                elemento.Actuar(dt);
+                elemento.Actualizado();
+            }
 
         Renderizar();
+
+        foreach (Elemento elemento in m_mapa.ElementoParaActualizar())
+        {
+            elemento.EmpezarAActualizar();
+            elemento.Reaccionar();
+        }
     }
 
     public void Renderizar()
@@ -47,10 +51,6 @@ public class FallingSand : MonoBehaviour
         //m_mapa.GenerarMeshColision(render, rangoJugador);
     }
 
-    /*public void AgregarJugador(Transform jugador, List<int> LODLevels)
-    {
-        m_mapa.AgregarJugador(jugador, LODLevels);
-    }*/
 
     public Vector3 PosicionEnMundo(Vector3 posicion)
     {
@@ -66,22 +66,7 @@ public class FallingSand : MonoBehaviour
         if (!sePudoInsertar)
             return false;
 
-        ContenibleNecesitaActualizarse(elemento);
         return true;
-        //elemento.necesitoActualizar += ContenibleNecesitaActualizarse;
-    }
-
-    private void ContenibleNecesitaActualizarse(Elemento elemento)
-    {
-        AgregarSinRepetir(m_paraActualizar, elemento);
-    }
-
-    private void AgregarSinRepetir<T>(List<T> lista, T elemento)
-    {
-        foreach (T e in lista)
-            if (e.Equals(elemento))
-                return;
-        lista.Add(elemento);
     }
 
     public static bool EsDefault(Color color)

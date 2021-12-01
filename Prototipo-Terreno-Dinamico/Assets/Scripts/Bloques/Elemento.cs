@@ -9,25 +9,75 @@ public abstract class Elemento
     protected uint id;
 
     public Vector3Int m_posicion;
-    public int m_densidad, m_temperatura, m_iluminacion;
+
+    public int m_densidad;
+    public ValorTemporal m_temperatura, m_iluminacion;
 
     protected Color m_color;
+    public bool m_actualizado = false;
 
     protected IConetenedorGeneral m_mundo;
 
     public Elemento(Vector3Int posicion, IConetenedorGeneral mundo)
     {
         m_posicion = posicion;
-        m_densidad = 55;
-        m_temperatura = 273;
-        m_iluminacion = 0;
-
         m_color = new Color(0, 0, 0, 1);
-
         m_mundo = mundo;
+
+        m_densidad = 25;
+        m_temperatura = new ValorTemporal(291);
+        m_iluminacion = new ValorTemporal(0);
+    }
+
+    public void Actuar(int dt)
+    {
+        ExpandirTemperatura();
+        Avanzar(dt);
     }
 
     public abstract void Avanzar(int dt);
+
+    protected void ExpandirTemperatura()
+    {
+        int cantidad = 0;
+        int temperaturaTotal = 0;
+
+        for (int x = -1; x <= 1; x++)
+            for (int y = -1; y <= 1; y++)
+                for (int z = -1; z <= 1; z++)
+                {
+                    Elemento elemento = m_mundo.EnPosicion(m_posicion);
+                    if (elemento == null)
+                        continue;
+                    temperaturaTotal += elemento.m_temperatura.Valor();
+                    cantidad++;
+                }
+
+        int temperaturaPromedio = temperaturaTotal / cantidad;
+        m_temperatura.NuevoValor(temperaturaPromedio);
+    }
+
+    protected void ExpandirLuz()
+    {
+
+    }
+
+    public void Actualizado()
+    {
+        m_actualizado = true;
+    }
+
+    public void EmpezarAActualizar()
+    {
+        m_actualizado = false;
+        m_temperatura.Actualizar();
+        m_iluminacion.Actualizar();
+    }
+
+    public bool EstaActualizado()
+    {
+        return m_actualizado;
+    }
 
     public abstract void Reaccionar();
 
@@ -119,6 +169,20 @@ public abstract class Elemento
     public abstract bool MismoTipo(Liquido liquido);
     public abstract bool MismoTipo(Gaseoso gaseoso);
 
+    public virtual void DividirAtributos(Elemento otro)
+    {
+        otro.m_densidad = m_densidad / 2;
+        m_densidad -= otro.m_densidad;
+        otro.Actualizado();
+    }
+
+    public void IgualarAtributos(Elemento otro)
+    {
+        otro.m_densidad = m_densidad;
+        otro.m_temperatura = m_temperatura;
+        otro.m_iluminacion = m_iluminacion;
+    }
+
     public virtual bool Visible()
     {
         return true;
@@ -182,6 +246,7 @@ public abstract class Elemento
 
         return elementoConMayorDensidad;
     }
+
     /*
     public abstract void Avanzar(IContenedorConDatos mapa, int dt);
 

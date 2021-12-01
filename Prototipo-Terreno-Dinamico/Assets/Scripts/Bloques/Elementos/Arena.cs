@@ -13,8 +13,7 @@ public class Arena : Solido
     public override Elemento Expandir(Vector3Int posicion)
     {
         Arena arenaNueva = new Arena(posicion, m_mundo);
-        arenaNueva.m_densidad = m_densidad / 2;
-        m_densidad /= 2;
+        base.DividirAtributos(arenaNueva);
         return arenaNueva;
     }
 

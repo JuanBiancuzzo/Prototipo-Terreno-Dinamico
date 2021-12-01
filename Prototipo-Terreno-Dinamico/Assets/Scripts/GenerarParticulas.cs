@@ -7,7 +7,10 @@ public enum MaterialSel
 {
 	Aire = 0,
 	Arena,
-	Concreto
+	Concreto,
+	Hielo,
+	Agua,
+	Vapor
 }
 
 public class GenerarParticulas : MonoBehaviour
@@ -53,6 +56,9 @@ public class GenerarParticulas : MonoBehaviour
 			case 0: return new Aire(posicion, simulacion.m_mapa);
 			case 1: return new Arena(posicion, simulacion.m_mapa);
 			case 2: return new Concreto(posicion, simulacion.m_mapa);
+			case 3: return new Hielo(posicion, simulacion.m_mapa);
+			case 4: return new Agua(posicion, simulacion.m_mapa);
+			case 5: return new Vapor(posicion, simulacion.m_mapa);
 			default: return new Aire(posicion, simulacion.m_mapa);
         }
     }

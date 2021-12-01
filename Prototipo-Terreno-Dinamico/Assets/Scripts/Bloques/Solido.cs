@@ -10,6 +10,8 @@ public abstract class Solido : Elemento
     protected Vector3Int m_estabilidad;
     protected int m_ficDinamica, m_ficEstatica, m_filtracion;
 
+    protected int m_flowRate;
+
     protected Solido(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
         m_estabilidad = Vector3Int.zero;
@@ -18,6 +20,7 @@ public abstract class Solido : Elemento
         m_filtracion = 1;
         m_velocidad = 0;
         m_aceleracion = 0;
+        m_flowRate = 25;
     }
 
     public override void Avanzar(int dt)
@@ -88,12 +91,12 @@ public abstract class Solido : Elemento
 
     protected void ActualizarVelocidad(int dt)
     {
-        m_velocidad += m_aceleracion * dt;
+        m_velocidad += (m_aceleracion + gravedad) * dt;
     }
 
     public override int CantidadADar()
     {
-        int cantidad = (Mathf.Abs(m_velocidad) + 1) * 25;
+        int cantidad = (Mathf.Abs(m_velocidad) + 0) * m_flowRate;
         return DarCantidad(cantidad);
     }
 
@@ -151,188 +154,10 @@ public abstract class Solido : Elemento
         return false;
     }
 
-
-    /*
-    public override void ActuanEnElemento(Elemento elemento, int dt)
+    public override void DividirAtributos(Elemento otro)
     {
-        elemento.ActuarEnOtro(this, dt);
+        base.DividirAtributos(otro);
+        Solido solido = (Solido)otro;
+        solido.m_velocidad = m_velocidad;
     }
-
-    public override void Avanzar(IContenedorConDatos mapa, int dt)
-    {
-        ActualizarVelocidad(dt);
-        Vector3Int direccion = Direccion(dt);
-
-        foreach (Vector3Int posicion in PosicionesEnMovimiento(mapa, dt))
-        {
-            Vector3Int posicionAnterior = m_posicion;
-
-            Elemento elemento = mapa.EnPosicion(posicion);
-            if (elemento == null)
-            {
-                mapa.Intercambiar(m_posicion, posicion);
-                ActualizarAlrededores(posicionAnterior, direccion, mapa);
-                continue;
-            }
-
-            elemento.ActuanEnElemento(this, dt);
-
-            bool puedoIntercambiar = elemento.PermitoIntercambiar(this, dt);
-            if (puedoIntercambiar)
-                mapa.Intercambiar(m_posicion, posicion);
-
-            ActualizarAlrededores(posicionAnterior, direccion, mapa);
-        }
-
-        if (Reacciona(mapa))
-        {
-            //NecesitoActualizar(this);
-        }
-    }
-
-    
-    protected virtual IEnumerable<Vector3Int> PosicionesEnMovimiento(IContenedorConDatos mapa, int dt)
-    {
-        float tiempoRestante = dt;
-
-        while (tiempoRestante > 0)
-        {
-            Vector3Int direccion = DireccionVelocidad(dt);
-            float promedioTiempo = TiempoPorDireccion(direccion, dt);
-
-            tiempoRestante -= promedioTiempo;
-
-            Vector3Int posicionNueva = m_posicion + direccion;
-            bool sePuedeMover = ElementoDejaIntercambiarEn(mapa, posicionNueva, dt);
-
-            yield return m_posicion + direccion;
-            
-            if (promedioTiempo <= 0.01f)
-                break;
-
-            if (sePuedeMover)
-                continue;
-
-            foreach (Vector3Int des in BuscarPosicionesDisponibles())
-            {
-                if (!ElementoDejaIntercambiarEn(mapa, posicionNueva + des, dt))
-                    continue;
-
-                tiempoRestante -= TiempoPorDireccion(des, dt);
-                yield return posicionNueva + des;
-                break;
-            }
-
-            break;
-        }
-    }
-
-    protected Vector3Int DireccionVelocidad(int dt)
-    {
-        Vector3Int direccion = Vector3Int.zero;
-
-        int mayorComponente = m_velocidad[Mathfs.MayorComponente(m_velocidad)];
-        int minimoEnDireccion = Mathf.Abs(Mathf.FloorToInt(mayorComponente / 2f));
-
-        for (int i = 0; i < 3; i++)
-            if (Mathf.Abs(m_velocidad[i]) >= minimoEnDireccion && m_velocidad[i] != 0)
-                direccion[i] = (int)Mathf.Sign(m_velocidad[i]);
-
-        return direccion;
-    }
-
-    private float TiempoPorDireccion(Vector3Int direccion, int dt)
-    {
-        float promedioTiempo = 0;
-        for (int i = 0; i < 3; i++)
-            if (direccion[i] != 0)
-                promedioTiempo += (Mathf.Abs(direccion[i]) * dt) / (float)Mathf.Abs(m_velocidad[i]);
-        promedioTiempo = promedioTiempo / 3f;
-        return promedioTiempo;
-    }
-
-    protected IEnumerable<Vector3Int> BuscarPosicionesDisponibles()
-    {
-        List<Vector3Int> posibilidades = new List<Vector3Int>
-        {
-            new Vector3Int(-1, 0, -1), new Vector3Int(-1, 0, 0), new Vector3Int(-1, 0, 1),
-            new Vector3Int( 0, 0, -1),                           new Vector3Int( 0, 0, 1),
-            new Vector3Int( 1, 0, -1), new Vector3Int( 1, 0, 0), new Vector3Int( 1, 0, 1),
-        };
-
-        for (int i = 0; i < 8; i++)
-        {
-            int index = Random.Range(0, posibilidades.Count - 1);
-            yield return posibilidades[index];
-            posibilidades.RemoveAt(index);
-        }
-    }
-
-    protected bool ElementoDejaIntercambiarEn(IContenedorConDatos mapa, Vector3Int posicion, int dt)
-    {
-        if (!mapa.EnRango(posicion))
-            return false;
-
-        Elemento elemento = mapa.EnPosicion(posicion);
-        return elemento == null || elemento.PermitoIntercambiar(this, dt);
-    }
-
-    public override bool PermitoIntercambiar(Solido elemento, int dt)
-    {
-        return false;
-    }
-
-    public override bool PermitoIntercambiar(Liquido elemento, int dt)
-    {
-        return false;
-    }
-
-    public override bool PermitoIntercambiar(Gaseoso elemento, int dt)
-    {
-        return false;
-    }
-
-    public override bool Reacciona(IContenedorConDatos mapa)
-    {
-        return false;
-    }
-
-
-    protected void ActualizarAlrededores(Vector3Int posicion, Vector3Int direccion, IContenedorConDatos mapa)
-    {
-        foreach (Vector3Int def in AlrededoresDeDireccion(direccion))
-        {
-            Elemento elemento = (Elemento)mapa.EnPosicion(def + posicion);
-            if (elemento == null)
-                continue;
-            if (elemento.Reacciona(mapa))
-            {
-                //elemento.NecesitoActualizar(elemento);
-            }
-        }
-    }
-
-    protected List<Vector3Int> AlrededoresDeDireccion(Vector3Int direccion)
-    {
-        List<Vector3Int> posibilidades = new List<Vector3Int>();
-        for (int x = -1; x <= 1; x++)
-            for (int y = -1; y <= 1; y++)
-                for (int z = -1; z <= 1; z++)
-                {
-                    if (!(x == 0 && y == 0 && z == 0))
-                        posibilidades.Add(new Vector3Int(x, y, z));
-                }
-
-        return posibilidades;
-    }
-
-    protected Vector3Int Direccion(int dt)
-    {
-        Vector3Int velocidad = m_velocidad * dt;
-        Vector3Int min = new Vector3Int(-1, -1, -1), max = new Vector3Int(1, 1, 1);
-
-        velocidad.Clamp(min, max);
-
-        return velocidad;
-    }*/
 }

@@ -28,7 +28,7 @@ public class Mundo : IConetenedorGeneral
                 for (int z = 0; z < m_extension.z; z++)
                 {
                     int altura = m_generador.ValorEnPosicion(x, z, m_extremo.m_minimo.y, m_extremo.m_maximo.y);
-                    m_elementos[x, y, z] = ElementoPorAltura(x, y, z, -1);
+                    m_elementos[x, y, z] = ElementoPorAltura(x, y, z, altura);
                 }
     }
 
@@ -73,7 +73,13 @@ public class Mundo : IConetenedorGeneral
             return true;
         }
 
-        if (elementoEnPosicion.PermiteDesplazar())
+        if (elemento.MismoElemento(elementoEnPosicion) && elementoEnPosicion.MaximoParaRecibir() >= elemento.m_densidad)
+        {
+            int cantidadExtra = elementoEnPosicion.Agregar(elemento.m_densidad);
+            if (cantidadExtra > 0)
+                Debug.LogWarning("Algo esta funcionando mal aca");
+        }
+        else if (elementoEnPosicion.PermiteDesplazar())
         {
             elementoEnPosicion.Desplazar();
             AgregarEnPosicion(posicion, elemento);
@@ -92,10 +98,10 @@ public class Mundo : IConetenedorGeneral
         if (elementoConMayorDensidad == null)
             return null;
 
-        Elemento remplazo = elementoConMayorDensidad.Expandir(posicion);
+        Elemento reemplazo = elementoConMayorDensidad.Expandir(posicion);
         Elemento actual = EnPosicion(posicion);
 
-        AgregarEnPosicion(posicion, remplazo);
+        AgregarEnPosicion(posicion, reemplazo);
         return actual;
     }
 
@@ -126,6 +132,17 @@ public class Mundo : IConetenedorGeneral
         if (elementoOrigen == null || elementoDestino == null)
             return false;
         return Intercambiar(elementoOrigen.Posicion(), elementoDestino.Posicion());
+    }
+
+    public override bool Reemplazar(Elemento elemento, Elemento reemplazo)
+    {
+        if (elemento == null | reemplazo == null)
+            return false;
+
+        Vector3Int posicion = elemento.Posicion();
+        m_elementos[posicion.x, posicion.y, posicion.z] = reemplazo;
+
+        return true;
     }
 
     public override Elemento EnPosicion(Vector3Int posicion)

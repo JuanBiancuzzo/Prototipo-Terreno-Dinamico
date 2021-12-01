@@ -39,6 +39,7 @@ public abstract class IConetenedorGeneral : MonoBehaviour, IContenedor, ISacarDa
     public abstract Color GetColor(Vector3Int posicion, Color defaultColor = default);
     public abstract float GetValor(Vector3Int posicion, float defaultValor = 0);
     public abstract bool Insertar(Elemento elemento);
+    public abstract bool Reemplazar(Elemento elemento, Elemento reemplazo);
     public abstract bool Intercambiar(Vector3Int origen, Vector3Int destino);
     public abstract bool Intercambiar(Elemento elementoOrigen, Elemento elementoDestino);
     public abstract void Renderizar(IRender render, ISacarDatos contenedor = null);

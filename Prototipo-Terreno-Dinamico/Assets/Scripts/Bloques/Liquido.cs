@@ -8,11 +8,15 @@ public abstract class Liquido : Elemento
 
     protected int m_velocidad, m_aceleracion;
     protected int m_ficDinamica, m_ficEstatica;
+    private int m_flowRate;
 
     protected Liquido(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
         m_ficDinamica = 2;
         m_ficEstatica = 4;
+        m_velocidad = 0;
+        m_aceleracion = 0;
+        m_flowRate = 30;
     }
 
     public override void Avanzar(int dt)
@@ -80,12 +84,12 @@ public abstract class Liquido : Elemento
 
     protected void ActualizarVelocidad(int dt)
     {
-        m_velocidad += m_aceleracion * dt;
+        m_velocidad += (m_aceleracion + gravedad) * dt;
     }
 
     public override int CantidadADar()
     {
-        int cantidad = Mathf.Abs(m_velocidad) * 5;
+        int cantidad = Mathf.Abs(m_velocidad) * m_flowRate;
         return DarCantidad(cantidad);
     }
 
@@ -142,19 +146,10 @@ public abstract class Liquido : Elemento
     {
         return false;
     }
-
-    /*
-    public override void ActuanEnElemento(Elemento elemento, int dt)
+    public override void DividirAtributos(Elemento otro)
     {
-        elemento.ActuarEnOtro(this, dt);
+        base.DividirAtributos(otro);
+        Liquido liquido = (Liquido)otro;
+        liquido.m_velocidad = m_velocidad;
     }
-
-    public override void Avanzar(IContenedorConDatos mapa, int dt)
-    {
-    }
-
-    public override bool Reacciona(IContenedorConDatos mapa)
-    {
-        return false;
-    }*/
 }
