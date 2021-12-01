@@ -10,7 +10,8 @@ public enum MaterialSel
 	Concreto,
 	Hielo,
 	Agua,
-	Vapor
+	Vapor,
+	Lava
 }
 
 public class GenerarParticulas : MonoBehaviour
@@ -59,6 +60,7 @@ public class GenerarParticulas : MonoBehaviour
 			case 3: return new Hielo(posicion, simulacion.m_mapa);
 			case 4: return new Agua(posicion, simulacion.m_mapa);
 			case 5: return new Vapor(posicion, simulacion.m_mapa);
+			case 6: return new Lava(posicion, simulacion.m_mapa);
 			default: return new Aire(posicion, simulacion.m_mapa);
         }
     }

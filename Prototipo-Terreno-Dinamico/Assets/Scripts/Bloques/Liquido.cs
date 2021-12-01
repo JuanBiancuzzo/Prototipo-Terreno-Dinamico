@@ -8,7 +8,7 @@ public abstract class Liquido : Elemento
 
     protected int m_velocidad, m_aceleracion;
     protected int m_ficDinamica, m_ficEstatica;
-    private int m_flowRate;
+    protected int m_flowRate;
 
     protected Liquido(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
@@ -16,7 +16,7 @@ public abstract class Liquido : Elemento
         m_ficEstatica = 4;
         m_velocidad = 0;
         m_aceleracion = 0;
-        m_flowRate = 30;
+        m_flowRate = 50;
     }
 
     public override void Avanzar(int dt)

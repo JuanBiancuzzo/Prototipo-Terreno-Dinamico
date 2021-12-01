@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public abstract class Elemento : ITenerDatos
 {
     static protected int m_minimoValor = 0, m_maximoValor = 100;
+    static protected int m_minimoLuz = 0, m_maximoLuz = 15;
     static float m_defaultValor = 0;
     static Color m_defualtColor = Color.white;
 
@@ -35,6 +36,7 @@ public abstract class Elemento : ITenerDatos
     {
         ExpandirTemperatura();
         Avanzar(dt);
+        ExpandirLuz();
     }
 
     public abstract void Avanzar(int dt);
@@ -48,7 +50,8 @@ public abstract class Elemento : ITenerDatos
             for (int y = -1; y <= 1; y++)
                 for (int z = -1; z <= 1; z++)
                 {
-                    Elemento elemento = m_mundo.EnPosicion(m_posicion);
+                    Vector3Int desfase = new Vector3Int(x, y, z);
+                    Elemento elemento = m_mundo.EnPosicion(m_posicion + desfase);
                     if (elemento == null)
                         continue;
                     temperaturaTotal += elemento.m_temperatura.Valor();
@@ -61,7 +64,28 @@ public abstract class Elemento : ITenerDatos
 
     protected void ExpandirLuz()
     {
+        if (Emisor())
+            return;
 
+        List<Vector3Int> opciones = new List<Vector3Int>()
+        {
+            new Vector3Int( 1, 0, 0), new Vector3Int(0,  1, 0), new Vector3Int(0, 0,  1),
+            new Vector3Int(-1, 0, 0), new Vector3Int(0, -1, 0), new Vector3Int(0, 0, -1)
+        };
+
+        int mayorIluminacion = m_iluminacion.Valor();
+
+        foreach (Vector3Int desfase in opciones)
+        {
+            Elemento elemento = m_mundo.EnPosicion(m_posicion + desfase);
+            if (elemento == null)
+                continue;
+
+            int iluminacionElemento = elemento.m_iluminacion.Valor();
+            mayorIluminacion = Mathf.Max(iluminacionElemento - 2, mayorIluminacion);
+        }
+        
+        m_iluminacion.NuevoValor(mayorIluminacion);
     }
 
     public void Actualizado()
@@ -175,6 +199,7 @@ public abstract class Elemento : ITenerDatos
     {
         otro.m_densidad = m_densidad / 2;
         m_densidad -= otro.m_densidad;
+        otro.m_iluminacion = m_iluminacion;
         otro.Actualizado();
     }
 
@@ -191,6 +216,11 @@ public abstract class Elemento : ITenerDatos
     }
 
     public virtual bool Translucido()
+    {
+        return false;
+    }
+
+    public virtual bool Emisor()
     {
         return false;
     }
@@ -235,7 +265,17 @@ public abstract class Elemento : ITenerDatos
                 break;
         }
 
-        return ModificarColor();
+        Color colorFinal = ModificarColor();
+
+        if (!Emisor())
+        {
+            float luz = Mathf.InverseLerp(m_minimoLuz, m_maximoLuz, m_iluminacion.Valor());
+            float alpha = colorFinal.a;
+            colorFinal *= luz;
+            colorFinal.a = alpha;
+        }
+
+        return colorFinal;
     }
 
     protected virtual Color ModificarColor()
