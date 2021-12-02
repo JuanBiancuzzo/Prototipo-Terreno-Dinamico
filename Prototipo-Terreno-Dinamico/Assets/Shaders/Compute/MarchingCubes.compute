@@ -4,25 +4,30 @@
 static const int numThreads = 8;
 
 struct Triangle {
-    float4 vertexC;
+    float3 vertexC;
     float4 colorC;
-    float2 uvC;
+    float iluminacionC;
 
-    float4 vertexB;
+    float3 vertexB;
     float4 colorB;
-    float2 uvB;
+    float iluminacionB;
 
-    float4 vertexA;
+    float3 vertexA;
     float4 colorA;
-    float2 uvA;
+    float iluminacionA;
 
     float3 normal;
 };
 
+struct Dato {
+    int3 posicion;
+    float valor;
+    float4 color;
+    int iluminacion;
+};
+
 AppendStructuredBuffer<Triangle> triangles;
-StructuredBuffer<float4> points;
-StructuredBuffer<float4> colores;
-StructuredBuffer<float> iluminaciones;
+StructuredBuffer<Dato> datos;
 
 float isoLevel;
 int3 numPointsPerAxis;
@@ -49,12 +54,15 @@ int indexEnPunto(int x, int y, int z)
 
 float4 valorEnPunto(int x, int y, int z)
 {
-    return points[indexEnPunto(x, y, z)];
+    int3 posicion = datos[indexEnPunto(x, y, z)].posicion;
+    float valor = datos[indexEnPunto(x, y, z)].valor;
+
+    return float4(posicion, valor);
 }
 
 float4 colorEnPunto(int x, int y, int z)
 {
-    return colores[indexEnPunto(x, y, z)];
+    return datos[indexEnPunto(x, y, z)].color;
 }
 
 float invLerp(float from, float to, float value)
@@ -64,7 +72,7 @@ float invLerp(float from, float to, float value)
 
 float luzEnPunto(int x, int y, int z)
 {
-    return invLerp(0, 15, iluminaciones[indexEnPunto(x, y, z)]);
+    return invLerp(0, 15, datos[indexEnPunto(x, y, z)].iluminacion);
 }
 
 bool coloresIguales(float4 color1, float4 color2)
@@ -147,78 +155,26 @@ void March(int3 id : SV_DispatchThreadID)
 
             if (j == 0)
             {
-                tri.vertexA = float4(posicion, iluminacion);
+                tri.vertexA = posicion;
                 tri.colorA = color;
-                tri.uvA = float2(0, 0);
+                tri.iluminacionA = iluminacion;
             }
             else if (j == 1)
             {
-                tri.vertexB = float4(posicion, iluminacion);
+                tri.vertexB = posicion;
                 tri.colorB = color;
-                tri.uvB = float2(0, 1);
+                tri.iluminacionB = iluminacion;
             }
             else
             {
-                tri.vertexC = float4(posicion, iluminacion);
+                tri.vertexC = posicion;
                 tri.colorC = color;
-                tri.uvC = float2(1, 0);
+                tri.iluminacionC = iluminacion;
             }
         }
-
-
 
         tri.normal = -normalize(cross(tri.vertexB - tri.vertexA, tri.vertexC - tri.vertexA));
 
         triangles.Append(tri);
     }
 }
-
-/*int3 igualdadDeColores(float4 color1, float4 color2, float4 color3)
-{
-    color1 = floor(color1 * 50);
-    color2 = floor(color2 * 50);
-    color3 = floor(color3 * 50);
-
-    int3 resultado;
-
-    resultado.x = (coloresIguales(color1, color2)) ? 0 : 1;
-    resultado.y = (coloresIguales(color1, color3)) ? 0 : 1;
-    resultado.z = (coloresIguales(color2, color3)) ? 0 : 1;
-
-    return resultado;
-}*/
-
-/*
-float4 color1 = floor(tri.colorA * 50);
-float4 color2 = floor(tri.colorB * 50);
-float4 color3 = floor(tri.colorC * 50);
-
-int3 igualdades;
-
-igualdades.x = (coloresIguales(color1, color2)) ? 0 : 1;
-igualdades.y = (coloresIguales(color1, color3)) ? 0 : 1;
-igualdades.z = (coloresIguales(color2, color3)) ? 0 : 1;
-int uvIndex = 0;
-if (igualdades.x) uvIndex |= 1;
-if (igualdades.y) uvIndex |= 2;
-if (igualdades.z) uvIndex |= 4;
-
-tri.uvA = float2(0, 0);
-if (igualdades.x == 0)
-    tri.uvB = float2(0, 0);
-else
-    tri.uvB = float2(1, 0);
-tri.uvC = float2(0, 1);*/
-/*
-static const int uvCoords[8][4] = {
-    {0, 0, 0, 0},
-    {1, 1, 1, 1},
-    {1, 1, 0, 0},
-    {-1, -1, -1, -1}, // no es un caso valido
-    {0, 0, 1, 1},
-    {-1, -1, -1, -1}, // no es un caso valido
-    {-1, -1, -1, -1}, // no es un caso valido
-    {1, 0, 0, 1}
-};*/
-
-

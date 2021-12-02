@@ -8,8 +8,7 @@ public class MeshData
     public List<Color> m_colores;
     public List<int> m_triangulos;
     public List<Vector3> m_normales;
-    public List<Vector2> m_uv0;
-    public List<Vector2> m_uv1;
+    public List<Vector2> m_uv;
     public Dictionary<Vector3, int> m_repetirVertices;
 
     public MeshData()
@@ -18,8 +17,7 @@ public class MeshData
         m_colores = new List<Color>();
         m_triangulos = new List<int>();
         m_normales = new List<Vector3>();
-        m_uv0 = new List<Vector2>();
-        m_uv1 = new List<Vector2>();
+        m_uv = new List<Vector2>();
         m_repetirVertices = new Dictionary<Vector3, int>();
     }
 
@@ -29,8 +27,7 @@ public class MeshData
         m_colores.Clear();
         m_triangulos.Clear();
         m_normales.Clear();
-        m_uv0.Clear();
-        m_uv1.Clear();
+        m_uv.Clear();
         m_repetirVertices.Clear();
     }
 
@@ -73,11 +70,8 @@ public class MeshData
         if (m_colores.Count > 0)
             mesh.SetColors(m_colores);
 
-        if (m_uv0.Count > 0)
-            mesh.SetUVs(0, m_uv0);
-
-        if (m_uv1.Count > 0)
-            mesh.SetUVs(1, m_uv1);
+        if (m_uv.Count > 0)
+            mesh.SetUVs(0, m_uv);
 
         if (m_normales.Count > 0)
             mesh.SetNormals(m_normales);
