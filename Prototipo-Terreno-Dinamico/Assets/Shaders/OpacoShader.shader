@@ -39,7 +39,7 @@ Shader "Unlit/OpacoShader"
                 o.vertex = UnityObjectToClipPos(v.vertex);
 
                 float3 direccionLuz = _WorldSpaceLightPos0.xyz;
-                float luz = saturate(max(v.uv.x, dot(v.normal, -direccionLuz)));
+                float luz = saturate(max(v.uv.x, dot(v.normal, direccionLuz)));
 
                 //float4 lightColor = float4(_LightColor0.rgb, 1);
                 o.color = v.color * luz;

@@ -157,7 +157,7 @@ void March(int3 id : SV_DispatchThreadID)
             }
         }
 
-        tri.normal = normalize(cross(tri.vertexB - tri.vertexA, tri.vertexC - tri.vertexA));
+        tri.normal = -normalize(cross(tri.vertexB - tri.vertexA, tri.vertexC - tri.vertexA));
 
         triangles.Append(tri);
     }

@@ -43,7 +43,7 @@ Shader "Unlit/TranslucidoShader"
                 float a = v.color.a;
 
                 float3 direccionLuz = _WorldSpaceLightPos0.xyz;
-                float luz = saturate(max(v.uv.x, dot(v.normal, -direccionLuz)));
+                float luz = saturate(max(v.uv.x, dot(v.normal, direccionLuz)));
                 v.color = v.color * luz;
 
                 v.color.a = a;
