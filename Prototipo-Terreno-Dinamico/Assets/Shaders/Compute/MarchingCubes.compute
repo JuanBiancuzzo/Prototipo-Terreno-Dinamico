@@ -4,17 +4,17 @@
 static const int numThreads = 8;
 
 struct Triangle {
-    float3 vertexC;
+    float4 vertexC;
     float4 colorC;
-    float iluminacionC;
+    float2 uvC;
 
-    float3 vertexB;
+    float4 vertexB;
     float4 colorB;
-    float iluminacionB;
+    float2 uvB;
 
-    float3 vertexA;
+    float4 vertexA;
     float4 colorA;
-    float iluminacionA;
+    float2 uvA;
 
     float3 normal;
 };
@@ -65,6 +65,14 @@ float invLerp(float from, float to, float value)
 float luzEnPunto(int x, int y, int z)
 {
     return invLerp(0, 15, iluminaciones[indexEnPunto(x, y, z)]);
+}
+
+bool coloresIguales(float4 color1, float4 color2)
+{
+    for (int i = 0; i < 4; i++)
+        if (color1[i] != color2[i])
+            return false;
+    return true;
 }
 
 [numthreads(numThreads, numThreads, numThreads)]
@@ -139,28 +147,78 @@ void March(int3 id : SV_DispatchThreadID)
 
             if (j == 0)
             {
-                tri.vertexA = posicion;
+                tri.vertexA = float4(posicion, iluminacion);
                 tri.colorA = color;
-                tri.iluminacionA = iluminacion;
+                tri.uvA = float2(0, 0);
             }
             else if (j == 1)
             {
-                tri.vertexB = posicion;
+                tri.vertexB = float4(posicion, iluminacion);
                 tri.colorB = color;
-                tri.iluminacionB = iluminacion;
+                tri.uvB = float2(0, 1);
             }
             else
             {
-                tri.vertexC = posicion;
+                tri.vertexC = float4(posicion, iluminacion);
                 tri.colorC = color;
-                tri.iluminacionC = iluminacion;
+                tri.uvC = float2(1, 0);
             }
         }
+
+
 
         tri.normal = -normalize(cross(tri.vertexB - tri.vertexA, tri.vertexC - tri.vertexA));
 
         triangles.Append(tri);
     }
 }
+
+/*int3 igualdadDeColores(float4 color1, float4 color2, float4 color3)
+{
+    color1 = floor(color1 * 50);
+    color2 = floor(color2 * 50);
+    color3 = floor(color3 * 50);
+
+    int3 resultado;
+
+    resultado.x = (coloresIguales(color1, color2)) ? 0 : 1;
+    resultado.y = (coloresIguales(color1, color3)) ? 0 : 1;
+    resultado.z = (coloresIguales(color2, color3)) ? 0 : 1;
+
+    return resultado;
+}*/
+
+/*
+float4 color1 = floor(tri.colorA * 50);
+float4 color2 = floor(tri.colorB * 50);
+float4 color3 = floor(tri.colorC * 50);
+
+int3 igualdades;
+
+igualdades.x = (coloresIguales(color1, color2)) ? 0 : 1;
+igualdades.y = (coloresIguales(color1, color3)) ? 0 : 1;
+igualdades.z = (coloresIguales(color2, color3)) ? 0 : 1;
+int uvIndex = 0;
+if (igualdades.x) uvIndex |= 1;
+if (igualdades.y) uvIndex |= 2;
+if (igualdades.z) uvIndex |= 4;
+
+tri.uvA = float2(0, 0);
+if (igualdades.x == 0)
+    tri.uvB = float2(0, 0);
+else
+    tri.uvB = float2(1, 0);
+tri.uvC = float2(0, 1);*/
+/*
+static const int uvCoords[8][4] = {
+    {0, 0, 0, 0},
+    {1, 1, 1, 1},
+    {1, 1, 0, 0},
+    {-1, -1, -1, -1}, // no es un caso valido
+    {0, 0, 1, 1},
+    {-1, -1, -1, -1}, // no es un caso valido
+    {-1, -1, -1, -1}, // no es un caso valido
+    {1, 0, 0, 1}
+};*/
 
 

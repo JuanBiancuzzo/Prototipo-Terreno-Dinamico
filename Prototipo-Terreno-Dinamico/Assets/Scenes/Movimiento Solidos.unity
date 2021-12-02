@@ -208,7 +208,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e092f8d7be349a644b418f9b560c1a1f, type: 2}
+  - {fileID: 2100000, guid: 1d261c94c322e344f861885b92c753e3, type: 2}
   - {fileID: 2100000, guid: 1d261c94c322e344f861885b92c753e3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -267,7 +267,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.9339623, g: 0.78040624, b: 0.2863564, a: 1}
+  m_Color: {r: 0.9764151, g: 1, b: 0.9964265, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -376,7 +376,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   simulacion: {fileID: 781101051}
-  m_materialSeleccionado: 1
+  m_materialSeleccionado: 4
   anchoPlancha: 0
   tirar: 1
   continuo: 1

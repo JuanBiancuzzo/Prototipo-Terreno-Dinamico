@@ -28,33 +28,36 @@ Shader "Unlit/TranslucidoShader"
                 float4 color : COLOR;
                 float3 normal : NORMAL;
                 float2 uv : TEXCOORD0;
+                float2 iluminacion : TEXCOORD1;
             };
 
             struct v2f
             {
                 float4 vertex : SV_POSITION;
-                float4 color : TEXCOORD0;
+                float2 uv : TEXCOORD0;
+                float4 color : TEXCOORD1;
             };
 
             v2f vert (appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                float a = v.color.a;
+                o.uv = v.uv;
 
                 float3 direccionLuz = _WorldSpaceLightPos0.xyz;
-                float luz = saturate(max(v.uv.x, dot(v.normal, direccionLuz)));
-                v.color = v.color * luz;
+                float luz = max(v.iluminacion.x, dot(v.normal, direccionLuz));
+                float3 lightColor = _LightColor0.rgb;
 
-                v.color.a = a;
-                o.color = v.color;
+                float3 diffuseLightcolor = lightColor * luz;
+                o.color = float4(v.color.rgb * diffuseLightcolor, v.color.a);
 
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                return i.color;
+                //return i.color;
+                return float4(i.uv, 0, 1);
             }
 
             ENDCG

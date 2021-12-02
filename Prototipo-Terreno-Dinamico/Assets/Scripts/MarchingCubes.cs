@@ -10,21 +10,23 @@ public class MarchingCubes : MonoBehaviour, IRender
 
 	MeshData m_meshData;
 	ISacarDatos m_datos;
-	public TipoMaterial m_tipoMaterial;
+	TipoMaterial m_tipoMaterial;
 
 	public ComputeShader shader;
 
 	struct Triangle
 	{
-		public Vector3 a;
+		public Vector4 a;
 		public Vector4 colorA;
-		public float iluminacionA;
-		public Vector3 b;
+		public Vector2 uvA;
+
+		public Vector4 b;
 		public Vector4 colorB;
-		public float iluminacionB;
-		public Vector3 c;
+		public Vector2 uvB;
+
+		public Vector4 c;
 		public Vector4 colorC;
-		public float iluminacionC;
+		public Vector2 uvC;
 
 		public Vector3 normal;
 
@@ -56,6 +58,7 @@ public class MarchingCubes : MonoBehaviour, IRender
 					return colorC;
 			}
 		}
+
 		public Vector3 GetNormal()
         {
 			return normal;
@@ -67,13 +70,23 @@ public class MarchingCubes : MonoBehaviour, IRender
 			switch (i)
 			{
 				case 0:
-					uv.x = iluminacionA; break;
+					uv.x = a.w; break;
 				case 1:
-					uv.x = iluminacionB; break;
+					uv.x = b.w; break;
 				default:
-					uv.x = iluminacionC; break;
+					uv.x = c.w; break;
 			}
 			return uv;
+		}
+		
+		public  Vector2 GetUv(int i)
+        {
+			switch (i)
+			{
+				case 0: return uvA;
+				case 1: return uvB;
+				default: return uvC;
+			}
 		}
     }
 
@@ -119,9 +132,15 @@ public class MarchingCubes : MonoBehaviour, IRender
 
 		// creando buffer de triangulos
 		int numVoxels = (extension.x) * (extension.y) * (extension.z);
-		int maxTriangleCount = numVoxels * 6;
+		int maxTriangleCount = numVoxels * 5;
 
-		int tamanioTriangulos = sizeof(float) * 3 * 3 + sizeof(float) * 4 * 3 + sizeof(float) * 3 + 3 * sizeof(float);
+		int tamanioVertices = 3 * sizeof(float) * 3;
+		int tamanioColores = 4 * sizeof(float) * 3;
+		int tamanioUv = 2 * sizeof(float) * 3;
+		int tamanioIluminacion = 1 * sizeof(float) * 3;
+		int tamanioNormal = 3 * sizeof(float);
+
+		int tamanioTriangulos = tamanioVertices + tamanioColores + tamanioUv + tamanioIluminacion + tamanioNormal;
 		ComputeBuffer triangulos = new ComputeBuffer(maxTriangleCount, tamanioTriangulos, ComputeBufferType.Append);
 
 		shader.SetBuffer(kernel, "points", puntos);
@@ -152,7 +171,8 @@ public class MarchingCubes : MonoBehaviour, IRender
 				preInfo.m_vertices.Add(tris[i][j]);
 				preInfo.m_colores.Add(tris[i].GetColor(j));
 				preInfo.m_normales.Add(tris[i].GetNormal());
-				preInfo.m_uv.Add(tris[i].GetIluminacion(j));
+				preInfo.m_uv0.Add(tris[i].GetUv(j));
+				preInfo.m_uv1.Add(tris[i].GetIluminacion(j));
 			}
 
 		puntos.Dispose();

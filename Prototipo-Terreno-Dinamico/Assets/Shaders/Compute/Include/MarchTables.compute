@@ -288,3 +288,4 @@ static const int cornerIndexBFromEdge[12] = {
     6,
     7
 };
+
