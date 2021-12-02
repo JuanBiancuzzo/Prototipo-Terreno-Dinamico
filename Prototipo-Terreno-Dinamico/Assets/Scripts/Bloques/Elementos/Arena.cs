@@ -8,6 +8,7 @@ public class Arena : Solido
     {
         m_color = new Color(1, 0.88f, 0.29f, 1);
         id = 0;
+        m_concentracion = 5;
     }
 
     public override Elemento Expandir(Vector3Int posicion)

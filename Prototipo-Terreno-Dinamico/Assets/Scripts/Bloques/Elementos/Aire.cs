@@ -17,6 +17,12 @@ public class Aire : Gaseoso
         return aireNueva;
     }
 
+    public override void Avanzar(int dt)
+    {
+        base.Avanzar(dt);
+        //Debug.Log(m_iluminacion.Valor());
+    }
+
     public override bool Visible()
     {
         return false;

@@ -26,19 +26,20 @@ public class FallingSand : MonoBehaviour
     public void Avanzar()
     {
         foreach (Elemento elemento in m_mapa.ElementoParaActualizar())
+            elemento.AntesDeAvanzar();
+
+        foreach (Elemento elemento in m_mapa.ElementoParaActualizar())
             if (!elemento.EstaActualizado())
             {
-                elemento.Actuar(dt);
+                elemento.Avanzar(dt);
                 elemento.Actualizado();
             }
 
-        Renderizar();
-
         foreach (Elemento elemento in m_mapa.ElementoParaActualizar())
-        {
-            elemento.EmpezarAActualizar();
-            elemento.Reaccionar();
-        }
+            elemento.DespuesDeAvanzar();
+
+        m_mapa.CalcularIluminacion();
+        Renderizar();
     }
 
     public void Renderizar()

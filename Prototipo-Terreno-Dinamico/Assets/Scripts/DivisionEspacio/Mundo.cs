@@ -34,7 +34,10 @@ public class Mundo : IConetenedorGeneral
 
     private Elemento ElementoPorAltura(int x, int y, int z, int altura)
     {
-        Vector3Int posicion = new Vector3Int(x, y, z) - m_extremo.m_minimo;
+        Vector3Int posicion = m_extremo.m_minimo + new Vector3Int(x, y, z);
+
+        if (posicion == Vector3Int.zero)
+            return new Lava(posicion, this);
 
         if (altura < posicion.y)
             return new Aire(posicion, this);
@@ -55,6 +58,27 @@ public class Mundo : IConetenedorGeneral
                         continue;
                     yield return elemento;
                 }
+    }
+
+    [Range(0, 15)] public int luzGlobal;
+    public override void CalcularIluminacion()
+    {
+
+
+        for (int x = 0; x < m_extension.x; x++)
+            for (int y = 0; y < m_extension.y; y++)
+                for (int z = 0; z < m_extension.z; z++)
+                {
+                    if (y == m_extension.y - 1)
+                        m_elementos[x, y, z].m_iluminacionGlobal = luzGlobal;
+                    m_elementos[x, y, z]?.ExpandirLuz();
+                }
+
+        for (int x = m_extension.x - 1; x >= 0; x--)
+            for (int y = m_extension.y - 1; y >= 0; y--)
+                for (int z = m_extension.z - 1; z >= 0; z--)
+                    m_elementos[x, y, z]?.ExpandirLuz();
+
     }
 
     public override bool Insertar(Elemento elemento)
@@ -176,7 +200,7 @@ public class Mundo : IConetenedorGeneral
 
     private Vector3Int PosicionRelativa(Vector3Int posicionMundo)
     {
-        return posicionMundo + m_extremo.m_minimo;
+        return posicionMundo - m_extremo.m_minimo;
     }
 
     public override Color GetColor(Vector3Int posicion, TipoMaterial tipoMaterial, Color defaultColor = default)

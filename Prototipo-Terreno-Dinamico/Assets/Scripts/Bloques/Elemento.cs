@@ -7,7 +7,6 @@ public abstract class Elemento : ITenerDatos
     static protected int m_minimoValor = 0, m_maximoValor = 100;
     static protected int m_minimoLuz = 0, m_maximoLuz = 15;
 
-    static int m_defualtIluminacion = 0;
     static float m_defaultValor = 0;
     static Color m_defualtColor = Color.white;
 
@@ -16,7 +15,8 @@ public abstract class Elemento : ITenerDatos
     public Vector3Int m_posicion;
 
     public int m_concentracion;
-    public ValorTemporal m_temperatura, m_iluminacion;
+    public int m_iluminacion, m_iluminacionGlobal;
+    public ValorTemporal m_temperatura;
 
     protected Color m_color;
     public bool m_actualizado = false;
@@ -31,17 +31,22 @@ public abstract class Elemento : ITenerDatos
 
         m_concentracion = 25;
         m_temperatura = new ValorTemporal(291);
-        m_iluminacion = new ValorTemporal(0);
+        m_iluminacion = 0;
     }
 
-    public void Actuar(int dt)
+    public void AntesDeAvanzar()
     {
+        EmpezarAActualizar();
         ExpandirTemperatura();
-        Avanzar(dt);
-        ExpandirLuz();
     }
 
     public abstract void Avanzar(int dt);
+
+    public void DespuesDeAvanzar()
+    {
+        ExpandirLuz();
+        Reaccionar();
+    }
 
     protected void ExpandirTemperatura()
     {
@@ -60,11 +65,11 @@ public abstract class Elemento : ITenerDatos
                     cantidad++;
                 }
 
-        int temperaturaPromedio = temperaturaTotal / cantidad;
+        int temperaturaPromedio = (cantidad == 0) ? 0 : temperaturaTotal / cantidad;
         m_temperatura.NuevoValor(temperaturaPromedio);
     }
 
-    protected void ExpandirLuz()
+    public void ExpandirLuz()
     {
         if (Emisor())
             return;
@@ -75,19 +80,26 @@ public abstract class Elemento : ITenerDatos
             new Vector3Int(-1, 0, 0), new Vector3Int(0, -1, 0), new Vector3Int(0, 0, -1)
         };
 
-        int mayorIluminacion = m_iluminacion.Valor();
-
         foreach (Vector3Int desfase in opciones)
         {
             Elemento elemento = m_mundo.EnPosicion(m_posicion + desfase);
             if (elemento == null)
                 continue;
 
-            int iluminacionElemento = elemento.m_iluminacion.Valor();
-            mayorIluminacion = Mathf.Max(iluminacionElemento - 2, mayorIluminacion);
+            int iluminacionElemento = elemento.m_iluminacion;
+            int iluminacionGlobalElemento = elemento.m_iluminacionGlobal;
+
+            iluminacionElemento -= 3;
+            iluminacionGlobalElemento -= (desfase.y == 1) ? 0 : 3;
+
+            ActualizarLuz(Mathf.Max(iluminacionElemento, m_iluminacion), Mathf.Max(iluminacionGlobalElemento, m_iluminacionGlobal));
         }
-        
-        m_iluminacion.NuevoValor(mayorIluminacion);
+    }
+
+    protected virtual void ActualizarLuz(int luz, int luzGlobal)
+    {
+        m_iluminacion = (Visible()) ? 0 : luz;
+        m_iluminacionGlobal = (Visible()) ? 0 : luzGlobal;
     }
 
     public void Actualizado()
@@ -99,7 +111,11 @@ public abstract class Elemento : ITenerDatos
     {
         m_actualizado = false;
         m_temperatura.Actualizar();
-        m_iluminacion.Actualizar();
+        if (!Emisor())
+        {
+            m_iluminacion = 0;
+            m_iluminacionGlobal = 0;
+        }
     }
 
     public bool EstaActualizado()
@@ -243,7 +259,7 @@ public abstract class Elemento : ITenerDatos
 
     public int GetIluminacion(TipoMaterial tipoMaterial)
     {
-        return (DarDefualt(tipoMaterial)) ? m_defualtIluminacion : m_iluminacion.Valor();
+        return Mathf.Max(m_iluminacion, m_iluminacionGlobal);
     }
 
     private bool DarDefualt(TipoMaterial tipoMaterial)

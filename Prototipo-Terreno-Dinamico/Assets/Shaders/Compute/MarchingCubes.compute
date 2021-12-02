@@ -44,7 +44,7 @@ float4 elegirColores(float v1, float4 color1, float v2, float4 color2)
 
 float elegirLuz(float v1, float luz1, float v2, float luz2)
 {
-    return luz1 + (v2 > v1) * (luz2 - luz1);
+    return luz1 + (v2 < v1) * (luz2 - luz1);
 }
 
 int indexEnPunto(int x, int y, int z)

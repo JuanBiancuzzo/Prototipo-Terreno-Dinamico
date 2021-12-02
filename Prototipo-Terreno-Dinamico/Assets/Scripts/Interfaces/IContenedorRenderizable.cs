@@ -46,4 +46,5 @@ public abstract class IConetenedorGeneral : MonoBehaviour, IContenedor, ISacarDa
     public abstract bool Intercambiar(Elemento elementoOrigen, Elemento elementoDestino);
     public abstract void Renderizar(IRender render, ISacarDatos contenedor = null);
     public abstract IEnumerable<Elemento> ElementoParaActualizar();
+    public abstract void CalcularIluminacion();
 }
