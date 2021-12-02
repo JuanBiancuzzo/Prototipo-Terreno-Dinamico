@@ -20,11 +20,13 @@ Shader "Unlit/TranslucidoShader"
             #pragma fragment frag
 
             #include "UnityCG.cginc"
+            #include "Lighting.cginc"
 
             struct appdata
             {
                 float4 vertex : POSITION;
                 float4 color : COLOR;
+                float3 normal : NORMAL;
                 float2 uv : TEXCOORD0;
             };
 
@@ -39,7 +41,11 @@ Shader "Unlit/TranslucidoShader"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 float a = v.color.a;
-                v.color *= v.uv.x;
+
+                float3 direccionLuz = _WorldSpaceLightPos0.xyz;
+                float luz = saturate(max(v.uv.x, dot(v.normal, -direccionLuz)));
+                v.color = v.color * luz;
+
                 v.color.a = a;
                 o.color = v.color;
 

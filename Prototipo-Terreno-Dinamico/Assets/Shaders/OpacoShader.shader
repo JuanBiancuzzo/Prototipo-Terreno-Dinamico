@@ -17,12 +17,13 @@ Shader "Unlit/OpacoShader"
             #pragma fragment frag
 
             #include "UnityCG.cginc"
+            #include "Lighting.cginc"
 
             struct appdata
             {
                 float4 vertex : POSITION;
                 float4 color : COLOR;
-                //float4 normals : NORMAL;
+                float3 normal : NORMAL;
                 float2 uv : TEXCOORD0;
             };
 
@@ -30,25 +31,24 @@ Shader "Unlit/OpacoShader"
             {
                 float4 vertex : SV_POSITION;
                 float4 color : TEXCOORD0;
-                //float4 normals : TEXCOORD1;
             };
 
             v2f vert (appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.color = v.color * v.uv.x;
-                //o.normals = v.normals;
+
+                float3 direccionLuz = _WorldSpaceLightPos0.xyz;
+                float luz = saturate(max(v.uv.x, dot(v.normal, -direccionLuz)));
+
+                //float4 lightColor = float4(_LightColor0.rgb, 1);
+                o.color = v.color * luz;
                 return o;
             }
 
             float4 frag(v2f i) : SV_Target
             {
-                //return (i.color * 8) % 8;
-
                 return i.color;
-                //return i.normals;
-                //return float4(0, 1, 0, 0.5);
             }
 
             ENDCG
