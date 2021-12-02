@@ -43,7 +43,7 @@ public abstract class Liquido : Elemento
                 if (cantidadExtra > 0)
                     continue;
             }
-            else if (elemento.PermiteDesplazar())
+            else if (elemento.PermiteDesplazar() && elemento.PermiteMoverse(this))
             {
                 elemento.Desplazar();
                 Elemento remplazo = Expandir(m_posicion + desfase);
@@ -73,13 +73,18 @@ public abstract class Liquido : Elemento
             new Vector3Int(-1, -1, 1), new Vector3Int(-1, -1, 0), new Vector3Int(-1, -1, -1)
         };
 
-        int opciones = diagonales.Count;
-        for (int i = 0; i < opciones; i++)
+        foreach (Vector3Int opcion in Utilidades.Dar<Vector3Int>(diagonales))
+            yield return opcion;
+
+        diagonales = new List<Vector3Int>()
         {
-            int index = Random.Range(0, diagonales.Count - 1);
-            yield return diagonales[index];
-            diagonales.RemoveAt(index);
-        }
+            new Vector3Int( 1, 0, 1),  new Vector3Int(1, 0, 0), new Vector3Int( 1, 0, -1),
+            new Vector3Int( 0, 0, 1),                           new Vector3Int( 0, 0, -1),
+            new Vector3Int(-1, 0, 1), new Vector3Int(-1, 0, 0), new Vector3Int(-1, 0, -1)
+        };
+
+        foreach (Vector3Int opcion in Utilidades.Dar<Vector3Int>(diagonales))
+            yield return opcion;
     }
 
     protected void ActualizarVelocidad(int dt)

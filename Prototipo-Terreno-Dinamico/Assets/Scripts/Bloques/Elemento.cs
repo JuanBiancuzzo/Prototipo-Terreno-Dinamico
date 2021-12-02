@@ -10,8 +10,6 @@ public abstract class Elemento : ITenerDatos
     static float m_defaultValor = 0;
     static Color m_defualtColor = Color.white;
 
-    protected uint id;
-
     public Vector3Int m_posicion;
 
     public int m_concentracion;
@@ -166,6 +164,11 @@ public abstract class Elemento : ITenerDatos
             Debug.LogError("Se esta perdiendo: " + m_concentracion + " densidad");
     }
 
+    public virtual bool PermiteMoverse(Elemento elemento)
+    {
+        return true;
+    }
+
     public abstract int CantidadADar();
 
     public virtual int DarCantidad(int cantidad)
@@ -204,7 +207,7 @@ public abstract class Elemento : ITenerDatos
 
     public bool MismoElemento(Elemento elemento)
     {
-        return id == elemento.id;
+        return this.GetType() == elemento.GetType();
     }
 
     public abstract bool MismoTipo(Elemento elemento);

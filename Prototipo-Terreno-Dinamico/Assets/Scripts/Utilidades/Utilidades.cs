@@ -58,4 +58,15 @@ public static class Utilidades
 
         return (e > valor - piso && valor - piso > -e);
     }
+
+    static public IEnumerable<T> Dar<T>(List<T> lista)
+    {
+        int cantidad = lista.Count;
+        for (int i = 0; i < cantidad; i++)
+        {
+            int index = Random.Range(0, lista.Count - 1);
+            yield return lista[index];
+            lista.RemoveAt(index);
+        }
+    }
 }

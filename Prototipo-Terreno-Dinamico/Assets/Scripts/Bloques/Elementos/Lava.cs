@@ -10,7 +10,6 @@ public class Lava : Liquido
     {
         m_color = new Color(0.72f, 0.15f, 0.16f, 0.80f);
         m_iluminacion = m_maximoLuz;
-        id = 6;
         m_flowRate = 10;
         m_temperatura = new ValorTemporal(temperaturaMaxima);
     }

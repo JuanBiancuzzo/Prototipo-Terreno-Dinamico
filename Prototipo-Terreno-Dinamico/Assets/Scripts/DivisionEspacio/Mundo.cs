@@ -11,6 +11,8 @@ public class Mundo : IConetenedorGeneral
 
     Elemento[,,] m_elementos;
 
+    [Range(0, 15)] public int luzGlobal;
+
     Mesh m_mesh;
 
     private void Awake()
@@ -35,9 +37,10 @@ public class Mundo : IConetenedorGeneral
     private Elemento ElementoPorAltura(int x, int y, int z, int altura)
     {
         Vector3Int posicion = m_extremo.m_minimo + new Vector3Int(x, y, z);
-
+        /*
         if (posicion == Vector3Int.zero)
             return new Lava(posicion, this);
+        */
 
         if (altura < posicion.y)
             return new Aire(posicion, this);
@@ -60,11 +63,8 @@ public class Mundo : IConetenedorGeneral
                 }
     }
 
-    [Range(0, 15)] public int luzGlobal;
     public override void CalcularIluminacion()
     {
-
-
         for (int x = 0; x < m_extension.x; x++)
             for (int y = 0; y < m_extension.y; y++)
                 for (int z = 0; z < m_extension.z; z++)

@@ -7,7 +7,6 @@ public class Vapor : Gaseoso
     public Vapor(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
         m_color = new Color(0.1f, 0.1f, 0.1f, 1);
-        id = 4;
     }
 
     public override Elemento Expandir(Vector3Int posicion)

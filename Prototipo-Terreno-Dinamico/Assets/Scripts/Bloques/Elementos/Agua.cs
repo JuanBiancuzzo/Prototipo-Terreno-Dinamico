@@ -7,7 +7,6 @@ public class Agua : Liquido
     public Agua(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
         m_color = new Color(0.12f, 0.56f, 1, 0.5f);
-        id = 5;
     }
 
     public override Elemento Expandir(Vector3Int posicion)

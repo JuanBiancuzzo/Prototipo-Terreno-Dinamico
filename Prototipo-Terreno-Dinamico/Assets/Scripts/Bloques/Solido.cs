@@ -94,6 +94,11 @@ public abstract class Solido : Elemento
         m_velocidad += (m_aceleracion + gravedad) * dt;
     }
 
+    public override bool PermiteMoverse(Elemento elemento)
+    {
+        return m_concentracion * 5 < elemento.m_concentracion * 2;
+    }
+
     public override int CantidadADar()
     {
         int cantidad = (Mathf.Abs(m_velocidad) + 0) * m_flowRate;

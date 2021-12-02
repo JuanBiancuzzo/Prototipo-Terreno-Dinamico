@@ -7,7 +7,6 @@ public class Concreto : Solido
     public Concreto (Vector3Int posicion, IConetenedorGeneral mundo) : base (posicion, mundo)
     {
         m_color = new Color(0.75f, 0.75f, 0.75f, 1);
-        id = 2;
         m_concentracion = 100;
     }
 

@@ -7,7 +7,6 @@ public class Hielo : Solido
     public Hielo(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
         m_color = new Color(1, 1, 1, 1);
-        id = 3;
         m_concentracion = 100;
     }
 
