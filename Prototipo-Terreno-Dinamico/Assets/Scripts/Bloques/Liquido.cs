@@ -21,7 +21,7 @@ public abstract class Liquido : Elemento
 
     public override void Avanzar(int dt)
     {
-        if (Vacio())
+        if (Vacio() || !Flowing())
             return;
 
         ActualizarVelocidad(dt);
@@ -85,6 +85,12 @@ public abstract class Liquido : Elemento
 
         foreach (Vector3Int opcion in Utilidades.Dar<Vector3Int>(diagonales))
             yield return opcion;
+    }
+
+    private bool Flowing()
+    {
+        // pensar una forma para determinarlo
+        return true;
     }
 
     protected void ActualizarVelocidad(int dt)

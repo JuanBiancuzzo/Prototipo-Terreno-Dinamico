@@ -121,6 +121,23 @@ public abstract class Elemento : ITenerDatos
         return m_actualizado;
     }
 
+    public int PasarTemperatura(Elemento elemento, int cantidad)
+    {
+        int cantidadADar = cantidad;
+        if (m_temperatura.Valor() < cantidad)
+            cantidadADar = m_temperatura.Valor();
+
+        m_temperatura.Quitar(cantidadADar);
+        elemento.m_temperatura.Agregar(cantidad);
+
+        return cantidad - cantidadADar;
+    }
+
+    public int RecibirTemperatura(Elemento elemento, int cantidad)
+    {
+        return elemento.PasarTemperatura(this, cantidad);
+    }
+
     public abstract void Reaccionar();
 
     public abstract Elemento Expandir(Vector3Int posicion);
