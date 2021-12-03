@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FallingSand : MonoBehaviour
+public class FallingSand : Interactuable
 {
     public IConetenedorGeneral m_mapa = null;
 
@@ -73,5 +73,15 @@ public class FallingSand : MonoBehaviour
     public static bool EsDefault(Color color)
     {
         return color == m_defaultColor;
+    }
+
+    public override int Dar(TipoDeMagia tipoDeMagia, int cantidad, Vector3 posicion)
+    {
+        return -1;
+    }
+
+    public override int Recibir(TipoDeMagia tipoDeMagia, int cantidad, Vector3 posicion)
+    {
+        return -1;
     }
 }
