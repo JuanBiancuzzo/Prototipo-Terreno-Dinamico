@@ -245,12 +245,12 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public bool Visible()
     {
-        return AlfaColor > 0;
+        return AlfaValor > 0;
     }
 
     public bool Translucido()
     {
-        return AlfaColor < 1;
+        return AlfaValor < 1;
     }
 
     public virtual bool Emisor()

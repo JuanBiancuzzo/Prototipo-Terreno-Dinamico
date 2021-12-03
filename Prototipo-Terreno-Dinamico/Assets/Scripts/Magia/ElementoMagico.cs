@@ -12,7 +12,7 @@ public class ElementoMagico
     public int IluminacionValor => m_iluminacion.IluminacionValor;
     public int TemperaturaValor => m_temperatura.TemperaturaValor;
     public Color ColorValor => m_color;
-    public float AlfaColor => m_alfa.AlfaValor;
+    public float AlfaValor => m_alfa.AlfaValor;
 
     public ElementoMagico(int iluminacion, Color color, int temperatura)
     {

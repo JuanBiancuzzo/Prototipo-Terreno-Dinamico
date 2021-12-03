@@ -22,12 +22,12 @@ public class AtributoInt
     public static int EnergiaAAtributo(EnergiaCoin energia)
     {
         float t = energia.EnergiaActualInterpolada();
-        return ValorTemperatura(t);
+        return ValorAtributo(t);
     }
 
     public static EnergiaCoin AtributoAEnergia(int valor, EnergiaCoin energiaAModificar = null)
     {
-        float t = TemperaturaInterpolada(valor);
+        float t = AtributoInterpolada(valor);
         if (energiaAModificar == null)
             energiaAModificar = new EnergiaCoin();
 
@@ -35,22 +35,12 @@ public class AtributoInt
         return energiaAModificar;
     }
 
-    public void ValorActualTemperatura(float t)
-    {
-        m_valor = ValorTemperatura(t);
-    }
-
-    public float TemeperaturaActualInterpolada()
-    {
-        return TemperaturaInterpolada(m_valor);
-    }
-
-    public static int ValorTemperatura(float t)
+    public static int ValorAtributo(float t)
     {
         return Mathf.FloorToInt(Mathf.Lerp(m_minimo, m_maximo, t));
     }
 
-    public static float TemperaturaInterpolada(int valor)
+    public static float AtributoInterpolada(int valor)
     {
         return Mathf.InverseLerp(m_minimo, m_maximo, valor);
     }
@@ -62,9 +52,16 @@ public class AtributoFloat
     float m_valor;
 
     public float Valor => m_valor;
-    public void NuevoValor(float valor) => m_valor = valor;
-    public void Aumentar(float cantidad) => m_valor += cantidad;
-    public void Disminuir(float cantidad) => m_valor -= cantidad;
+    public void NuevoValor(float valor)
+    {
+        m_valor = valor;
+    }
+    public void Aumentar(float cantidad){
+        m_valor += cantidad;
+    }
+    public void Disminuir(float cantidad){
+        m_valor -= cantidad;
+    }
 
     public AtributoFloat(float valor, float minimo, float maximo)
     {
@@ -75,12 +72,12 @@ public class AtributoFloat
     public static float EnergiaAAtributo(EnergiaCoin energia)
     {
         float t = energia.EnergiaActualInterpolada();
-        return ValorTemperatura(t);
+        return ValorAtributo(t);
     }
 
     public static EnergiaCoin AtributoAEnergia(float valor, EnergiaCoin energiaAModificar = null)
     {
-        float t = TemperaturaInterpolada(valor);
+        float t = AtributoInterpolada(valor);
         if (energiaAModificar == null)
             energiaAModificar = new EnergiaCoin();
 
@@ -88,22 +85,12 @@ public class AtributoFloat
         return energiaAModificar;
     }
 
-    public void ValorActualTemperatura(float t)
+    public static float ValorAtributo(float t)
     {
-        m_valor = ValorTemperatura(t);
+        return Mathf.Lerp(m_minimo, m_maximo, t);
     }
 
-    public float TemeperaturaActualInterpolada()
-    {
-        return TemperaturaInterpolada(m_valor);
-    }
-
-    public static float ValorTemperatura(float t)
-    {
-        return Mathf.FloorToInt(Mathf.Lerp(m_minimo, m_maximo, t));
-    }
-
-    public static float TemperaturaInterpolada(float valor)
+    public static float AtributoInterpolada(float valor)
     {
         return Mathf.InverseLerp(m_minimo, m_maximo, valor);
     }

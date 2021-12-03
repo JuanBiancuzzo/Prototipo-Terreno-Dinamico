@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Alfa : IEnergia
 {
-    static float minimo = 0, maximo = 1;
+    static float minimo = 0f, maximo = 1f;
     AtributoFloat m_alfa;
 
     public float AlfaValor => m_alfa.Valor;
@@ -22,21 +22,21 @@ public class Alfa : IEnergia
      */
     public EnergiaCoin Aumentar(EnergiaCoin energia)
     {
-        float temperaturaAAgregar = AtributoFloat.EnergiaAAtributo(energia);
-        float temperaturaPosible = Mathf.Min(maximo - m_alfa.Valor, temperaturaAAgregar);
+        float alfaAAgregar = AtributoFloat.EnergiaAAtributo(energia);
+        float alfaPosible = Mathf.Min(maximo - m_alfa.Valor, alfaAAgregar);
 
-        m_alfa.Aumentar(temperaturaPosible);
+        m_alfa.Aumentar(alfaPosible);
 
-        return AtributoFloat.AtributoAEnergia(temperaturaAAgregar - temperaturaPosible, energia);
+        return AtributoFloat.AtributoAEnergia(alfaAAgregar - alfaPosible, energia);
     }
 
     public EnergiaCoin Disminuir(EnergiaCoin energia)
     {
-        float temperaturaASacar = AtributoFloat.EnergiaAAtributo(energia);
-        temperaturaASacar = Mathf.Min(m_alfa.Valor, temperaturaASacar);
+        float alfaASacar = AtributoFloat.EnergiaAAtributo(energia);
+        alfaASacar = Mathf.Min(m_alfa.Valor, alfaASacar);
 
-        m_alfa.Disminuir(temperaturaASacar);
+        m_alfa.Disminuir(alfaASacar);
 
-        return AtributoFloat.AtributoAEnergia(temperaturaASacar, energia);
+        return AtributoFloat.AtributoAEnergia(alfaASacar, energia);
     }
 }

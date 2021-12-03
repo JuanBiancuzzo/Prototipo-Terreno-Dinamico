@@ -23,21 +23,21 @@ public class Iluminacion : IEnergia
      */
     public EnergiaCoin Aumentar(EnergiaCoin energia)
     {
-        int temperaturaAAgregar = AtributoInt.EnergiaAAtributo(energia);
-        int temperaturaPosible = Mathf.Min(maximo - m_iluminacion.Valor, temperaturaAAgregar);
+        int iluminacionAAgregar = AtributoInt.EnergiaAAtributo(energia);
+        int iluminacionPosible = Mathf.Min(maximo - m_iluminacion.Valor, iluminacionAAgregar);
 
-        m_iluminacion.Aumentar(temperaturaPosible);
+        m_iluminacion.Aumentar(iluminacionPosible);
 
-        return AtributoInt.AtributoAEnergia(temperaturaAAgregar - temperaturaPosible, energia);
+        return AtributoInt.AtributoAEnergia(iluminacionAAgregar - iluminacionPosible, energia);
     }
 
     public EnergiaCoin Disminuir(EnergiaCoin energia)
     {
-        int temperaturaASacar = AtributoInt.EnergiaAAtributo(energia);
-        temperaturaASacar = Mathf.Min(m_iluminacion.Valor, temperaturaASacar);
+        int iluminacionASacar = AtributoInt.EnergiaAAtributo(energia);
+        iluminacionASacar = Mathf.Min(m_iluminacion.Valor, iluminacionASacar);
 
-        m_iluminacion.Disminuir(temperaturaASacar);
+        m_iluminacion.Disminuir(iluminacionASacar);
 
-        return AtributoInt.AtributoAEnergia(temperaturaASacar, energia);
+        return AtributoInt.AtributoAEnergia(iluminacionASacar, energia);
     }
 }
