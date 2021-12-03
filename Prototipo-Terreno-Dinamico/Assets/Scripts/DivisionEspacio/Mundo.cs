@@ -163,7 +163,7 @@ public class Mundo : IConetenedorGeneral
         if (elemento == null | reemplazo == null)
             return false;
 
-        Vector3Int posicion = elemento.Posicion();
+        Vector3Int posicion = PosicionRelativa(elemento.Posicion());
         m_elementos[posicion.x, posicion.y, posicion.z] = reemplazo;
 
         return true;
@@ -269,4 +269,63 @@ public class Mundo : IConetenedorGeneral
 
         Gizmos.DrawWireCube(posicion + m_posicion, m_extension);
     }
+    /*
+    // devuelve cuanto pudo sacar
+    public override int Dar(TipoDeMagia tipoDeMagia, int cantidad, DatosNecesarios datos)
+    {
+        if (tipoDeMagia != TipoDeMagia.Alfa)
+        {
+            Debug.LogError("No es el tipo de magia");
+            return -1;
+        }
+
+        DatoParaMapa datoMapa = (DatoParaMapa)datos;
+        Vector3Int posicionMundo = Vector3Int.FloorToInt(datoMapa.posicion);
+        Vector3Int posicion = PosicionRelativa(posicionMundo);
+
+        float cantidadASacar = (float)cantidad / 100f;
+        Elemento elemento = m_elementos[posicion.x, posicion.y, posicion.z];
+        if (elemento == null)
+        {
+            Debug.LogError("El elemento no existe");
+            return -1;
+        }
+
+        float a = elemento.m_color.a;
+        float sacado = Mathf.Min(cantidadASacar, a);
+
+        elemento.m_color.a -= sacado;
+
+        return Mathf.FloorToInt(sacado * 100);
+    }
+
+    // devuelva cuanto no pudo guardar, lo que sobra
+    public override int Recibir(TipoDeMagia tipoDeMagia, int cantidad, DatosNecesarios datos)
+    {
+        if (tipoDeMagia != TipoDeMagia.Alfa)
+        {
+            Debug.LogError("No es el tipo de magia");
+            return -1;
+        }
+
+        DatoParaMapa datoMapa = (DatoParaMapa)datos;
+        Vector3Int posicionMundo = Vector3Int.FloorToInt(datoMapa.posicion);
+        Vector3Int posicion = PosicionRelativa(posicionMundo);
+
+        float cantidadAAgregar = (float)cantidad / 100f;
+        Elemento elemento = m_elementos[posicion.x, posicion.y, posicion.z];
+        if (elemento == null)
+        {
+            Debug.LogError("El elemento no existe");
+            return -1;
+        }
+
+        float a = elemento.m_color.a;
+        float agregar = Mathf.Min(cantidadAAgregar, 1 - a);
+
+        elemento.m_color.a += agregar;
+        Debug.Log(elemento.m_color.a);
+
+        return Mathf.FloorToInt((cantidadAAgregar - agregar) * 100);
+    } */
 }

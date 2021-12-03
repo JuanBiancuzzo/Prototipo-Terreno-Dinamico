@@ -163,9 +163,4 @@ public abstract class Liquido : Elemento
         Liquido liquido = (Liquido)otro;
         liquido.m_velocidad = m_velocidad;
     }
-
-    public override bool Translucido()
-    {
-        return true;
-    }
 }

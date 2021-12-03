@@ -31,7 +31,7 @@ public abstract class IContenedorConDatos : MonoBehaviour, ISacarDatos, IContene
 }
 
 public abstract class IConetenedorGeneral : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
-{
+{   
     public abstract Elemento Eliminar(Vector3Int posicion);
     public abstract Elemento Eliminar(Elemento elemento);
     public abstract Elemento EnPosicion(Vector3Int posicion);
@@ -48,3 +48,4 @@ public abstract class IConetenedorGeneral : MonoBehaviour, IContenedor, ISacarDa
     public abstract IEnumerable<Elemento> ElementoParaActualizar();
     public abstract void CalcularIluminacion();
 }
+

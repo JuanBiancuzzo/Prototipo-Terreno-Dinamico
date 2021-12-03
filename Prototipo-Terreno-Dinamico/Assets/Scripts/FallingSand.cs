@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FallingSand : Interactuable
+public class FallingSand : MonoBehaviour
 {
     public IConetenedorGeneral m_mapa = null;
 
@@ -75,13 +75,10 @@ public class FallingSand : Interactuable
         return color == m_defaultColor;
     }
 
-    public override int Dar(TipoDeMagia tipoDeMagia, int cantidad, Vector3 posicion)
-    {
-        return -1;
-    }
+    // dar el elemento magico
 
-    public override int Recibir(TipoDeMagia tipoDeMagia, int cantidad, Vector3 posicion)
+    public ElementoMagico DarElementoMagico(Vector3 posicion)
     {
-        return -1;
+        return m_mapa.EnPosicion(Vector3Int.FloorToInt(posicion));
     }
 }

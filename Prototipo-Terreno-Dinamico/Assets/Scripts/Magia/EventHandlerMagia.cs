@@ -6,11 +6,10 @@ public enum TipoDeMagia
     Iluminacion,
     Color,
     Alfa,
-    Temperatura,
-    Velocidad
+    Temperatura
 };
 
-public class EventHandlerMagia
+public class EventHandlerMagia : MonoBehaviour
 {
     public static EventHandlerMagia current;
 
@@ -19,15 +18,15 @@ public class EventHandlerMagia
         current = this;
     }
 
-    public event Func<TipoDeMagia, int, Vector3, int> darEnergia;
-    public int SacarEnergia(TipoDeMagia tipoDeMagia, int cantidad, Vector3 posicion = default)
+    public event Func<TipoDeMagia, EnergiaCoin, EnergiaCoin> darEnergia;
+    public EnergiaCoin SacarEnergia(TipoDeMagia tipoDeMagia, EnergiaCoin cantidad)
     {
-        return (darEnergia == null) ? -1 : darEnergia(tipoDeMagia, cantidad, posicion);
+        return (darEnergia == null) ? null : darEnergia(tipoDeMagia, cantidad);
     }
 
-    public event Func<TipoDeMagia, int, Vector3, int> recibirEnergia;
-    public int DarEnergia(TipoDeMagia tipoDeMagia, int cantidad, Vector3 posicion = default)
+    public event Func<TipoDeMagia, EnergiaCoin, EnergiaCoin> recibirEnergia;
+    public EnergiaCoin DarEnergia(TipoDeMagia tipoDeMagia, EnergiaCoin cantidad)
     {
-        return (recibirEnergia == null) ? -1 : recibirEnergia(tipoDeMagia, cantidad, posicion);
+        return (recibirEnergia == null) ? null : recibirEnergia(tipoDeMagia, cantidad);
     }
 }

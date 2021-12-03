@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class EstandarGenerador : IGenerador
 {
+    [SerializeField] int altura;
+
     public override int ValorEnPosicion(int x, int y, int minimo, int maximo)
     {
-        return minimo + 2;
+        return altura;
     }
 }

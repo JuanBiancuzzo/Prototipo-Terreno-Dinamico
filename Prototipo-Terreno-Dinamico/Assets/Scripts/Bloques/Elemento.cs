@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 
-public abstract class Elemento : ITenerDatos
+public abstract class Elemento : ElementoMagico, ITenerDatos
 {
     static protected int m_minimoValor = 0, m_maximoValor = 100;
     static protected int m_minimoLuz = 0, m_maximoLuz = 15;
@@ -16,7 +16,7 @@ public abstract class Elemento : ITenerDatos
     public int m_iluminacion, m_iluminacionGlobal;
     public ValorTemporal m_temperatura;
 
-    protected Color m_color;
+    public Color m_color;
     public bool m_actualizado = false;
 
     protected IConetenedorGeneral m_mundo;
@@ -250,12 +250,12 @@ public abstract class Elemento : ITenerDatos
 
     public virtual bool Visible()
     {
-        return true;
+        return m_color.a > 0;
     }
 
     public virtual bool Translucido()
     {
-        return false;
+        return m_color.a < 1;
     }
 
     public virtual bool Emisor()

@@ -1,0 +1,40 @@
+using UnityEngine;
+
+public class Temperatura : IEnergia
+{
+    static int minimo = 0, maximo = 1000;
+    AtributoInt m_temperatura = null;
+
+    public int TemperaturaValor => m_temperatura.Valor;
+
+    public Temperatura(int temperatura)
+    {
+        m_temperatura = new AtributoInt(temperatura, minimo, maximo);
+    }
+
+
+    /*
+     * Disminuir es saca energia y devuelve cuanto consumio
+     * Aumentar es dar energia y devuelve cuanto no pudo agarrar
+     */
+
+    public EnergiaCoin Aumentar(EnergiaCoin energia)
+    {
+        int temperaturaAAgregar = AtributoInt.EnergiaAAtributo(energia);
+        int temperaturaPosible = Mathf.Min(maximo - m_temperatura.Valor, temperaturaAAgregar);
+
+        m_temperatura.Aumentar(temperaturaPosible);
+
+        return AtributoInt.AtributoAEnergia(temperaturaAAgregar - temperaturaPosible, energia);
+    }
+
+    public EnergiaCoin Disminuir(EnergiaCoin energia)
+    {
+        int temperaturaASacar = AtributoInt.EnergiaAAtributo(energia);
+        temperaturaASacar = Mathf.Min(m_temperatura.Valor, temperaturaASacar);
+
+        m_temperatura.Disminuir(temperaturaASacar);
+
+        return AtributoInt.AtributoAEnergia(temperaturaASacar, energia);
+    }
+}
