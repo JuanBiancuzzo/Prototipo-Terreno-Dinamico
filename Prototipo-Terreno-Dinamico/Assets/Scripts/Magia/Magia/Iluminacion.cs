@@ -8,6 +8,9 @@ public class Iluminacion : IEnergia
     AtributoInt m_iluminacion;
 
     public int IluminacionValor => m_iluminacion.Valor;
+    public void NuevoValor(int valor) => m_iluminacion.NuevoValor(valor);
+    public void Aumentar(int cantidad) => m_iluminacion.Aumentar(cantidad);
+    public void Disminuir(int cantidad) => m_iluminacion.Disminuir(cantidad);
 
     public Iluminacion(int iluminacion)
     {

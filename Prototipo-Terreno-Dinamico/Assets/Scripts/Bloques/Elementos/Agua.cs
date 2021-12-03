@@ -6,7 +6,7 @@ public class Agua : Liquido
 {
     public Agua(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
-        m_color = new Color(0.12f, 0.56f, 1, 0.5f);
+        NuevoColor(new Color(0.12f, 0.56f, 1, 0.5f));
     }
 
     public override Elemento Expandir(Vector3Int posicion)
@@ -20,9 +20,9 @@ public class Agua : Liquido
     {
         Elemento elemento = null;
 
-        if (m_temperatura.Valor() > 373)
+        if (TemperaturaValor > 373)
             elemento = new Vapor(m_posicion, m_mundo);
-        else if (m_temperatura.Valor() < 273)
+        else if (TemperaturaValor < 273)
             elemento = new Hielo(m_posicion, m_mundo);
 
         if (elemento == null)

@@ -8,7 +8,9 @@ public class Alfa : IEnergia
     AtributoFloat m_alfa;
 
     public float AlfaValor => m_alfa.Valor;
-
+    public void NuevoValor(float valor) {
+        m_alfa.NuevoValor(valor);
+    }
     public Alfa(float alfa)
     {
         m_alfa = new AtributoFloat(alfa, minimo, maximo);

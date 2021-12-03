@@ -6,7 +6,7 @@ public class Hielo : Solido
 {
     public Hielo(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
-        m_color = new Color(1, 1, 1, 1);
+        NuevoColor(new Color(1, 1, 1, 1));
         m_concentracion = 100;
     }
 
@@ -23,7 +23,7 @@ public class Hielo : Solido
 
     public override void Reaccionar()
     {
-        if (m_temperatura.Valor() <= 273)
+        if (TemperaturaValor <= 273)
             return;
 
         Agua agua = new Agua(m_posicion, m_mundo);

@@ -6,7 +6,7 @@ public class Vapor : Gaseoso
 {
     public Vapor(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
-        m_color = new Color(0.1f, 0.1f, 0.1f, 0.5f);
+        NuevoColor(new Color(0.1f, 0.1f, 0.1f, 0.5f));
     }
 
     public override Elemento Expandir(Vector3Int posicion)
@@ -18,7 +18,7 @@ public class Vapor : Gaseoso
 
     public override void Reaccionar()
     {
-        if (m_temperatura.Valor() >= 373)
+        if (TemperaturaValor >= 373)
             return;
 
         Agua agua = new Agua(m_posicion, m_mundo);

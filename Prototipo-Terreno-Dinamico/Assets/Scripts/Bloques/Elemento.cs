@@ -13,23 +13,24 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     public Vector3Int m_posicion;
 
     public int m_concentracion;
-    public int m_iluminacion, m_iluminacionGlobal;
-    public ValorTemporal m_temperatura;
-
-    public Color m_color;
     public bool m_actualizado = false;
 
     protected IConetenedorGeneral m_mundo;
 
-    public Elemento(Vector3Int posicion, IConetenedorGeneral mundo)
+    public Elemento(Vector3Int posicion, IConetenedorGeneral mundo) : base(13, new Color(1, 1, 1, 1), 290)
     {
         m_posicion = posicion;
-        m_color = new Color(0, 0, 0, 1);
         m_mundo = mundo;
 
         m_concentracion = 25;
-        m_temperatura = new ValorTemporal(291);
-        m_iluminacion = 0;
+    }
+
+    protected void NuevoColor(Color color)
+    {
+        // se encarga de setear el rgb y el alfa
+        m_alfa.NuevoValor(color.a);
+        m_rgb.NuevoValor(color);
+        ActualizarColor();
     }
 
     public void AntesDeAvanzar()
@@ -59,7 +60,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
                     Elemento elemento = m_mundo.EnPosicion(m_posicion + desfase);
                     if (elemento == null)
                         continue;
-                    temperaturaTotal += elemento.m_temperatura.Valor();
+                    temperaturaTotal += elemento.TemperaturaValor;
                     cantidad++;
                 }
 
@@ -84,20 +85,15 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
             if (elemento == null)
                 continue;
 
-            int iluminacionElemento = elemento.m_iluminacion;
-            int iluminacionGlobalElemento = elemento.m_iluminacionGlobal;
-
-            iluminacionElemento -= 3;
-            iluminacionGlobalElemento -= (desfase.y == 1) ? 0 : 3;
-
-            ActualizarLuz(Mathf.Max(iluminacionElemento, m_iluminacion), Mathf.Max(iluminacionGlobalElemento, m_iluminacionGlobal));
+            int iluminacionElemento = elemento.IluminacionValor - 3;
+            ActualizarLuz(Mathf.Max(iluminacionElemento, IluminacionValor));
         }
     }
 
-    protected virtual void ActualizarLuz(int luz, int luzGlobal)
+    protected virtual void ActualizarLuz(int luz)
     {
-        m_iluminacion = (Visible()) ? 0 : luz;
-        m_iluminacionGlobal = (Visible()) ? 0 : luzGlobal;
+        int nuevoValor = (Visible()) ? 0 : luz;
+        m_iluminacion.NuevoValor(nuevoValor);
     }
 
     public void Actualizado()
@@ -108,12 +104,8 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     public void EmpezarAActualizar()
     {
         m_actualizado = false;
-        m_temperatura.Actualizar();
         if (!Emisor())
-        {
-            m_iluminacion = 0;
-            m_iluminacionGlobal = 0;
-        }
+            m_iluminacion.NuevoValor(0);
     }
 
     public bool EstaActualizado()
@@ -124,11 +116,11 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     public int PasarTemperatura(Elemento elemento, int cantidad)
     {
         int cantidadADar = cantidad;
-        if (m_temperatura.Valor() < cantidad)
-            cantidadADar = m_temperatura.Valor();
+        if (TemperaturaValor < cantidad)
+            cantidadADar = TemperaturaValor;
 
-        m_temperatura.Quitar(cantidadADar);
-        elemento.m_temperatura.Agregar(cantidad);
+        m_temperatura.Disminuir(cantidadADar);
+        elemento.m_temperatura.Aumentar(cantidad);
 
         return cantidad - cantidadADar;
     }
@@ -235,9 +227,9 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public virtual void DividirAtributos(Elemento otro)
     {
+        IgualarAtributos(otro);
         otro.m_concentracion = m_concentracion / 2;
         m_concentracion -= otro.m_concentracion;
-        otro.m_iluminacion = m_iluminacion;
         otro.Actualizado();
     }
 
@@ -246,16 +238,19 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
         otro.m_concentracion = m_concentracion;
         otro.m_temperatura = m_temperatura;
         otro.m_iluminacion = m_iluminacion;
+        otro.m_alfa = m_alfa;
+        otro.m_rgb = m_rgb;
+        otro.ActualizarColor();
     }
 
-    public virtual bool Visible()
+    public bool Visible()
     {
-        return m_color.a > 0;
+        return AlfaColor > 0;
     }
 
-    public virtual bool Translucido()
+    public bool Translucido()
     {
-        return m_color.a < 1;
+        return AlfaColor < 1;
     }
 
     public virtual bool Emisor()
@@ -274,12 +269,12 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public Color GetColor(TipoMaterial tipoMaterial)
     {
-        return (DarDefualt(tipoMaterial)) ? m_defualtColor : ModificarColor();
+        return (DarDefualt(tipoMaterial)) ? m_defualtColor : ColorValor;
     }
 
     public int GetIluminacion(TipoMaterial tipoMaterial)
     {
-        return Mathf.Max(m_iluminacion, m_iluminacionGlobal);
+        return IluminacionValor;
     }
 
     private bool DarDefualt(TipoMaterial tipoMaterial)
@@ -294,11 +289,6 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
         }
 
         return seTieneQueDar;
-    }
-
-    protected virtual Color ModificarColor()
-    {
-        return m_color;
     }
 
     public Vector3Int Posicion()

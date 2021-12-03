@@ -8,22 +8,15 @@ public class AtributoInt
     int m_valor;
 
     public int Valor => m_valor;
+    public void NuevoValor(int valor) => m_valor = valor;
+    public void Aumentar(int cantidad) => m_valor += cantidad;
+    public void Disminuir(int cantidad) => m_valor -= cantidad;
 
     public AtributoInt(int valor, int minimo, int maximo)
     {
         m_valor = Mathf.Max(minimo, Mathf.Min(maximo, valor));
         m_minimo = minimo;
         m_maximo = maximo;
-    }
-    
-    public void Aumentar(int cantidad)
-    {
-        m_valor += cantidad;
-    }
-
-    public void Disminuir(int cantidad)
-    {
-        m_valor -= cantidad;
     }
 
     public static int EnergiaAAtributo(EnergiaCoin energia)
@@ -69,6 +62,9 @@ public class AtributoFloat
     float m_valor;
 
     public float Valor => m_valor;
+    public void NuevoValor(float valor) => m_valor = valor;
+    public void Aumentar(float cantidad) => m_valor += cantidad;
+    public void Disminuir(float cantidad) => m_valor -= cantidad;
 
     public AtributoFloat(float valor, float minimo, float maximo)
     {
@@ -91,17 +87,6 @@ public class AtributoFloat
         energiaAModificar.ValorActualEnergia(t);
         return energiaAModificar;
     }
-
-    public void Aumentar(float cantidad)
-    {
-        m_valor += cantidad;
-    }
-
-    public void Disminuir(float cantidad)
-    {
-        m_valor -= cantidad;
-    }
-
 
     public void ValorActualTemperatura(float t)
     {

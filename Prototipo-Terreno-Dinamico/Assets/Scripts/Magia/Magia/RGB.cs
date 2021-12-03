@@ -8,6 +8,12 @@ public class RGB : IEnergia
     AtributoFloat r, g, b;
 
     public Vector3 RGBValor => new Vector3(r.Valor, g.Valor, b.Valor);
+    public void NuevoValor(Color color)
+    {
+        r.NuevoValor(color.r);
+        g.NuevoValor(color.g);
+        b.NuevoValor(color.b);
+    }
 
     public RGB(Vector3 valor)
     {

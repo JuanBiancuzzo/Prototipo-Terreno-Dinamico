@@ -8,10 +8,10 @@ public class Lava : Liquido
 
     public Lava(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
-        m_color = new Color(0.72f, 0.15f, 0.16f, 0.80f);
-        m_iluminacion = m_maximoLuz;
+        NuevoColor(new Color(0.72f, 0.15f, 0.16f, 0.80f));
+        m_iluminacion.NuevoValor(m_maximoLuz);
         m_flowRate = 10;
-        m_temperatura = new ValorTemporal(temperaturaMaxima);
+        m_temperatura.NuevoValor(temperaturaMaxima);
     }
 
     public override Elemento Expandir(Vector3Int posicion)
@@ -23,10 +23,10 @@ public class Lava : Liquido
 
     public override void Reaccionar()
     {
-        float t = Mathf.InverseLerp(0, temperaturaMaxima, m_temperatura.Valor());
+        float t = Mathf.InverseLerp(0, temperaturaMaxima, TemperaturaValor);
         int nuevaIluminacion = Mathf.RoundToInt(Mathf.Lerp(m_minimoLuz, m_maximoLuz, t));
-        m_temperatura.NuevoValor(Mathf.Max(0, m_temperatura.Valor() - 1));
-        m_iluminacion = nuevaIluminacion;
+        m_temperatura.NuevoValor(Mathf.Max(0, TemperaturaValor - 1));
+        m_iluminacion.NuevoValor(nuevaIluminacion);
     }
 
     public override bool Emisor()

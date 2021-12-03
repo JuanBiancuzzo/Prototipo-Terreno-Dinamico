@@ -6,7 +6,7 @@ public class Aire : Gaseoso
 {
     public Aire(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
-        m_color = new Color(0, 0, 0, 0);
+        NuevoColor(new Color(0, 0, 0, 0));
     }
 
     public override Elemento Expandir(Vector3Int posicion)
@@ -19,11 +19,6 @@ public class Aire : Gaseoso
     public override void Avanzar(int dt)
     {
         base.Avanzar(dt);
-    }
-
-    public override bool Visible()
-    {
-        return false;
     }
 
     public override void Reaccionar()

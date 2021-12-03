@@ -6,6 +6,9 @@ public class Temperatura : IEnergia
     AtributoInt m_temperatura = null;
 
     public int TemperaturaValor => m_temperatura.Valor;
+    public void NuevoValor(int valor) => m_temperatura.NuevoValor(valor);
+    public void Aumentar(int cantidad) => m_temperatura.Aumentar(cantidad);
+    public void Disminuir(int cantidad) => m_temperatura.Disminuir(cantidad);
 
     public Temperatura(int temperatura)
     {

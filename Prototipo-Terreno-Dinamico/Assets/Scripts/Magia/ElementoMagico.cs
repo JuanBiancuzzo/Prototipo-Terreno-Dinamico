@@ -1,10 +1,27 @@
+using UnityEngine;
 
 public class ElementoMagico
 {
-    public Iluminacion m_iluminacion;
-    public RGB m_rgb;
-    public Alfa m_alfa;
-    public Temperatura m_temperatura;
+    protected Iluminacion m_iluminacion;
+    protected RGB m_rgb;
+    protected Alfa m_alfa;
+    protected Temperatura m_temperatura;
+
+    private Color m_color;
+
+    public int IluminacionValor => m_iluminacion.IluminacionValor;
+    public int TemperaturaValor => m_temperatura.TemperaturaValor;
+    public Color ColorValor => m_color;
+    public float AlfaColor => m_alfa.AlfaValor;
+
+    public ElementoMagico(int iluminacion, Color color, int temperatura)
+    {
+        m_color = color;
+        m_iluminacion = new Iluminacion(iluminacion);
+        m_temperatura = new Temperatura(temperatura);
+        m_rgb = new RGB(new Vector3(color.r, color.g, color.b));
+        m_alfa = new Alfa(color.a);
+    }
 
     public void DarMagia()
     {
@@ -45,13 +62,23 @@ public class ElementoMagico
             case TipoDeMagia.Iluminacion:
                 return m_iluminacion;
             case TipoDeMagia.Color:
+                ActualizarColor();
                 return m_rgb;
             case TipoDeMagia.Alfa:
+                ActualizarColor();
                 return m_alfa;
             case TipoDeMagia.Temperatura:
                 return m_temperatura;
         }
 
         return null;
+    }
+
+    public void ActualizarColor()
+    {
+        Vector3 rgb = m_rgb.RGBValor;
+        for (int i = 0; i < 3; i++)
+            m_color[i] = rgb[i];
+        m_color.a = m_alfa.AlfaValor;
     }
 }
