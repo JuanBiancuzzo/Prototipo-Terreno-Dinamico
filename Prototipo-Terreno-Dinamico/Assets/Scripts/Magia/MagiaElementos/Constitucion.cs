@@ -21,7 +21,7 @@ public class Constitucion : IEnergia
     public bool Atraviesa(Constitucion otro)
     {
         int valorReal = maximo - ConstitucionValor;
-        return otro.ConstitucionValor <= valorReal;
+        return otro.ConstitucionValor < valorReal;
     }
 
     /*

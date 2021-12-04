@@ -253,7 +253,7 @@ MonoBehaviour:
   color: {r: 0, g: 0, b: 0, a: 0}
   temperatura: 0
   concentracion: 0
-  constitucion: 70
+  constitucion: 0
   m_extensionCarga: 1
   m_mundo: {fileID: 781101051}
 --- !u!1 &732861620
