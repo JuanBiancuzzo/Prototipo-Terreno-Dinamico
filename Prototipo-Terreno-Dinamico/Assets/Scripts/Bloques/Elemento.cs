@@ -303,15 +303,12 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public static Elemento ComparacionEntreElemento(Elemento e1, Elemento e2)
     {
-        if (e1 == null && e2 == null)
-            return null;
-
         if (e1 == null)
             return e2;
         if (e2 == null)
             return e1;
 
-        return (e1.m_concentracion > e2.m_concentracion) ? e1 : e2;
+        return (e1.m_concentracion >= e2.m_concentracion) ? e1 : e2;
     }
 
     public static Elemento ElementoConMayorConcentracion(Vector3Int posicion, IConetenedorGeneral mundo, Elemento excepcion = null)

@@ -37,10 +37,6 @@ public class Mundo : IConetenedorGeneral
     private Elemento ElementoPorAltura(int x, int y, int z, int altura)
     {
         Vector3Int posicion = m_extremo.m_minimo + new Vector3Int(x, y, z);
-        /*
-        if (posicion == Vector3Int.zero)
-            return new Lava(posicion, this);
-        */
 
         if (altura < posicion.y)
             return new Aire(posicion, this);
