@@ -17,6 +17,7 @@ public abstract class Liquido : Elemento
         m_velocidad = 0;
         m_aceleracion = 0;
         m_flowRate = 50;
+        m_consitucion.NuevoValor(60);
     }
 
     public override void Avanzar(int dt)

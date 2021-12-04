@@ -7,17 +7,13 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     static protected int m_minimoValor = 0, m_maximoValor = 100;
     static protected int m_minimoLuz = 0, m_maximoLuz = 15;
 
-    static float m_defaultValor = 0;
-    static Color m_defualtColor = Color.white;
-
     public Vector3Int m_posicion;
 
     public bool m_actualizado = false;
-
     protected IConetenedorGeneral m_mundo;
 
     public Elemento(Vector3Int posicion, IConetenedorGeneral mundo) 
-        : base(13, new Color(1, 1, 1, 1), 290, 25)
+        : base(13, new Color(1, 1, 1, 1), 290, 25, 100)
     {
         m_posicion = posicion;
         m_mundo = mundo;
@@ -25,7 +21,6 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     protected void NuevoColor(Color color)
     {
-        // se encarga de setear el rgb y el alfa
         m_alfa.NuevoValor(color.a);
         m_rgb.NuevoValor(color);
         ActualizarColor();
@@ -253,28 +248,43 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
         return AlfaValor < 1;
     }
 
+    public bool Solido(Constitucion entidad)
+    {
+        return !m_consitucion.Atraviesa(entidad);
+    }
+
     public virtual bool Emisor()
     {
         return false;
     }
 
-    public float GetValor(TipoMaterial tipoMaterial)
+    public float GetValor(TipoMaterial tipoMaterial, float defaultValor)
     {
         if (DarDefualt(tipoMaterial))
-            return m_defaultValor;
+            return defaultValor;
 
+        return ValorInterpolado();
+    }
+
+    private float ValorInterpolado()
+    {
         float t = Mathf.InverseLerp(m_minimoValor, m_maximoValor, ConcentracionValor);
         return Mathf.Lerp(0.19f, 1f, t);
     }
 
-    public Color GetColor(TipoMaterial tipoMaterial)
+    public Color GetColor(TipoMaterial tipoMaterial, Color colorDefault)
     {
-        return (DarDefualt(tipoMaterial)) ? m_defualtColor : ColorValor;
+        return (DarDefualt(tipoMaterial)) ? colorDefault : ColorValor;
     }
 
-    public int GetIluminacion(TipoMaterial tipoMaterial)
+    public int GetIluminacion()
     {
         return IluminacionValor;
+    }
+
+    public float GetColision(Constitucion otro, float defaultColision)
+    {
+        return (Solido(otro)) ? ValorInterpolado() : defaultColision;
     }
 
     private bool DarDefualt(TipoMaterial tipoMaterial)

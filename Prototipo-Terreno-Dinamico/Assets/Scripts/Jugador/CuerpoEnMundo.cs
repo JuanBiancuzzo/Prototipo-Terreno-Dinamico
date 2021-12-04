@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CuerpoEnMundo : MonoBehaviour
+public class CuerpoEnMundo : EntidadMagica
 {
     public int m_extensionCarga;
     public FallingSand m_mundo = null;
+
+    Vector3Int m_posicion => Vector3Int.FloorToInt(transform.position);
+    Vector3Int minimo => m_posicion - Vector3Int.one * m_extensionCarga;
+    Vector3Int maximo => m_posicion + Vector3Int.one * m_extensionCarga;
 
     Extremo m_extremo;
 
@@ -25,7 +29,7 @@ public class CuerpoEnMundo : MonoBehaviour
     void PedirColision()
     {
         CalcularExtremo();
-        m_mundo.GenerarMeshColision(m_extremo);
+        m_mundo.GenerarMeshColision(m_extremo, m_consitucion);
     }
 
     void CalcularExtremo()
@@ -33,5 +37,13 @@ public class CuerpoEnMundo : MonoBehaviour
         Vector3Int posicion = Vector3Int.FloorToInt(m_mundo.PosicionEnMundo(transform.position));
         m_extremo.m_minimo = posicion - Vector3Int.one * m_extensionCarga;
         m_extremo.m_maximo = posicion + Vector3Int.one * m_extensionCarga;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawSphere(transform.position, 0.1f);
+
+        Vector3Int extension = (m_extremo.m_maximo - m_extremo.m_minimo);
+        Gizmos.DrawWireCube(Vector3Int.FloorToInt(m_mundo.PosicionEnMundo(transform.position)), extension);
     }
 }

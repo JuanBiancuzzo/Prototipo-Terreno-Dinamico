@@ -7,6 +7,7 @@ public abstract class Gaseoso : Elemento
     protected Gaseoso(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
         m_concentracion.NuevoValor(5);
+        m_consitucion.NuevoValor(0);
     }
 
     public override void Avanzar(int dt)

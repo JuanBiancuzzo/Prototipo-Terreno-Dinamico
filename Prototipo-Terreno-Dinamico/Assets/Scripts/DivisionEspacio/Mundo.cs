@@ -11,14 +11,16 @@ public class Mundo : IConetenedorGeneral
 
     Elemento[,,] m_elementos;
 
-    [Range(0, 15)] public int luzGlobal;
-
     Mesh m_mesh;
+    Mesh m_meshColision;
+    MeshCollider m_meshCollider;
 
     private void Awake()
     {
         m_mesh = new Mesh();
-        GetComponent<MeshFilter>().sharedMesh = m_mesh;   
+        m_meshColision = new Mesh();
+        GetComponent<MeshFilter>().sharedMesh = m_mesh;
+        m_meshCollider = GetComponent<MeshCollider>();
     }
 
     private void Start()
@@ -204,7 +206,7 @@ public class Mundo : IConetenedorGeneral
         if (elemento == null)
             return defaultColor;
 
-        return elemento.GetColor(tipoMaterial);
+        return elemento.GetColor(tipoMaterial, defaultColor);
     }
 
     public override float GetValor(Vector3Int posicion, TipoMaterial tipoMaterial, float defaultValor = 0)
@@ -216,10 +218,10 @@ public class Mundo : IConetenedorGeneral
         if (elemento == null)
             return defaultValor;
 
-        return elemento.GetValor(tipoMaterial);
+        return elemento.GetValor(tipoMaterial, defaultValor);
     }
 
-    public override int GetIluminacion(Vector3Int posicion, TipoMaterial tipoMaterial, int defaultIluminacion = 0)
+    public override int GetIluminacion(Vector3Int posicion, int defaultIluminacion = 0)
     {
         if (!EnRango(posicion))
             return defaultIluminacion;
@@ -228,18 +230,30 @@ public class Mundo : IConetenedorGeneral
         if (elemento == null)
             return defaultIluminacion;
 
-        return elemento.GetIluminacion(tipoMaterial);
+        return elemento.GetIluminacion();
+    }
+
+    public override float GetColision(Vector3Int posicion, Constitucion otro, float defaultColision = 0f)
+    {
+        if (!EnRango(posicion))
+            return defaultColision;
+
+        Elemento elemento = EnPosicion(posicion);
+        if (elemento == null)
+            return defaultColision;
+
+        return elemento.GetColision(otro, defaultColision);
     }
 
     public override void Renderizar(IRender render, ISacarDatos contenedor = null)
     {
         MeshData meshDataOpaco = new MeshData();
-        render.GenerarMeshCompute(m_extremo, this, ref meshDataOpaco, TipoMaterial.Opaco);
+        render.GenerarMesh(m_extremo, this, ref meshDataOpaco, TipoMaterial.Opaco);
         Mesh meshOpaco = new Mesh();
         meshDataOpaco.RellenarMesh(meshOpaco);
 
         MeshData meshDataTranslucido = new MeshData();
-        render.GenerarMeshCompute(m_extremo, this, ref meshDataTranslucido, TipoMaterial.Translucido);
+        render.GenerarMesh(m_extremo, this, ref meshDataTranslucido, TipoMaterial.Translucido);
         Mesh meshTranslucido = new Mesh();
         meshDataTranslucido.RellenarMesh(meshTranslucido);
 
@@ -255,69 +269,21 @@ public class Mundo : IConetenedorGeneral
         m_mesh.CombineMeshes(finalCombiner.ToArray(), false);
     }
 
+    public override void GenerarMeshColision(IRender render, Extremo rangoEntidad, Constitucion entidad)
+    {
+        m_meshColision.Clear();
+        MeshData meshDataColision = new MeshData();
+
+        render.GenerarMeshColision(rangoEntidad, this, ref meshDataColision, entidad);
+        meshDataColision.RellenarMesh(m_meshColision);
+
+        m_meshCollider.sharedMesh = m_meshColision;
+    }
+
     private void OnDrawGizmos()
     {
         Vector3Int posicion = (m_extremo.m_maximo + m_extremo.m_minimo) / 2;
 
         Gizmos.DrawWireCube(posicion + m_posicion, m_extension);
     }
-    /*
-    // devuelve cuanto pudo sacar
-    public override int Dar(TipoDeMagia tipoDeMagia, int cantidad, DatosNecesarios datos)
-    {
-        if (tipoDeMagia != TipoDeMagia.Alfa)
-        {
-            Debug.LogError("No es el tipo de magia");
-            return -1;
-        }
-
-        DatoParaMapa datoMapa = (DatoParaMapa)datos;
-        Vector3Int posicionMundo = Vector3Int.FloorToInt(datoMapa.posicion);
-        Vector3Int posicion = PosicionRelativa(posicionMundo);
-
-        float cantidadASacar = (float)cantidad / 100f;
-        Elemento elemento = m_elementos[posicion.x, posicion.y, posicion.z];
-        if (elemento == null)
-        {
-            Debug.LogError("El elemento no existe");
-            return -1;
-        }
-
-        float a = elemento.m_color.a;
-        float sacado = Mathf.Min(cantidadASacar, a);
-
-        elemento.m_color.a -= sacado;
-
-        return Mathf.FloorToInt(sacado * 100);
-    }
-
-    // devuelva cuanto no pudo guardar, lo que sobra
-    public override int Recibir(TipoDeMagia tipoDeMagia, int cantidad, DatosNecesarios datos)
-    {
-        if (tipoDeMagia != TipoDeMagia.Alfa)
-        {
-            Debug.LogError("No es el tipo de magia");
-            return -1;
-        }
-
-        DatoParaMapa datoMapa = (DatoParaMapa)datos;
-        Vector3Int posicionMundo = Vector3Int.FloorToInt(datoMapa.posicion);
-        Vector3Int posicion = PosicionRelativa(posicionMundo);
-
-        float cantidadAAgregar = (float)cantidad / 100f;
-        Elemento elemento = m_elementos[posicion.x, posicion.y, posicion.z];
-        if (elemento == null)
-        {
-            Debug.LogError("El elemento no existe");
-            return -1;
-        }
-
-        float a = elemento.m_color.a;
-        float agregar = Mathf.Min(cantidadAAgregar, 1 - a);
-
-        elemento.m_color.a += agregar;
-        Debug.Log(elemento.m_color.a);
-
-        return Mathf.FloorToInt((cantidadAAgregar - agregar) * 100);
-    } */
 }

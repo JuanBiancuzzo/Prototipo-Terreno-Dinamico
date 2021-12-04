@@ -7,7 +7,8 @@ public enum TipoDeMagia
     Color,
     Alfa,
     Temperatura,
-    Concentracion
+    Concentracion,
+    Consitucion
 };
 
 public class EventHandlerMagia : MonoBehaviour

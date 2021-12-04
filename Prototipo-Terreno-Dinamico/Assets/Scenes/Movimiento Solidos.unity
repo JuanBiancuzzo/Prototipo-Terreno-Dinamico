@@ -201,6 +201,7 @@ GameObject:
   m_Component:
   - component: {fileID: 713432421}
   - component: {fileID: 713432420}
+  - component: {fileID: 713432422}
   m_Layer: 0
   m_Name: Jugador
   m_TagString: Untagged
@@ -215,7 +216,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 713432419}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 21b39c3374fa57944a4b8df7269f1efa, type: 3}
   m_Name: 
@@ -230,12 +231,31 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 713432419}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 2.92, y: -2.27, z: -3.631}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &713432422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 713432419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd5840e67e5b334eba7358c1c763c91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iluminacion: 0
+  color: {r: 0, g: 0, b: 0, a: 0}
+  temperatura: 0
+  concentracion: 0
+  constitucion: 70
+  m_extensionCarga: 1
+  m_mundo: {fileID: 781101051}
 --- !u!1 &732861620
 GameObject:
   m_ObjectHideFlags: 0
@@ -292,6 +312,7 @@ GameObject:
   - component: {fileID: 781101051}
   - component: {fileID: 781101053}
   - component: {fileID: 781101052}
+  - component: {fileID: 781101054}
   m_Layer: 0
   m_Name: Mundo
   m_TagString: Untagged
@@ -315,7 +336,6 @@ MonoBehaviour:
     m_minimo: {x: -5, y: -5, z: -5}
     m_maximo: {x: 5, y: 5, z: 5}
   m_generador: {fileID: 662555204}
-  luzGlobal: 0
 --- !u!4 &781101050
 Transform:
   m_ObjectHideFlags: 0
@@ -395,6 +415,20 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 781101048}
+  m_Mesh: {fileID: 0}
+--- !u!64 &781101054
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 781101048}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!1 &820632828
 GameObject:

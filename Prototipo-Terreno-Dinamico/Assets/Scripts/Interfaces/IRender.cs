@@ -12,6 +12,5 @@ public enum TipoMaterial
 public interface IRender
 {
     public void GenerarMesh(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, TipoMaterial tipoMaterial = TipoMaterial.Opaco, int LOD = 1);
-
-    public void GenerarMeshCompute(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, TipoMaterial tipoMaterial = TipoMaterial.Opaco, int LOD = 1);
+    public void GenerarMeshColision(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, Constitucion entidad);
 }

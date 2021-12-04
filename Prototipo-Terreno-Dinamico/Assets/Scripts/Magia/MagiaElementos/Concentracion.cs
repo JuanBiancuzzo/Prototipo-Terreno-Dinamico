@@ -23,21 +23,21 @@ public class Concentracion : IEnergia
      */
     public EnergiaCoin Aumentar(EnergiaCoin energia)
     {
-        int iluminacionAAgregar = AtributoInt.EnergiaAAtributo(energia);
-        int iluminacionPosible = Mathf.Min(maximo - m_concentracion.Valor, iluminacionAAgregar);
+        int concentracionAAgregar = AtributoInt.EnergiaAAtributo(energia);
+        int concentracionPosible = Mathf.Min(maximo - m_concentracion.Valor, concentracionAAgregar);
 
-        m_concentracion.Aumentar(iluminacionPosible);
+        m_concentracion.Aumentar(concentracionPosible);
 
-        return AtributoInt.AtributoAEnergia(iluminacionAAgregar - iluminacionPosible, energia);
+        return AtributoInt.AtributoAEnergia(concentracionAAgregar - concentracionPosible, energia);
     }
 
     public EnergiaCoin Disminuir(EnergiaCoin energia)
     {
-        int iluminacionASacar = AtributoInt.EnergiaAAtributo(energia);
-        iluminacionASacar = Mathf.Min(m_concentracion.Valor, iluminacionASacar);
+        int concentracionASacar = AtributoInt.EnergiaAAtributo(energia);
+        concentracionASacar = Mathf.Min(m_concentracion.Valor, concentracionASacar);
 
-        m_concentracion.Disminuir(iluminacionASacar);
+        m_concentracion.Disminuir(concentracionASacar);
 
-        return AtributoInt.AtributoAEnergia(iluminacionASacar, energia);
+        return AtributoInt.AtributoAEnergia(concentracionASacar, energia);
     }
 }

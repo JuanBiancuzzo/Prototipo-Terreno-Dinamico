@@ -1,13 +1,20 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class ElementoMagico : IObjetoMagico
+public class EntidadMagica : MonoBehaviour, IObjetoMagico
 {
     protected Iluminacion m_iluminacion;
+    [SerializeField] int iluminacion;
     protected RGB m_rgb;
     protected Alfa m_alfa;
+    [SerializeField] Color color;
     protected Temperatura m_temperatura;
+    [SerializeField] int temperatura;
     protected Concentracion m_concentracion;
+    [SerializeField] int concentracion;
     protected Constitucion m_consitucion;
+    [SerializeField] int constitucion;
 
     private Color m_color;
 
@@ -18,7 +25,7 @@ public class ElementoMagico : IObjetoMagico
     public int ConcentracionValor => m_concentracion.ConcentracionValor;
     public int ConsitucionValor => m_consitucion.ConstitucionValor;
 
-    public ElementoMagico(int iluminacion, Color color, int temperatura, int concentracion, int constitucion)
+    void Awake()
     {
         m_color = color;
         m_iluminacion = new Iluminacion(iluminacion);
@@ -35,7 +42,7 @@ public class ElementoMagico : IObjetoMagico
     }
 
     public void DejarDeDarMagia()
-    { 
+    {
         EventHandlerMagia.current.darEnergia -= Dar;
     }
 

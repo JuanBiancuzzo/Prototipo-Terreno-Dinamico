@@ -11,6 +11,7 @@ public class MarchingCubes : MonoBehaviour, IRender
 	MeshData m_meshData;
 	ISacarDatos m_datos;
 	TipoMaterial m_tipoMaterial;
+	Constitucion m_entidad;
 
 	public ComputeShader shader;
 
@@ -96,7 +97,7 @@ public class MarchingCubes : MonoBehaviour, IRender
         }
     }
 
-	public void GenerarMeshCompute(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, TipoMaterial tipoMaterial = TipoMaterial.Opaco, int LOD = 1)
+	public void GenerarMesh(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, TipoMaterial tipoMaterial = TipoMaterial.Opaco, int LOD = 1)
     {
 		m_tipoMaterial = tipoMaterial;
 		int kernel = shader.FindKernel("March");
@@ -128,7 +129,7 @@ public class MarchingCubes : MonoBehaviour, IRender
 						posicion,
 						datos.GetValor(posicion, m_tipoMaterial),
 						datos.GetColor(posicion, m_tipoMaterial),
-						datos.GetIluminacion(posicion, m_tipoMaterial)
+						datos.GetIluminacion(posicion)
 					);
 				}
 
@@ -180,24 +181,31 @@ public class MarchingCubes : MonoBehaviour, IRender
 		triCountBuffer.Dispose();
 	}
 
-	public void GenerarMesh(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, TipoMaterial tipoMaterial = TipoMaterial.Opaco, int LOD = 1)
-    {
-		Inicializar(preInfo, datos, tipoMaterial);
-		Vector3Int minimos = extremo.m_minimo, maximos = extremo.m_maximo;
-
-		for (int x = minimos.x - LOD; x < maximos.x + LOD; x += LOD)
-			for (int y = minimos.y - LOD; y < maximos.y + LOD; y += LOD)
-				for (int z = minimos.z - LOD; z < maximos.z + LOD; z += LOD)
-					GenerarCubo(x, y, z);
-
-		CargarDatos(ref preInfo);
-    }
-
 	public void Inicializar(MeshData preInformacion, ISacarDatos datos, TipoMaterial tipoMaterial)
 	{
 		m_meshData = preInformacion;
 		m_datos = datos;
 		m_tipoMaterial = tipoMaterial;
+	}
+
+	public void GenerarMeshColision(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, Constitucion entidad)
+    {
+		Inicializar(preInfo, datos, entidad);
+		Vector3Int minimos = extremo.m_minimo, maximos = extremo.m_maximo;
+
+		for (int x = minimos.x - 1; x < maximos.x + 1; x++)
+			for (int y = minimos.y - 1; y < maximos.y + 1; y++)
+				for (int z = minimos.z - 1; z < maximos.z + 1; z++)
+					GenerarCubo(x, y, z);
+
+		CargarDatos(ref preInfo);
+    }
+
+	public void Inicializar(MeshData preInformacion, ISacarDatos datos, Constitucion entidad)
+    {
+		m_meshData = preInformacion;
+		m_datos = datos;
+		m_entidad = entidad;
 	}
 
 	public void CargarDatos(ref MeshData preInformacion)
@@ -222,7 +230,6 @@ public class MarchingCubes : MonoBehaviour, IRender
 			int index2 = CornerIndexFromEdge[indexTriangulos[i], 1];
 
 			Vector3 vectice = VectorMedio(posicionesCubo[index1], valores[index1], posicionesCubo[index2], valores[index2]);
-			Color colorActual = ColorMedio(posicionesCubo[index1], posicionesCubo[index2]);
 
 			if (m_meshData.m_repetirVertices.ContainsKey(vectice))
 			{
@@ -233,7 +240,6 @@ public class MarchingCubes : MonoBehaviour, IRender
 				m_meshData.m_triangulos.Add(m_meshData.m_vertices.Count);
 				m_meshData.m_repetirVertices.Add(vectice, m_meshData.m_vertices.Count);
 				m_meshData.m_vertices.Add(vectice);
-				m_meshData.m_colores.Add(colorActual);
 				m_meshData.m_normales.Add(new Vector3(0, 0, 0));
 			}
 			
@@ -264,25 +270,12 @@ public class MarchingCubes : MonoBehaviour, IRender
 		return Vector3.Lerp(posicionA, posicionB, Mathf.Clamp(valorMedio, 0f, 1f));
     }
 
-	private Color ColorMedio(Vector3Int posicionA, Vector3Int posicionB)
-    {
-		Color colorA = m_datos.GetColor(posicionA, m_tipoMaterial);
-		Color colorB = m_datos.GetColor(posicionB, m_tipoMaterial);
-
-		if (FallingSand.EsDefault(colorA))
-			return colorB;
-
-		if (FallingSand.EsDefault(colorB))
-			return colorA;
-
-		return Color.Lerp(colorA, colorB, 0.5f);
-    }
 
 	private float[] ValoresDeCubo(List<Vector3Int> listaDePosiciones)
     {
 		float[] valores = new float[8];
 		for (int i = 0; i < 8; i++)
-			valores[i] = m_datos.GetValor(listaDePosiciones[i], m_tipoMaterial);
+			valores[i] = m_datos.GetColision(listaDePosiciones[i], m_entidad);
 		return valores;
     }
 

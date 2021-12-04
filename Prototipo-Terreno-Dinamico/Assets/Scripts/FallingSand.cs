@@ -47,9 +47,9 @@ public class FallingSand : MonoBehaviour
         m_mapa.Renderizar(render);
     }
 
-    public void GenerarMeshColision(Extremo rangoJugador)
+    public void GenerarMeshColision(Extremo rangoEntidad, Constitucion entidad)
     {
-        //m_mapa.GenerarMeshColision(render, rangoJugador);
+        m_mapa.GenerarMeshColision(render, rangoEntidad, entidad);
     }
 
 
