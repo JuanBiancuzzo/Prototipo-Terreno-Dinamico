@@ -15,6 +15,7 @@ public class Mundo : IConetenedorGeneral
     Mesh m_meshColision;
     MeshCollider m_meshCollider;
 
+    public ElementoSeleccionado objectoSeleccionado;
     private void Awake()
     {
         m_mesh = new Mesh();
@@ -278,6 +279,16 @@ public class Mundo : IConetenedorGeneral
         meshDataColision.RellenarMesh(m_meshColision);
 
         m_meshCollider.sharedMesh = m_meshColision;
+    }
+
+    public override void SeleccionarElemento(IRender render, Vector3Int posicion)
+    {
+        if (objectoSeleccionado == null || !EnRango(posicion))
+            return;
+
+        MeshData meshData = new MeshData();
+        render.GenerarMeshSeleccion(posicion, this, ref meshData);
+        objectoSeleccionado.CargarNuevaMesh(meshData);
     }
 
     private void OnDrawGizmos()

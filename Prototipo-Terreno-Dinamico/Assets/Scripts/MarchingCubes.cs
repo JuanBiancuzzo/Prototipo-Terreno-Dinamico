@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MarchingCubes : MonoBehaviour, IRender
+public class MarchingCubes : MonoBehaviour, IRender 
 {
     [Range(0, 1)] public float m_nivelDelSuelo;
 
@@ -181,39 +181,57 @@ public class MarchingCubes : MonoBehaviour, IRender
 		triCountBuffer.Dispose();
 	}
 
-	public void Inicializar(MeshData preInformacion, ISacarDatos datos, TipoMaterial tipoMaterial)
+	public void Inicializar(MeshData preInformacion, ISacarDatos datos)
 	{
 		m_meshData = preInformacion;
 		m_datos = datos;
-		m_tipoMaterial = tipoMaterial;
+	}
+
+	public void GenerarMeshSeleccion(Vector3Int posicion, ISacarDatos datos, ref MeshData meshData)
+	{
+		Inicializar(meshData, datos);
+		m_tipoMaterial = TipoMaterial.Opaco;
+		GenerarCubo(posicion.x, posicion.y, posicion.z, ValoresParaSeleccion);
+		CargarDatos(ref meshData);
+	}
+
+	private float[] ValoresParaSeleccion(List<Vector3Int> listaDePosiciones)
+    {
+		float[] valores = new float[8];
+		for (int i = 0; i < 8; i++)
+			valores[i] = m_datos.GetValor(listaDePosiciones[i], m_tipoMaterial);
+		return valores;
 	}
 
 	public void GenerarMeshColision(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, Constitucion entidad)
     {
-		Inicializar(preInfo, datos, entidad);
-		Vector3Int minimos = extremo.m_minimo, maximos = extremo.m_maximo;
+		Inicializar(preInfo, datos);
+		m_entidad = entidad;
 
+		Vector3Int minimos = extremo.m_minimo, maximos = extremo.m_maximo;
 		for (int x = minimos.x - 1; x < maximos.x + 1; x++)
 			for (int y = minimos.y - 1; y < maximos.y + 1; y++)
 				for (int z = minimos.z - 1; z < maximos.z + 1; z++)
-					GenerarCubo(x, y, z);
+					GenerarCubo(x, y, z, ValoresParaColision);
 
 		CargarDatos(ref preInfo);
     }
 
-	public void Inicializar(MeshData preInformacion, ISacarDatos datos, Constitucion entidad)
-    {
-		m_meshData = preInformacion;
-		m_datos = datos;
-		m_entidad = entidad;
+	private float[] ValoresParaColision(List<Vector3Int> listaDePosiciones)
+	{
+		float[] valores = new float[8];
+		for (int i = 0; i < 8; i++)
+			valores[i] = m_datos.GetColision(listaDePosiciones[i], m_entidad);
+		return valores;
 	}
+
 
 	public void CargarDatos(ref MeshData preInformacion)
 	{
 		preInformacion = m_meshData;
 	}
 
-	private void GenerarCubo(int x, int y, int z)
+	private void GenerarCubo(int x, int y, int z, Func<List<Vector3Int>, float[]> ValoresDeCubo)
     {
 		List<Vector3Int> posicionesCubo = PosicionesDelCubo(x, y, z);
 		float[] valores = ValoresDeCubo(posicionesCubo);
@@ -266,18 +284,18 @@ public class MarchingCubes : MonoBehaviour, IRender
 
 	private Vector3 VectorMedio(Vector3 posicionA, float valorA, Vector3 posicionB, float valorB)
     {
-		float valorMedio = Mathf.Lerp(valorA, valorB, m_nivelDelSuelo);
+		float valorMedio = Mathf.InverseLerp(valorA, valorB, m_nivelDelSuelo);
 		return Vector3.Lerp(posicionA, posicionB, Mathf.Clamp(valorMedio, 0f, 1f));
     }
 
 
-	private float[] ValoresDeCubo(List<Vector3Int> listaDePosiciones)
+	/*private float[] ValoresDeCubo(List<Vector3Int> listaDePosiciones)
     {
 		float[] valores = new float[8];
 		for (int i = 0; i < 8; i++)
 			valores[i] = m_datos.GetColision(listaDePosiciones[i], m_entidad);
 		return valores;
-    }
+    }*/
 
 	private List<Vector3Int> PosicionesDelCubo(int x, int y, int z)
     {
@@ -294,7 +312,7 @@ public class MarchingCubes : MonoBehaviour, IRender
 		return posiciones;
 	}
 
-	int[,] TriangulationTable = new int[256, 16] 
+    int[,] TriangulationTable = new int[256, 16] 
 	{
 		{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
 		{ 0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },

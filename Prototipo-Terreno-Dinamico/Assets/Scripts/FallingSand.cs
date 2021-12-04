@@ -52,6 +52,11 @@ public class FallingSand : MonoBehaviour
         m_mapa.GenerarMeshColision(render, rangoEntidad, entidad);
     }
 
+    public void SeleccionarElemento(Vector3Int posicion)
+    {
+        m_mapa.SeleccionarElemento(render, posicion);
+    }
+
 
     public Vector3 PosicionEnMundo(Vector3 posicion)
     {
@@ -75,7 +80,6 @@ public class FallingSand : MonoBehaviour
         return color == m_defaultColor;
     }
 
-    // dar el elemento magico
 
     public ElementoMagico DarElementoMagico(Vector3 posicion)
     {

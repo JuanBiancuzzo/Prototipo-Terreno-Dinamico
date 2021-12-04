@@ -27,6 +27,7 @@ public abstract class IConetenedorGeneral : MonoBehaviour, IContenedor, ISacarDa
     public abstract bool Intercambiar(Elemento elementoOrigen, Elemento elementoDestino);
     public abstract void Renderizar(IRender render, ISacarDatos contenedor = null);
     public abstract void GenerarMeshColision(IRender render, Extremo rangoEntidad, Constitucion entidad);
+    public abstract void SeleccionarElemento(IRender render, Vector3Int posicion);
     public abstract IEnumerable<Elemento> ElementoParaActualizar();
     public abstract void CalcularIluminacion();
 }

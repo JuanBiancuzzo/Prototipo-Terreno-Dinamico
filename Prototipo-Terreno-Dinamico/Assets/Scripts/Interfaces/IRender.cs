@@ -13,4 +13,5 @@ public interface IRender
 {
     public void GenerarMesh(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, TipoMaterial tipoMaterial = TipoMaterial.Opaco, int LOD = 1);
     public void GenerarMeshColision(Extremo extremo, ISacarDatos datos, ref MeshData preInfo, Constitucion entidad);
+    public void GenerarMeshSeleccion(Vector3Int posicion, ISacarDatos datos, ref MeshData meshData);
 }

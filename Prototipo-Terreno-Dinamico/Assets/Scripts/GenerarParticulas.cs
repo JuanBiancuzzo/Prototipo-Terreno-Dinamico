@@ -26,12 +26,16 @@ public class GenerarParticulas : MonoBehaviour
 
     void FixedUpdate()
 	{
+		simulacion.SeleccionarElemento(Vector3Int.FloorToInt(transform.position));
+
+		/*
 		if (!tirar)
 			return;
 
+		 
 		TirarPlancha(anchoPlancha, Vector3Int.FloorToInt(transform.position), (int)m_materialSeleccionado);
 		if (!continuo)
-			tirar = false;
+			tirar = false; */
 	}
 
 	void TirarPlancha(int ancho, Vector3Int posicion, int index)
