@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnergiaCoin 
 {
-    static int minimo = 0, maximo = 100;
+    static int minimo = 0, maximo = 300;
     int m_cantidad;
 
     public int Valor => m_cantidad;

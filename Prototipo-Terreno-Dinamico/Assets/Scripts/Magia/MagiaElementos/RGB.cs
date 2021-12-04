@@ -24,9 +24,8 @@ public class RGB : IEnergia
 
     public EnergiaCoin Aumentar(EnergiaCoin energia)
     {
-        float energiaAAgregar = AtributoFloat.EnergiaAAtributo(energia);
+        float energiaPorColor = AtributoFloat.EnergiaAAtributo(energia);
 
-        float energiaPorColor = energiaAAgregar / 3;
         List<AtributoFloat> rgb = new List<AtributoFloat> { r, g, b };
 
         float energiaRestanteTotal = 0;
@@ -42,9 +41,8 @@ public class RGB : IEnergia
 
     public EnergiaCoin Disminuir(EnergiaCoin energia)
     {
-        float energiaAAgregar = AtributoFloat.EnergiaAAtributo(energia);
+        float energiaPorColor = AtributoFloat.EnergiaAAtributo(energia);
 
-        float energiaPorColor = energiaAAgregar / 3;
         List<AtributoFloat> rgb = new List<AtributoFloat> { r, g, b };
 
         float energiaRestanteTotal = 0;
