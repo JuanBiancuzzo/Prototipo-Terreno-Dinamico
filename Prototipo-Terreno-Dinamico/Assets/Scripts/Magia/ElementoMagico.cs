@@ -6,6 +6,7 @@ public class ElementoMagico
     protected RGB m_rgb;
     protected Alfa m_alfa;
     protected Temperatura m_temperatura;
+    protected Concentracion m_concentracion;
 
     private Color m_color;
 
@@ -13,14 +14,16 @@ public class ElementoMagico
     public int TemperaturaValor => m_temperatura.TemperaturaValor;
     public Color ColorValor => m_color;
     public float AlfaValor => m_alfa.AlfaValor;
+    public int ConcentracionValor => m_concentracion.ConcentracionValor;
 
-    public ElementoMagico(int iluminacion, Color color, int temperatura)
+    public ElementoMagico(int iluminacion, Color color, int temperatura, int concentracion)
     {
         m_color = color;
         m_iluminacion = new Iluminacion(iluminacion);
         m_temperatura = new Temperatura(temperatura);
         m_rgb = new RGB(new Vector3(color.r, color.g, color.b));
         m_alfa = new Alfa(color.a);
+        m_concentracion = new Concentracion(concentracion);
     }
 
     public void DarMagia()
@@ -69,6 +72,8 @@ public class ElementoMagico
                 return m_alfa;
             case TipoDeMagia.Temperatura:
                 return m_temperatura;
+            case TipoDeMagia.Concentracion:
+                return m_concentracion;
         }
 
         return null;

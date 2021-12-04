@@ -89,9 +89,9 @@ public class Mundo : IConetenedorGeneral
             return true;
         }
 
-        if (elemento.MismoElemento(elementoEnPosicion) && elementoEnPosicion.MaximoParaRecibir() >= elemento.m_concentracion)
+        if (elemento.MismoElemento(elementoEnPosicion) && elementoEnPosicion.MaximoParaRecibir() >= elemento.ConcentracionValor)
         {
-            int cantidadExtra = elementoEnPosicion.Agregar(elemento.m_concentracion);
+            int cantidadExtra = elementoEnPosicion.Agregar(elemento.ConcentracionValor);
             if (cantidadExtra > 0)
                 Debug.LogWarning("Algo esta funcionando mal aca");
         }

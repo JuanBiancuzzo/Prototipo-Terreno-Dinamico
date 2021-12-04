@@ -7,7 +7,7 @@ public class Concreto : Solido
     public Concreto (Vector3Int posicion, IConetenedorGeneral mundo) : base (posicion, mundo)
     {
         NuevoColor(new Color(0.75f, 0.75f, 0.75f, 1));
-        m_concentracion = 100;
+        m_concentracion.NuevoValor(100);
     }
 
     public override void Avanzar(int dt)

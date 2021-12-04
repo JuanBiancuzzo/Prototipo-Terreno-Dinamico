@@ -96,7 +96,7 @@ public abstract class Solido : Elemento
 
     public override bool PermiteMoverse(Elemento elemento)
     {
-        return m_concentracion * 5 < elemento.m_concentracion * 2;
+        return ConcentracionValor * 5 < elemento.ConcentracionValor * 2;
     }
 
     public override int CantidadADar()
@@ -131,7 +131,7 @@ public abstract class Solido : Elemento
         foreach (Elemento elemento in elementoDelMismoElemento)
             cantidadAdimitida += elemento.MaximoParaRecibir();
 
-        return m_concentracion < cantidadAdimitida * 0.9f;
+        return ConcentracionValor < cantidadAdimitida * 0.9f;
     }
 
     public override bool PermiteIntercambiar()

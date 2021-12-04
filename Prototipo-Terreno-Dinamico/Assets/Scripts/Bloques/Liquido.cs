@@ -130,7 +130,7 @@ public abstract class Liquido : Elemento
         foreach (Elemento elemento in elementoDelMismoElemento)
             cantidadAdimitida += elemento.MaximoParaRecibir();
 
-        return m_concentracion < cantidadAdimitida;
+        return ConcentracionValor < cantidadAdimitida;
     }
 
     public override bool PermiteIntercambiar()

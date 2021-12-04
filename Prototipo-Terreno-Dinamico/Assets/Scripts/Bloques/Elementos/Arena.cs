@@ -7,7 +7,7 @@ public class Arena : Solido
     public Arena(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
         NuevoColor(new Color(1, 0.88f, 0.29f, 1));
-        m_concentracion = 30;
+        m_concentracion.NuevoValor(30);
     }
 
     public override Elemento Expandir(Vector3Int posicion)

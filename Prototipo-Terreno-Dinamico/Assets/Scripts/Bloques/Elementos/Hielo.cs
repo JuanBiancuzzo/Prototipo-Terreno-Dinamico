@@ -7,7 +7,7 @@ public class Hielo : Solido
     public Hielo(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
     {
         NuevoColor(new Color(1, 1, 1, 1));
-        m_concentracion = 100;
+        m_concentracion.NuevoValor(100);
     }
 
     public override void Avanzar(int dt)

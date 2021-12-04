@@ -12,17 +12,15 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public Vector3Int m_posicion;
 
-    public int m_concentracion;
     public bool m_actualizado = false;
 
     protected IConetenedorGeneral m_mundo;
 
-    public Elemento(Vector3Int posicion, IConetenedorGeneral mundo) : base(13, new Color(1, 1, 1, 1), 290)
+    public Elemento(Vector3Int posicion, IConetenedorGeneral mundo) 
+        : base(13, new Color(1, 1, 1, 1), 290, 25)
     {
         m_posicion = posicion;
         m_mundo = mundo;
-
-        m_concentracion = 25;
     }
 
     protected void NuevoColor(Color color)
@@ -158,18 +156,20 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
                         elementoDelMismoElemento.Add(elemento);
                 }
 
-        elementoDelMismoElemento.Sort((a, b) => b.m_concentracion.CompareTo(a.m_concentracion));
+        elementoDelMismoElemento.Sort((a, b) => 
+            b.ConcentracionValor.CompareTo(a.ConcentracionValor)
+        );
 
         for (int i = 0; i < elementoDelMismoElemento.Count; i++)
         {
             Elemento elemento = elementoDelMismoElemento[i];
 
-            int cantidadADar = DarCantidad(m_concentracion / (elementoDelMismoElemento.Count - i));
+            int cantidadADar = DarCantidad(ConcentracionValor / (elementoDelMismoElemento.Count - i));
             int cantidadExtra = elemento.Agregar(cantidadADar);
             Agregar(cantidadExtra);
         }
 
-        if (m_concentracion > 0)
+        if (ConcentracionValor > 0)
             Debug.LogError("Se esta perdiendo: " + m_concentracion + " densidad");
     }
 
@@ -182,23 +182,23 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public virtual int DarCantidad(int cantidad)
     {
-        cantidad = Mathf.Min(cantidad, m_concentracion);
-        m_concentracion -= cantidad;
+        cantidad = Mathf.Min(cantidad, ConcentracionValor);
+        m_concentracion.Disminuir(cantidad);
         return cantidad;
     }
 
     public virtual int Agregar(int cantidadDensidad)
     {
-        m_concentracion += cantidadDensidad;
-        int resto = m_concentracion - m_maximoValor;
+        m_concentracion.Aumentar(cantidadDensidad);
+        int resto = ConcentracionValor - m_maximoValor;
         if (resto > 0)
-            m_concentracion = m_maximoValor;
+            m_concentracion.NuevoValor(m_maximoValor);
         return (resto < 0) ? 0 : resto;
     }
 
     public virtual int MaximoParaRecibir()
     {
-        return m_maximoValor - m_concentracion;
+        return m_maximoValor - ConcentracionValor;
     }
 
     // tal vez tener un metodo que en globe la idea de que un elemento quiere estar en esa posicion
@@ -211,7 +211,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public bool Vacio()
     {
-        return m_concentracion == 0;
+        return ConcentracionValor == 0;
     }
 
     public bool MismoElemento(Elemento elemento)
@@ -228,8 +228,8 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     public virtual void DividirAtributos(Elemento otro)
     {
         IgualarAtributos(otro);
-        otro.m_concentracion = m_concentracion / 2;
-        m_concentracion -= otro.m_concentracion;
+        otro.m_concentracion.NuevoValor(ConcentracionValor / 2);
+        m_concentracion.Disminuir(otro.ConcentracionValor);
         otro.Actualizado();
     }
 
@@ -263,7 +263,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
         if (DarDefualt(tipoMaterial))
             return m_defaultValor;
 
-        float t = Mathf.InverseLerp(m_minimoValor, m_maximoValor, m_concentracion);
+        float t = Mathf.InverseLerp(m_minimoValor, m_maximoValor, ConcentracionValor);
         return Mathf.Lerp(0.19f, 1f, t);
     }
 
@@ -308,7 +308,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
         if (e2 == null)
             return e1;
 
-        return (e1.m_concentracion >= e2.m_concentracion) ? e1 : e2;
+        return (e1.ConcentracionValor >= e2.ConcentracionValor) ? e1 : e2;
     }
 
     public static Elemento ElementoConMayorConcentracion(Vector3Int posicion, IConetenedorGeneral mundo, Elemento excepcion = null)
