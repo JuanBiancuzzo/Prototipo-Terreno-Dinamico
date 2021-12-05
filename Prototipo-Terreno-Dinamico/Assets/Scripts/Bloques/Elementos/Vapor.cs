@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Vapor : Gaseoso
 {
-    public Vapor(Vector3Int posicion, IConetenedorGeneral mundo) : base(posicion, mundo)
+    public Vapor(Vector3Int posicion, IContenedorGeneral mundo) : base(posicion, mundo)
     {
         NuevoColor(new Color(0.1f, 0.1f, 0.1f, 0.5f));
     }

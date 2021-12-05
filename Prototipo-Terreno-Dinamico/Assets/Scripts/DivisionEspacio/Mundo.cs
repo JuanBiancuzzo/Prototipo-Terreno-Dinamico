@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mundo : IConetenedorGeneral
+public class Mundo : IContenedorGeneral
 {
     Vector3Int m_posicion => Vector3Int.FloorToInt(transform.position);
     public Extremo m_extremo;

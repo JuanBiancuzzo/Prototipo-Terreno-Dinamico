@@ -10,7 +10,7 @@ public interface IContenedorConDatos : ISacarDatos, IContenedor
 {
 }
 
-public abstract class IConetenedorGeneral : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
+public abstract class IContenedorGeneral : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
 {   
     public abstract Elemento Eliminar(Vector3Int posicion);
     public abstract Elemento Eliminar(Elemento elemento);

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Concreto : Solido
 {
-    public Concreto (Vector3Int posicion, IConetenedorGeneral mundo) : base (posicion, mundo)
+    public Concreto (Vector3Int posicion, IContenedorGeneral mundo) : base (posicion, mundo)
     {
         NuevoColor(new Color(0.75f, 0.75f, 0.75f, 1));
         m_concentracion.NuevoValor(100);
