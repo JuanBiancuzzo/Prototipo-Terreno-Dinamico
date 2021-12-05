@@ -7,21 +7,22 @@ using UnityEngine;
 public class ElementoSeleccionado : MonoBehaviour
 {
     Mesh m_mesh;
+    MeshFilter m_meshFilter;
 
     private void Awake()
     {
         m_mesh = new Mesh();
         GetComponent<MeshFilter>().sharedMesh = m_mesh;
+        
     }
 
-    private void FixedUpdate()
+    public void LimplearMesh()
     {
         m_mesh.Clear();
     }
 
     public void CargarNuevaMesh(MeshData meshData)
     {
-        m_mesh.Clear();
         meshData.RellenarMesh(m_mesh);
     }
 }

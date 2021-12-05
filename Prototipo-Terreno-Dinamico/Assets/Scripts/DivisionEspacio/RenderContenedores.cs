@@ -42,8 +42,14 @@ public class RenderContenedores : MonoBehaviour, IRenderizable
 
     public void RenderizarElemento(IRender render, Vector3Int posicion)
     {
-        if (objectoSeleccionado == null || !mundo.EnRango(posicion))
+        if (objectoSeleccionado == null)
             return;
+
+        if (!mundo.EnRango(posicion))
+        {
+            objectoSeleccionado.LimplearMesh();
+            return;
+        }
 
         MeshData meshData = new MeshData();
         render.GenerarMeshSeleccion(posicion, mundo.sacarDatos, ref meshData);
