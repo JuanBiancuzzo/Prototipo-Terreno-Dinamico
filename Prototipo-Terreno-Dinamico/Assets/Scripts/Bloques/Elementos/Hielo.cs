@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Hielo : Solido
 {
-    public Hielo(Vector3Int posicion, IContenedorGeneral mundo) : base(posicion, mundo)
+    public Hielo(Vector3Int posicion, Mundo mundo) : base(posicion, mundo)
     {
         NuevoColor(new Color(1, 1, 1, 1));
         m_concentracion.NuevoValor(100);

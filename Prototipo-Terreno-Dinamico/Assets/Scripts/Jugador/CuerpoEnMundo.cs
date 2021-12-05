@@ -8,9 +8,6 @@ public class CuerpoEnMundo : EntidadMagica
     public FallingSand m_mundo = null;
 
     Vector3Int m_posicion => Vector3Int.FloorToInt(transform.position);
-    Vector3Int minimo => m_posicion - Vector3Int.one * m_extensionCarga;
-    Vector3Int maximo => m_posicion + Vector3Int.one * m_extensionCarga;
-
     Extremo m_extremo;
 
     void Start()

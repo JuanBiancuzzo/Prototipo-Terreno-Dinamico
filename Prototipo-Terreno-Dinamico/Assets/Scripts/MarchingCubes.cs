@@ -288,15 +288,6 @@ public class MarchingCubes : MonoBehaviour, IRender
 		return Vector3.Lerp(posicionA, posicionB, Mathf.Clamp(valorMedio, 0f, 1f));
     }
 
-
-	/*private float[] ValoresDeCubo(List<Vector3Int> listaDePosiciones)
-    {
-		float[] valores = new float[8];
-		for (int i = 0; i < 8; i++)
-			valores[i] = m_datos.GetColision(listaDePosiciones[i], m_entidad);
-		return valores;
-    }*/
-
 	private List<Vector3Int> PosicionesDelCubo(int x, int y, int z)
     {
 		List<Vector3Int> posiciones = new List<Vector3Int>();

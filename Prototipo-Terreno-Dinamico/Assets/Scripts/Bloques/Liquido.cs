@@ -10,7 +10,7 @@ public abstract class Liquido : Elemento
     protected int m_ficDinamica, m_ficEstatica;
     protected int m_flowRate;
 
-    protected Liquido(Vector3Int posicion, IContenedorGeneral mundo) : base(posicion, mundo)
+    protected Liquido(Vector3Int posicion, Mundo mundo) : base(posicion, mundo)
     {
         m_ficDinamica = 2;
         m_ficEstatica = 4;

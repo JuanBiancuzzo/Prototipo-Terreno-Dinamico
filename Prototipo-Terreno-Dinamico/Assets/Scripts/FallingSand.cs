@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FallingSand : MonoBehaviour
 {
-    public IContenedorGeneral m_mapa = null;
+    public Mundo m_mapa = null;
 
     public static float m_default = 0f;
     public static Color m_defaultColor = new Color(1f, 1f, 1f, 1f);

@@ -2,17 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(IContenedorGeneral))]
-public class ContenedorMundo : Contenedor
+[RequireComponent(typeof(Mundo))]
+public class ContenedorMundo : MonoBehaviour, IContenedor
 {
+    protected Mundo mundo;
 
-    IContenedorGeneral mundo;
+    public Extremo m_extremo;
+    public Vector3Int m_extension => m_extremo.m_maximo - m_extremo.m_minimo;
     Elemento[,,] m_elementos;
     public IGenerador m_generador;
 
     private void Awake()
     {
-        mundo = GetComponent<IContenedorGeneral>();
+        mundo = GetComponent<Mundo>();
     }
 
     private void Start()
@@ -40,7 +42,7 @@ public class ContenedorMundo : Contenedor
             return new Concreto(posicion, mundo);
     }
 
-    public override bool Insertar(Elemento elemento)
+    public bool Insertar(Elemento elemento)
     {
         if (elemento == null)
             return false;
@@ -82,7 +84,7 @@ public class ContenedorMundo : Contenedor
         return posicionMundo - m_extremo.m_minimo;
     }
 
-    public override Elemento Eliminar(Vector3Int posicion)
+    public Elemento Eliminar(Vector3Int posicion)
     {
         if (!EnRango(posicion))
             return null;
@@ -98,12 +100,12 @@ public class ContenedorMundo : Contenedor
         return actual;
     }
 
-    public override Elemento Eliminar(Elemento elemento)
+    public Elemento Eliminar(Elemento elemento)
     {
         return (elemento == null) ? null : Eliminar(elemento.Posicion());
     }
 
-    public override Elemento EnPosicion(Vector3Int posicion)
+    public Elemento EnPosicion(Vector3Int posicion)
     {
         if (!EnRango(posicion))
             return null;
@@ -112,7 +114,7 @@ public class ContenedorMundo : Contenedor
         return m_elementos[posicionRelativa.x, posicionRelativa.y, posicionRelativa.z];
     }
 
-    public override bool EnRango(Vector3Int posicion)
+    public bool EnRango(Vector3Int posicion)
     {
         Vector3Int posicionRelativa = PosicionRelativa(posicion);
         for (int i = 0; i < 3; i++)
@@ -121,12 +123,12 @@ public class ContenedorMundo : Contenedor
         return true;
     }
 
-    public override bool EnRango(Elemento elemento)
+    public bool EnRango(Elemento elemento)
     {
         return (elemento == null) ? false : EnRango(elemento.Posicion());
     }
 
-    public override bool Intercambiar(Vector3Int origen, Vector3Int destino)
+    public bool Intercambiar(Vector3Int origen, Vector3Int destino)
     {
         if (!EnRango(origen) || !EnRango(destino))
             return false;
@@ -143,14 +145,14 @@ public class ContenedorMundo : Contenedor
         return true;
     }
 
-    public override bool Intercambiar(Elemento elementoOrigen, Elemento elementoDestino)
+    public bool Intercambiar(Elemento elementoOrigen, Elemento elementoDestino)
     {
         if (elementoOrigen == null || elementoDestino == null)
             return false;
         return Intercambiar(elementoOrigen.Posicion(), elementoDestino.Posicion());
     }
 
-    public override bool Reemplazar(Elemento elemento, Elemento reemplazo)
+    public bool Reemplazar(Elemento elemento, Elemento reemplazo)
     {
         if (elemento == null | reemplazo == null)
             return false;

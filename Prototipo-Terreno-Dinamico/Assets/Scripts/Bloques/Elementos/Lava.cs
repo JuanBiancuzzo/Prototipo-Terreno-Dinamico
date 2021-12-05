@@ -6,7 +6,7 @@ public class Lava : Liquido
 {
     int temperaturaMaxima = 400;
 
-    public Lava(Vector3Int posicion, IContenedorGeneral mundo) : base(posicion, mundo)
+    public Lava(Vector3Int posicion, Mundo mundo) : base(posicion, mundo)
     {
         NuevoColor(new Color(0.72f, 0.15f, 0.16f, 0.80f));
         m_iluminacion.NuevoValor(m_maximoLuz);

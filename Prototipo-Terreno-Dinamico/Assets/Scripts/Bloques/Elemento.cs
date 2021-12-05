@@ -10,10 +10,10 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     public Vector3Int m_posicion;
 
     public bool m_actualizado = false;
-    protected IContenedorGeneral m_mundo;
+    protected Mundo m_mundo;
 
-    public Elemento(Vector3Int posicion, IContenedorGeneral mundo) 
-        : base(13, new Color(1, 1, 1, 1), 290, 25, 100)
+    public Elemento(Vector3Int posicion, Mundo mundo) 
+        : base(13, new Color(1, 1, 1, 1), 290, 25, 50) // iluminacion, color, temperatura, concentracion y constitucion
     {
         m_posicion = posicion;
         m_mundo = mundo;
@@ -321,7 +321,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
         return (e1.ConcentracionValor >= e2.ConcentracionValor) ? e1 : e2;
     }
 
-    public static Elemento ElementoConMayorConcentracion(Vector3Int posicion, IContenedorGeneral mundo, Elemento excepcion = null)
+    public static Elemento ElementoConMayorConcentracion(Vector3Int posicion, Mundo mundo, Elemento excepcion = null)
     {
         Elemento elementoConMayorDensidad = null;
 

@@ -6,8 +6,3 @@ public interface IRenderizable
 {
     void Renderizar(IRender render, ISacarDatos contenedor = null);
 }
-
-public abstract class Renderizable : MonoBehaviour, IRenderizable
-{
-    public abstract void Renderizar(IRender render, ISacarDatos contenedor = null);
-}

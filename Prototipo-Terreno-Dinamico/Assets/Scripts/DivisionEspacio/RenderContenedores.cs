@@ -2,21 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(IContenedorGeneral))]
-public class RenderContenedores : Renderizable
+[RequireComponent(typeof(Mundo))]
+public class RenderContenedores : MonoBehaviour, IRenderizable
 {
-    IContenedorGeneral mundo;
-
+    protected Mundo mundo;
     Mesh m_mesh;
 
     private void Awake()
     {
-        mundo = GetComponent<IContenedorGeneral>();
+        mundo = GetComponent<Mundo>();
         m_mesh = new Mesh();
         GetComponent<MeshFilter>().sharedMesh = m_mesh;
     }
 
-    public override void Renderizar(IRender render, ISacarDatos contenedor = null)
+    public void Renderizar(IRender render, ISacarDatos contenedor = null)
     {
         MeshData meshDataOpaco = new MeshData();
         render.GenerarMesh(mundo.contenedor.m_extremo, contenedor, ref meshDataOpaco, TipoMaterial.Opaco);

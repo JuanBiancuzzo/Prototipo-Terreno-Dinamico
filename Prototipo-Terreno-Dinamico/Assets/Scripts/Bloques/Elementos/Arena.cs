@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Arena : Solido
 {
-    public Arena(Vector3Int posicion, IContenedorGeneral mundo) : base(posicion, mundo)
+    public Arena(Vector3Int posicion, Mundo mundo) : base(posicion, mundo)
     {
         NuevoColor(new Color(1, 0.88f, 0.29f, 1));
         m_concentracion.NuevoValor(30);

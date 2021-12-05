@@ -13,20 +13,3 @@ public interface IContenedor
     public bool Reemplazar(Elemento elemento, Elemento reemplazo);
 
 }
-
-public abstract class Contenedor : MonoBehaviour, IContenedor
-{
-
-    public Extremo m_extremo;
-    public Vector3Int m_extension => m_extremo.m_maximo - m_extremo.m_minimo;
-
-    public abstract Elemento Eliminar(Vector3Int posicion);
-    public abstract Elemento Eliminar(Elemento elemento);
-    public abstract Elemento EnPosicion(Vector3Int posicion);
-    public abstract bool EnRango(Vector3Int posicion);
-    public abstract bool EnRango(Elemento elemento);
-    public abstract bool Insertar(Elemento elemento);
-    public abstract bool Intercambiar(Vector3Int origen, Vector3Int destino);
-    public abstract bool Intercambiar(Elemento elementoOrigen, Elemento elementoDestino);
-    public abstract bool Reemplazar(Elemento elemento, Elemento reemplazo);
-}

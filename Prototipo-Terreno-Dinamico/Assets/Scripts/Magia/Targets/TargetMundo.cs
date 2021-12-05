@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class TargetMundo : ITarget
 {
-    IContenedorGeneral m_mundo;
+    Mundo m_mundo;
 
-    public TargetMundo(IContenedorGeneral mundo)
+    public TargetMundo(Mundo mundo)
     {
         m_mundo = mundo;
     }

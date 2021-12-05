@@ -12,7 +12,7 @@ public abstract class Solido : Elemento
 
     protected int m_flowRate;
 
-    protected Solido(Vector3Int posicion, IContenedorGeneral mundo) : base(posicion, mundo)
+    protected Solido(Vector3Int posicion, Mundo mundo) : base(posicion, mundo)
     {
         m_estabilidad = Vector3Int.zero;
         m_ficDinamica = 2;

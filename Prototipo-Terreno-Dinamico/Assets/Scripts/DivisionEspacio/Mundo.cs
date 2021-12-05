@@ -2,25 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Colisiones))]
-[RequireComponent(typeof(SacarDatos))]
-[RequireComponent(typeof(Renderizable))]
-[RequireComponent(typeof(Contenedor))]
-public class Mundo : IContenedorGeneral
+[RequireComponent(typeof(ColisionesMundo))]
+[RequireComponent(typeof(SacarDatosMundo))]
+[RequireComponent(typeof(RenderContenedores))]
+[RequireComponent(typeof(ContenedorMundo))]
+public class Mundo : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable, IColisiones
 {
+
+    public RenderContenedores renderizable;
+    public ColisionesMundo colisiones;
+    public SacarDatosMundo sacarDatos;
+    public ContenedorMundo contenedor;
     Vector3Int m_posicion => Vector3Int.FloorToInt(transform.position);
 
 
     public ElementoSeleccionado objectoSeleccionado;
     private void Awake()
     {
-        renderizable = GetComponent<Renderizable>();
-        colisiones = GetComponent<Colisiones>();
-        sacarDatos = GetComponent<SacarDatos>();
-        contenedor = GetComponent<Contenedor>();
+        renderizable = GetComponent<RenderContenedores>();
+        colisiones = GetComponent<ColisionesMundo>();
+        sacarDatos = GetComponent<SacarDatosMundo>();
+        contenedor = GetComponent<ContenedorMundo>();
     }
 
-    public override IEnumerable<Elemento> ElementoParaActualizar()
+    public IEnumerable<Elemento> ElementoParaActualizar()
     {
         for (int x = 0; x < contenedor.m_extension.x; x++)
             for (int y = 0; y < contenedor.m_extension.y; y++)
@@ -33,7 +38,7 @@ public class Mundo : IContenedorGeneral
                 }
     }
 
-    public override void CalcularIluminacion()
+    public void CalcularIluminacion()
     {
         for (int x = 0; x < contenedor.m_extension.x; x++)
             for (int y = 0; y < contenedor.m_extension.y; y++)
@@ -47,7 +52,7 @@ public class Mundo : IContenedorGeneral
 
     }
 
-    public override void SeleccionarElemento(IRender render, Vector3Int posicion)
+    public void SeleccionarElemento(IRender render, Vector3Int posicion)
     {
         if (objectoSeleccionado == null || !EnRango(posicion))
             return;
@@ -57,77 +62,77 @@ public class Mundo : IContenedorGeneral
         objectoSeleccionado.CargarNuevaMesh(meshData);
     }
 
-    public override bool Insertar(Elemento elemento)
+    public bool Insertar(Elemento elemento)
     {
         return contenedor.Insertar(elemento);
     }
 
-    public override Elemento Eliminar(Vector3Int posicion)
+    public Elemento Eliminar(Vector3Int posicion)
     {
         return contenedor.Eliminar(posicion);
     }
 
-    public override Elemento Eliminar(Elemento elemento)
+    public Elemento Eliminar(Elemento elemento)
     {
         return contenedor.Eliminar(elemento);
     }
 
-    public override bool Intercambiar(Vector3Int origen, Vector3Int destino)
+    public bool Intercambiar(Vector3Int origen, Vector3Int destino)
     {
         return contenedor.Intercambiar(origen, destino);
     }
 
-    public override bool Intercambiar(Elemento elementoOrigen, Elemento elementoDestino)
+    public bool Intercambiar(Elemento elementoOrigen, Elemento elementoDestino)
     {
         return contenedor.Intercambiar(elementoOrigen, elementoDestino);
     }
 
-    public override bool Reemplazar(Elemento elemento, Elemento reemplazo)
+    public bool Reemplazar(Elemento elemento, Elemento reemplazo)
     {
         return contenedor.Reemplazar(elemento, reemplazo);
     }
 
-    public override Elemento EnPosicion(Vector3Int posicion)
+    public Elemento EnPosicion(Vector3Int posicion)
     {
         return contenedor.EnPosicion(posicion);
     }
 
-    public override bool EnRango(Vector3Int posicion)
+    public bool EnRango(Vector3Int posicion)
     {
         return contenedor.EnRango(posicion);
     }
 
-    public override bool EnRango(Elemento elemento)
+    public bool EnRango(Elemento elemento)
     {
         return contenedor.EnRango(elemento);
     }
 
-    public override Color GetColor(Vector3Int posicion, TipoMaterial tipoMaterial, Color defaultColor = default)
+    public Color GetColor(Vector3Int posicion, TipoMaterial tipoMaterial, Color defaultColor = default)
     {
         return sacarDatos.GetColor(posicion, tipoMaterial, defaultColor);
     }
 
-    public override float GetValor(Vector3Int posicion, TipoMaterial tipoMaterial, float defaultValor = 0)
+    public float GetValor(Vector3Int posicion, TipoMaterial tipoMaterial, float defaultValor = 0)
     {
         return sacarDatos.GetValor(posicion, tipoMaterial, defaultValor);
     }
 
-    public override int GetIluminacion(Vector3Int posicion, int defaultIluminacion = 0)
+    public int GetIluminacion(Vector3Int posicion, int defaultIluminacion = 0)
     {
         return sacarDatos.GetIluminacion(posicion, defaultIluminacion);
     }
 
-    public override float GetColision(Vector3Int posicion, Constitucion otro, float defaultColision = 0f)
+    public float GetColision(Vector3Int posicion, Constitucion otro, float defaultColision = 0f)
     {
         return sacarDatos.GetColision(posicion, otro, defaultColision);
     }
 
-    public override void Renderizar(IRender render, ISacarDatos contenedor = null)
+    public void Renderizar(IRender render, ISacarDatos contenedor = null)
     {
         renderizable.Renderizar(render, this);
     }
 
-    public override void GenerarMeshColision(IRender render, Extremo rangoEntidad, Constitucion entidad)
+    public void GenerarMeshColision(IRender render, Extremo rangoEntidad, Constitucion entidad)
     {
         colisiones.GenerarMeshColision(render, rangoEntidad, entidad);
     }

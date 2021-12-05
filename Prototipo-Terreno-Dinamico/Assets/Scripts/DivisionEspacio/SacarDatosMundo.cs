@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(IContenedorGeneral))]
-public class SacarDatosMundo : SacarDatos
+[RequireComponent(typeof(Mundo))]
+public class SacarDatosMundo : MonoBehaviour, ISacarDatos
 {
-    IContenedorGeneral mundo;
+    protected Mundo mundo;
 
     private void Awake()
     {
-        mundo = GetComponent<IContenedorGeneral>();
+        mundo = GetComponent<Mundo>();
     }
 
-    public override float GetColision(Vector3Int posicion, Constitucion otro, float defaultColision = 0)
+    public float GetColision(Vector3Int posicion, Constitucion otro, float defaultColision = 0)
     {
         if (!mundo.EnRango(posicion))
             return defaultColision;
@@ -24,7 +24,7 @@ public class SacarDatosMundo : SacarDatos
         return elemento.GetColision(otro, defaultColision);
     }
 
-    public override Color GetColor(Vector3Int posicion, TipoMaterial tipoMaterial, Color defaultColor = default)
+    public Color GetColor(Vector3Int posicion, TipoMaterial tipoMaterial, Color defaultColor = default)
     {
         if (!mundo.EnRango(posicion))
             return defaultColor;
@@ -36,7 +36,7 @@ public class SacarDatosMundo : SacarDatos
         return elemento.GetColor(tipoMaterial, defaultColor);
     }
 
-    public override int GetIluminacion(Vector3Int posicion, int defaultIluminacion = 0)
+    public int GetIluminacion(Vector3Int posicion, int defaultIluminacion = 0)
     {
         if (!mundo.EnRango(posicion))
             return defaultIluminacion;
@@ -48,7 +48,7 @@ public class SacarDatosMundo : SacarDatos
         return elemento.GetIluminacion(); 
     }
 
-    public override float GetValor(Vector3Int posicion, TipoMaterial tipoMaterial, float defaultValor = 0)
+    public float GetValor(Vector3Int posicion, TipoMaterial tipoMaterial, float defaultValor = 0)
     {
         if (!mundo.EnRango(posicion))
             return defaultValor;
