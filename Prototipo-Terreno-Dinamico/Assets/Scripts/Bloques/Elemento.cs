@@ -260,10 +260,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public float GetValor(TipoMaterial tipoMaterial, float defaultValor)
     {
-        if (DarDefualt(tipoMaterial))
-            return defaultValor;
-
-        return ValorInterpolado();
+        return (DarDefualt(tipoMaterial)) ? defaultValor : ValorInterpolado();
     }
 
     private float ValorInterpolado()

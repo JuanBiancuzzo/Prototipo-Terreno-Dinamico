@@ -26,6 +26,7 @@ public class GenerarParticulas : MonoBehaviour
 
     void FixedUpdate()
 	{
+		//simulacion.SeleccionarElemento(new Vector3Int(0, -3, 0));
 		simulacion.SeleccionarElemento(Vector3Int.FloorToInt(transform.position));
 
 		/*

@@ -31,16 +31,17 @@ public class CuerpoEnMundo : EntidadMagica
 
     void CalcularExtremo()
     {
-        Vector3Int posicion = Vector3Int.FloorToInt(m_mundo.PosicionEnMundo(transform.position));
-        m_extremo.m_minimo = posicion - Vector3Int.one * m_extensionCarga;
-        m_extremo.m_maximo = posicion + Vector3Int.one * m_extensionCarga;
+        Vector3Int posicion = Vector3Int.FloorToInt(m_mundo.PosicionEnMundo(m_posicion));
+        m_extremo.m_minimo = posicion - Vector3Int.one * (m_extensionCarga - 1);
+        m_extremo.m_maximo = posicion + Vector3Int.one * (m_extensionCarga - 1);
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.DrawSphere(transform.position, 0.1f);
 
-        Vector3Int extension = (m_extremo.m_maximo - m_extremo.m_minimo);
+        Vector3Int posicion = Vector3Int.FloorToInt(m_mundo.PosicionEnMundo(m_posicion));
+        Vector3Int extension = ((posicion + Vector3Int.one * m_extensionCarga) - (posicion - Vector3Int.one * m_extensionCarga));
         Gizmos.DrawWireCube(Vector3Int.FloorToInt(m_mundo.PosicionEnMundo(transform.position)), extension);
     }
 }

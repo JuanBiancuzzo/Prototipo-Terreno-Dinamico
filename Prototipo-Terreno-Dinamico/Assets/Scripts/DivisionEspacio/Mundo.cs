@@ -15,14 +15,6 @@ public class Mundo : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable, ICo
     public ContenedorMundo contenedor;
     Vector3Int m_posicion => Vector3Int.FloorToInt(transform.position);
 
-    private void Awake()
-    {
-        renderizable = GetComponent<RenderContenedores>();
-        colisiones = GetComponent<ColisionesMundo>();
-        sacarDatos = GetComponent<SacarDatosMundo>();
-        contenedor = GetComponent<ContenedorMundo>();
-    }
-
     public IEnumerable<Elemento> ElementoParaActualizar()
     {
         for (int x = 0; x < contenedor.m_extension.x; x++)
