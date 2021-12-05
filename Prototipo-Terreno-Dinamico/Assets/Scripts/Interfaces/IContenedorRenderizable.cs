@@ -2,16 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IContenedorRenderizable : IRenderizable, IContenedor
+public abstract class IContenedorGeneral : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable, IColisiones
 {
-}
 
-public interface IContenedorConDatos : ISacarDatos, IContenedor
-{
-}
+    public Renderizable renderizable;
+    public Colisiones colisiones;
+    public SacarDatos sacarDatos;
+    public Contenedor contenedor;
 
-public abstract class IContenedorGeneral : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable
-{   
     public abstract Elemento Eliminar(Vector3Int posicion);
     public abstract Elemento Eliminar(Elemento elemento);
     public abstract Elemento EnPosicion(Vector3Int posicion);
