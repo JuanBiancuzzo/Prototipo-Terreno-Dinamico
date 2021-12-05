@@ -7,6 +7,7 @@ public class RenderContenedores : MonoBehaviour, IRenderizable
 {
     protected Mundo mundo;
     Mesh m_mesh;
+    public ElementoSeleccionado objectoSeleccionado;
 
     private void Awake()
     {
@@ -15,15 +16,15 @@ public class RenderContenedores : MonoBehaviour, IRenderizable
         GetComponent<MeshFilter>().sharedMesh = m_mesh;
     }
 
-    public void Renderizar(IRender render, ISacarDatos contenedor = null)
+    public void Renderizar(IRender render)
     {
         MeshData meshDataOpaco = new MeshData();
-        render.GenerarMesh(mundo.contenedor.m_extremo, contenedor, ref meshDataOpaco, TipoMaterial.Opaco);
+        render.GenerarMesh(mundo.contenedor.m_extremo, mundo.sacarDatos, ref meshDataOpaco, TipoMaterial.Opaco);
         Mesh meshOpaco = new Mesh();
         meshDataOpaco.RellenarMesh(meshOpaco);
 
         MeshData meshDataTranslucido = new MeshData();
-        render.GenerarMesh(mundo.contenedor.m_extremo, contenedor, ref meshDataTranslucido, TipoMaterial.Translucido);
+        render.GenerarMesh(mundo.contenedor.m_extremo, mundo.sacarDatos, ref meshDataTranslucido, TipoMaterial.Translucido);
         Mesh meshTranslucido = new Mesh();
         meshDataTranslucido.RellenarMesh(meshTranslucido);
 
@@ -37,5 +38,15 @@ public class RenderContenedores : MonoBehaviour, IRenderizable
             finalCombiner.Add(ci);
         }
         m_mesh.CombineMeshes(finalCombiner.ToArray(), false);
+    }
+
+    public void RenderizarElemento(IRender render, Vector3Int posicion)
+    {
+        if (objectoSeleccionado == null || !mundo.EnRango(posicion))
+            return;
+
+        MeshData meshData = new MeshData();
+        render.GenerarMeshSeleccion(posicion, mundo.sacarDatos, ref meshData);
+        objectoSeleccionado.CargarNuevaMesh(meshData);
     }
 }

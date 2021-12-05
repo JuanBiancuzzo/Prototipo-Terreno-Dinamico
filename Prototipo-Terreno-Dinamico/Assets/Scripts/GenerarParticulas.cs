@@ -71,6 +71,6 @@ public class GenerarParticulas : MonoBehaviour
 
 	void OnDrawGizmos()
     {
-		Gizmos.DrawSphere(transform.position, 0.5f);
+		Gizmos.DrawSphere(transform.position, 0.25f);
 	}
 }

@@ -54,7 +54,7 @@ public class FallingSand : MonoBehaviour
 
     public void SeleccionarElemento(Vector3Int posicion)
     {
-        m_mapa.SeleccionarElemento(render, posicion);
+        m_mapa.RenderizarElemento(render, posicion);
     }
 
 

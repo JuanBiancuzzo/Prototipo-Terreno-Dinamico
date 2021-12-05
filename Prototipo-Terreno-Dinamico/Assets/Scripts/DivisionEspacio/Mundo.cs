@@ -15,8 +15,6 @@ public class Mundo : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable, ICo
     public ContenedorMundo contenedor;
     Vector3Int m_posicion => Vector3Int.FloorToInt(transform.position);
 
-
-    public ElementoSeleccionado objectoSeleccionado;
     private void Awake()
     {
         renderizable = GetComponent<RenderContenedores>();
@@ -50,16 +48,6 @@ public class Mundo : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable, ICo
                 for (int z = contenedor.m_extension.z - 1; z >= 0; z--)
                     contenedor.EnPosicion(new Vector3Int(x, y, z))?.ExpandirLuz();
 
-    }
-
-    public void SeleccionarElemento(IRender render, Vector3Int posicion)
-    {
-        if (objectoSeleccionado == null || !EnRango(posicion))
-            return;
-
-        MeshData meshData = new MeshData();
-        render.GenerarMeshSeleccion(posicion, this, ref meshData);
-        objectoSeleccionado.CargarNuevaMesh(meshData);
     }
 
     public bool Insertar(Elemento elemento)
@@ -127,9 +115,14 @@ public class Mundo : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable, ICo
         return sacarDatos.GetColision(posicion, otro, defaultColision);
     }
 
-    public void Renderizar(IRender render, ISacarDatos contenedor = null)
+    public void Renderizar(IRender render)
     {
-        renderizable.Renderizar(render, this);
+        renderizable.Renderizar(render);
+    }
+
+    public void RenderizarElemento(IRender render, Vector3Int posicion)
+    {
+        renderizable.RenderizarElemento(render, posicion);
     }
 
     public void GenerarMeshColision(IRender render, Extremo rangoEntidad, Constitucion entidad)

@@ -4,5 +4,7 @@ using UnityEngine;
 
 public interface IRenderizable 
 {
-    void Renderizar(IRender render, ISacarDatos contenedor = null);
+    void Renderizar(IRender render);
+
+    void RenderizarElemento(IRender render, Vector3Int posicion);
 }
