@@ -9,10 +9,9 @@ public struct Grupo
     public TipoDeMagia tipoDeMagia;
 };
 
-[CreateAssetMenu(fileName = "MagiaManager", menuName = "Manager/MagiaManager", order = 1)]
-public class MagiaManager : ScriptableObject
+public static class SpellSystem
 {
-    public bool Spell(List<Grupo> dar, List<Grupo> recibir)
+    public static bool Spell(List<Grupo> dar, List<Grupo> recibir)
     {
         EnergiaCoin energiaTotal = new EnergiaCoin();
 
@@ -48,17 +47,17 @@ public class MagiaManager : ScriptableObject
         return true;
     }
 
-    public bool Spell(Grupo dar, Grupo recibir)
+    public static bool Spell(Grupo dar, Grupo recibir)
     {
         return Spell(new List<Grupo> { dar }, new List<Grupo> { recibir });
     }
 
-    public bool Spell(List<Grupo> dar, Grupo recibir)
+    public static bool Spell(List<Grupo> dar, Grupo recibir)
     {
         return Spell(dar, new List<Grupo> { recibir });
     }
 
-    public bool Spell(Grupo dar, List<Grupo> recibir)
+    public static bool Spell(Grupo dar, List<Grupo> recibir)
     {
         return Spell(new List<Grupo> { dar }, recibir);
     }

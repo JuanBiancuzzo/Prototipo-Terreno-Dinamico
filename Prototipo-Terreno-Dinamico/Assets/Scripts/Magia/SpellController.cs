@@ -1,14 +1,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum AccionMagica
+{
+    Punto,
+    //Circulo,
+    //Esfera,
+    Linea,
+    Area,
+    //Volumen
+};
+
 public class SpellController : MonoBehaviour
 {
-    [SerializeField] MagiaManager m_magiaManager;
     [SerializeField] FallingSand m_mundo;
 
     private void Update()
     {
-        if (m_magiaManager == null || m_mundo == null)
+        if (m_mundo == null)
             return;
 
         if (Input.GetKeyDown("space"))
@@ -47,7 +56,7 @@ public class SpellController : MonoBehaviour
             }
         }; 
 
-        bool resultado = m_magiaManager.Spell(darLista, recibirLista);
+        bool resultado = SpellSystem.Spell(darLista, recibirLista);
 
         if (!resultado)
             Debug.LogError("El spell no funciono");
