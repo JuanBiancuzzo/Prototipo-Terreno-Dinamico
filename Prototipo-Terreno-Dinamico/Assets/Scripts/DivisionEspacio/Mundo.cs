@@ -39,7 +39,6 @@ public class Mundo : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable, ICo
             for (int y = contenedor.m_extension.y - 1; y >= 0; y--)
                 for (int z = contenedor.m_extension.z - 1; z >= 0; z--)
                     contenedor.EnPosicion(new Vector3Int(x, y, z))?.ExpandirLuz();
-
     }
 
     public bool Insertar(Elemento elemento)

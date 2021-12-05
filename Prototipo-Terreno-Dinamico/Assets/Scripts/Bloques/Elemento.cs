@@ -165,7 +165,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
         }
 
         if (ConcentracionValor > 0)
-            Debug.LogError("Se esta perdiendo: " + m_concentracion + " densidad");
+            Debug.LogError("Se esta perdiendo: " + ConcentracionValor + " concentracion");
     }
 
     public virtual bool PermiteMoverse(Elemento elemento)
@@ -211,7 +211,10 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public bool MismoElemento(Elemento elemento)
     {
-        return this.GetType() == elemento.GetType();
+
+        Debug.Log("Tenemos: " + GetType() + " contra " + elemento.GetType());
+
+        return GetType() == elemento.GetType();
     }
 
     public abstract bool MismoTipo(Elemento elemento);

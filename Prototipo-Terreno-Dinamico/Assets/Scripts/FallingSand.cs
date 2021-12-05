@@ -4,17 +4,26 @@ using UnityEngine;
 
 public class FallingSand : MonoBehaviour
 {
-    public Mundo m_mapa = null;
+    Mundo m_mapa;
+    MarchingCubes render;
+    public Mundo Mapa { get => m_mapa; }
 
     public static float m_default = 0f;
     public static Color m_defaultColor = new Color(1f, 1f, 1f, 1f);
 
-    public MarchingCubes render;
     public int dt = 1;
 
     public int m_velocidadSimulacion = 5;
 
+    private void Awake()
+    {
+        m_mapa = GetComponentInChildren<Mundo>();
+        render = GetComponentInChildren<MarchingCubes>();
+    }
+
     int contador = 0;
+
+
     void FixedUpdate()
     {
         if (contador == 0)

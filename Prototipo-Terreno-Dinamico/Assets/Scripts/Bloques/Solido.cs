@@ -38,6 +38,7 @@ public abstract class Solido : Elemento
 
             if (MismoElemento(elemento))
             {
+                Debug.Log("En teoria el anterior deberia ser arena contra arena");
                 Solido solido = (Solido)elemento;
 
                 if (solido.MaximoParaRecibir() == 0)
