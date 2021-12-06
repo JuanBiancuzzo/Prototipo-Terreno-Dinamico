@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,10 +23,7 @@ public class Mundo : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable, ICo
                     Vector3Int posicion = new Vector3Int(x, y, z) + contenedor.m_extremo.m_minimo;
                     Elemento elemento = contenedor.EnPosicion(posicion);
                     if (elemento == null)
-                    {
-                        Debug.Log(new Vector3Int(x, y, z));
                         continue;
-                    }
                     yield return elemento;
                 }
     }

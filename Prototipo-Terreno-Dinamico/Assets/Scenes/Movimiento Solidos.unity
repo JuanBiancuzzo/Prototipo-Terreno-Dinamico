@@ -634,7 +634,7 @@ MonoBehaviour:
   m_materialSeleccionado: 1
   anchoPlancha: 0
   tirar: 1
-  continuo: 0
+  continuo: 1
 --- !u!4 &1527085762
 Transform:
   m_ObjectHideFlags: 0
@@ -643,7 +643,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1527085760}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.06, y: 3.52, z: 0.12}
+  m_LocalPosition: {x: 3.68, y: 3.52, z: -3.66}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
