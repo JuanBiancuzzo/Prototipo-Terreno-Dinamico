@@ -113,25 +113,9 @@ public abstract class Liquido : Elemento
 
     public override bool PermiteDesplazar()
     {
-        List<Elemento> elementoDelMismoElemento = new List<Elemento>();
-
-        for (int x = -1; x <= 1; x++)
-            for (int y = -1; y <= 1; y++)
-                for (int z = -1; z <= 1; z++)
-                {
-                    if (x == 0 && z == 0 && y == 0)
-                        continue;
-
-                    Elemento elemento = m_mundo.EnPosicion(m_posicion + new Vector3Int(x, y, z));
-                    if (elemento != null && MismoElemento(elemento) && elemento.MaximoParaRecibir() > 0)
-                        elementoDelMismoElemento.Add(elemento);
-                }
-
-        int cantidadAdimitida = 0;
-        foreach (Elemento elemento in elementoDelMismoElemento)
-            cantidadAdimitida += elemento.MaximoParaRecibir();
-
-        return ConcentracionValor < cantidadAdimitida;
+        Extremo extremo = new Extremo(new Vector3Int(-1, -1, -1), new Vector3Int(1, 1, 1));
+        int cantidadAdmitida = CantidadAdmitidaEnExtremos(extremo);
+        return ConcentracionValor < cantidadAdmitida;
     }
 
     public override bool PermiteIntercambiar()

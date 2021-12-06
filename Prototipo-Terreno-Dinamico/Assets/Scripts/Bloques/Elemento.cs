@@ -96,6 +96,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public void EmpezarAActualizar()
     {
+
         m_actualizado = false;
         if (!Emisor())
             m_iluminacion.NuevoValor(0);
@@ -133,6 +134,30 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public abstract void Desplazar();
 
+    protected int CantidadAdmitidaEnExtremos(Extremo extremo)
+    {
+        List<Elemento> elementoDelMismoElemento = new List<Elemento>();
+
+        Vector3Int minimo = extremo.m_minimo, maximo = extremo.m_maximo;
+
+        for (int x = minimo.x; x <= maximo.x; x++)
+            for (int y = minimo.y; y <= maximo.y; y++)
+                for (int z = minimo.z; z <= maximo.z; z++)
+                {
+                    if (x == 0 && z == 0 && y == 0)
+                        continue;
+
+                    Elemento elemento = m_mundo.EnPosicion(m_posicion + new Vector3Int(x, y, z));
+                    if (elemento != null && MismoElemento(elemento) && elemento.MaximoParaRecibir() > 0)
+                        elementoDelMismoElemento.Add(elemento);
+                }
+
+        int cantidadAdimitida = 0;
+        foreach (Elemento elemento in elementoDelMismoElemento)
+            cantidadAdimitida += elemento.MaximoParaRecibir();
+        return cantidadAdimitida;
+    }
+
     protected void DesplazarEntreExtremos(Extremo extremo)
     {
         List<Elemento> elementoDelMismoElemento = new List<Elemento>();
@@ -151,15 +176,9 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
                         elementoDelMismoElemento.Add(elemento);
                 }
 
-        elementoDelMismoElemento.Sort((a, b) => 
-            b.ConcentracionValor.CompareTo(a.ConcentracionValor)
-        );
-
-        for (int i = 0; i < elementoDelMismoElemento.Count; i++)
+        foreach (Elemento elemento in elementoDelMismoElemento)
         {
-            Elemento elemento = elementoDelMismoElemento[i];
-
-            int cantidadADar = DarCantidad(ConcentracionValor / (elementoDelMismoElemento.Count - i));
+            int cantidadADar = Mathf.Min(DarCantidad(ConcentracionValor), elemento.MaximoParaRecibir());
             int cantidadExtra = elemento.Agregar(cantidadADar);
             Agregar(cantidadExtra);
         }
@@ -211,9 +230,6 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public bool MismoElemento(Elemento elemento)
     {
-
-        Debug.Log("Tenemos: " + GetType() + " contra " + elemento.GetType());
-
         return GetType() == elemento.GetType();
     }
 
@@ -226,19 +242,20 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     public virtual void DividirAtributos(Elemento otro)
     {
         IgualarAtributos(otro);
-        otro.m_concentracion.NuevoValor(ConcentracionValor / 2);
-        m_concentracion.Disminuir(otro.ConcentracionValor);
+        int concentracionNueva = DarCantidad(ConcentracionValor / 2);
+        otro.m_concentracion.NuevoValor(concentracionNueva);
         otro.Actualizado();
     }
 
     public void IgualarAtributos(Elemento otro)
     {
-        otro.m_concentracion = m_concentracion;
-        otro.m_temperatura = m_temperatura;
-        otro.m_iluminacion = m_iluminacion;
-        otro.m_alfa = m_alfa;
-        otro.m_rgb = m_rgb;
+        otro.m_concentracion.NuevoValor(ConcentracionValor);
+        otro.m_temperatura.NuevoValor(TemperaturaValor);
+        otro.m_iluminacion.NuevoValor(IluminacionValor);
+        otro.m_alfa.NuevoValor(AlfaValor);
+        otro.m_rgb.NuevoValor(ColorValor);
         otro.ActualizarColor();
+        otro.Actualizado();
     }
 
     public bool Visible()

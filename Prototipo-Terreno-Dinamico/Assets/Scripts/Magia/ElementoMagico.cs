@@ -16,7 +16,7 @@ public class ElementoMagico : IObjetoMagico
     public Color ColorValor => m_color;
     public float AlfaValor => m_alfa.AlfaValor;
     public int ConcentracionValor => m_concentracion.ConcentracionValor;
-    public int ConsitucionValor => m_consitucion.ConstitucionValor;
+    public int ConstitucionValor => m_consitucion.ConstitucionValor;
 
     public ElementoMagico(int iluminacion, Color color, int temperatura, int concentracion, int constitucion)
     {

@@ -8,9 +8,18 @@ public class AtributoInt
     int m_valor;
 
     public int Valor => m_valor;
-    public void NuevoValor(int valor) => m_valor = valor;
-    public void Aumentar(int cantidad) => m_valor += cantidad;
-    public void Disminuir(int cantidad) => m_valor -= cantidad;
+    public void NuevoValor(int valor)
+    {
+        m_valor = valor;
+    }
+    public void Aumentar(int cantidad)
+    {
+        m_valor += cantidad;
+    }
+    public void Disminuir(int cantidad)
+    {
+        m_valor -= cantidad;
+    }
 
     public AtributoInt(int valor, int minimo, int maximo)
     {

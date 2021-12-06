@@ -17,6 +17,7 @@ public class Mundo : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable, ICo
 
     public IEnumerable<Elemento> ElementoParaActualizar()
     {
+        //Debug.Log(" --- ");
         for (int x = 0; x < contenedor.m_extension.x; x++)
             for (int y = 0; y < contenedor.m_extension.y; y++)
                 for (int z = 0; z < contenedor.m_extension.z; z++)

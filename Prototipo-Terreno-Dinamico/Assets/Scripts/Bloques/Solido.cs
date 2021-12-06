@@ -25,6 +25,7 @@ public abstract class Solido : Elemento
 
     public override void Avanzar(int dt)
     {
+
         if (Vacio())
             return;
 
@@ -37,8 +38,7 @@ public abstract class Solido : Elemento
                 continue;
 
             if (MismoElemento(elemento))
-            {
-                Debug.Log("En teoria el anterior deberia ser arena contra arena");
+            {                
                 Solido solido = (Solido)elemento;
 
                 if (solido.MaximoParaRecibir() == 0)
@@ -102,8 +102,7 @@ public abstract class Solido : Elemento
 
     public override int CantidadADar()
     {
-        int cantidad = (Mathf.Abs(m_velocidad) + 0) * m_flowRate;
-        return DarCantidad(cantidad);
+        return DarCantidad(m_flowRate);
     }
 
     public override void Desplazar()
@@ -114,25 +113,10 @@ public abstract class Solido : Elemento
 
     public override bool PermiteDesplazar()
     {
-        List<Elemento> elementoDelMismoElemento = new List<Elemento>();
+        Extremo extremo = new Extremo(new Vector3Int(-1, -1, -1), new Vector3Int(1, 0, 1));
+        int cantidadAdmitida = CantidadAdmitidaEnExtremos(extremo);
+        return ConcentracionValor < cantidadAdmitida * 0.9f;
 
-        for (int x = -1; x <= 1; x++)
-            for (int y = -1; y <= 0; y++)
-                for (int z = -1; z <= 1; z++)
-                {
-                    if (x == 0 && z == 0 && y == 0)
-                        continue;
-
-                    Elemento elemento = m_mundo.EnPosicion(m_posicion + new Vector3Int(x, y, z));
-                    if (elemento != null && MismoElemento(elemento) && elemento.MaximoParaRecibir() > 0)
-                        elementoDelMismoElemento.Add(elemento);
-                }
-
-        int cantidadAdimitida = 0;
-        foreach (Elemento elemento in elementoDelMismoElemento)
-            cantidadAdimitida += elemento.MaximoParaRecibir();
-
-        return ConcentracionValor < cantidadAdimitida * 0.9f;
     }
 
     public override bool PermiteIntercambiar()
