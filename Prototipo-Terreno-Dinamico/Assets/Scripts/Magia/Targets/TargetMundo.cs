@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TargetMundo : ITarget
+public class TargetMundo
 {
     Mundo m_mundo;
 

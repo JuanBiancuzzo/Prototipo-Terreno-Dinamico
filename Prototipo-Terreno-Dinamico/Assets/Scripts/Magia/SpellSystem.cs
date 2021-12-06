@@ -4,7 +4,7 @@ using UnityEngine;
 
 public struct Grupo
 {
-    public ElementoMagico elemento;
+    public IObjetoMagico elemento;
     public EnergiaCoin energia;
     public TipoDeMagia tipoDeMagia;
 };
@@ -31,6 +31,9 @@ public static class SpellSystem
 
         foreach (Grupo grupo in recibir)
         {
+            Elemento e = (Elemento)grupo.elemento;
+            Debug.Log("Tipo: " + e.GetType() + " y esta en " + e.m_posicion);
+
             grupo.elemento.RecibirMagia();
 
             EnergiaCoin cantidadARecibir = energiaTotal.MenorEnergia(grupo.energia);

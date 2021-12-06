@@ -1,62 +1,53 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AccionMagica
-{
-    Punto,
-    //Circulo,
-    //Esfera,
-    Linea,
-    Area,
-    //Volumen
-};
 
 public class SpellController : MonoBehaviour
 {
-    [SerializeField] FallingSand m_mundo;
+    [SerializeField] Mundo m_mundo;
+    [SerializeField] Camera m_camara;
+
+    private void Awake()
+    {
+        TargetSystem.m_mundo = m_mundo;
+    }
 
     private void Update()
     {
-        if (m_mundo == null)
-            return;
-
         if (Input.GetKeyDown("space"))
             HacerSpell();
     }
 
     private void HacerSpell()
     {
+        int energiaInicial = 50, energiaFinal = 100;
+        Vector3 posicion = transform.position;
+        float extensionMedia = 2f;
+        TipoDeMagia inicio = TipoDeMagia.Color, final = TipoDeMagia.Alfa;
+
+
         List<Grupo> darLista = new List<Grupo>();
 
-        for (int i = 0; i < 8; i++)
+        foreach (IObjetoMagico objetoMagico in TargetSystem.ObjetoEnAmbiente(posicion, extensionMedia))
         {
             Grupo dar = new Grupo()
             {
-                elemento = m_mundo.DarElementoMagico(new Vector3(-4 + i, -3, -3)),
-                energia = new EnergiaCoin(20),
-                tipoDeMagia = TipoDeMagia.Concentracion
+                elemento = objetoMagico,
+                energia = new EnergiaCoin(energiaInicial),
+                tipoDeMagia = inicio
             };
 
             darLista.Add(dar);
         }
 
-        List<Grupo> recibirLista = new List<Grupo>()
+        Grupo recibir = new Grupo()
         {
-            new Grupo()
-            {
-                elemento = m_mundo.DarElementoMagico(new Vector3(3, -2, 3)),
-                energia = new EnergiaCoin(100),
-                tipoDeMagia = TipoDeMagia.Alfa
-            },
-            new Grupo()
-            {
-                elemento = m_mundo.DarElementoMagico(new Vector3(3, -2, 3)),
-                energia = new EnergiaCoin(60),
-                tipoDeMagia = TipoDeMagia.Color
-            }
-        }; 
+            elemento = TargetSystem.ObjetoEnPunto(posicion, m_camara.transform.forward, 6f),
+            energia = new EnergiaCoin(energiaFinal),
+            tipoDeMagia = final
+        };
 
-        bool resultado = SpellSystem.Spell(darLista, recibirLista);
+        bool resultado = SpellSystem.Spell(darLista, recibir);
 
         if (!resultado)
             Debug.LogError("El spell no funciono");
