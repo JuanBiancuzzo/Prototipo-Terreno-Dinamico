@@ -22,8 +22,6 @@ public class FallingSand : MonoBehaviour
     }
 
     int contador = 0;
-
-
     void FixedUpdate()
     {
         if (contador == 0)
@@ -38,11 +36,18 @@ public class FallingSand : MonoBehaviour
             elemento.AntesDeAvanzar();
 
         foreach (Elemento elemento in m_mapa.ElementoParaActualizar())
+        {
+            if (elemento.m_posicion == new Vector3Int(1, 0, 0))
+            {
+                //Debug.Log("De tipo: " + elemento.GetType() + " const: " + elemento.ConstitucionValor);
+            }
+
             if (!elemento.EstaActualizado())
             {
                 elemento.Avanzar(dt);
                 elemento.Actualizado();
             }
+        }
 
         foreach (Elemento elemento in m_mapa.ElementoParaActualizar())
             elemento.DespuesDeAvanzar();

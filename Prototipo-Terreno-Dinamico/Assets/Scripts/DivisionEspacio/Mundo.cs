@@ -17,14 +17,17 @@ public class Mundo : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable, ICo
 
     public IEnumerable<Elemento> ElementoParaActualizar()
     {
-        //Debug.Log(" --- ");
         for (int x = 0; x < contenedor.m_extension.x; x++)
             for (int y = 0; y < contenedor.m_extension.y; y++)
                 for (int z = 0; z < contenedor.m_extension.z; z++)
                 {
-                    Elemento elemento = contenedor.EnPosicion(new Vector3Int(x, y, z));
+                    Vector3Int posicion = new Vector3Int(x, y, z) + contenedor.m_extremo.m_minimo;
+                    Elemento elemento = contenedor.EnPosicion(posicion);
                     if (elemento == null)
+                    {
+                        Debug.Log(new Vector3Int(x, y, z));
                         continue;
+                    }
                     yield return elemento;
                 }
     }
@@ -34,12 +37,18 @@ public class Mundo : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable, ICo
         for (int x = 0; x < contenedor.m_extension.x; x++)
             for (int y = 0; y < contenedor.m_extension.y; y++)
                 for (int z = 0; z < contenedor.m_extension.z; z++)
-                    contenedor.EnPosicion(new Vector3Int(x, y, z))?.ExpandirLuz();
+                {
+                    Vector3Int posicion = new Vector3Int(x, y, z) + contenedor.m_extremo.m_minimo;
+                    contenedor.EnPosicion(posicion)?.ExpandirLuz();
+                }
 
         for (int x = contenedor.m_extension.x - 1; x >= 0; x--)
             for (int y = contenedor.m_extension.y - 1; y >= 0; y--)
                 for (int z = contenedor.m_extension.z - 1; z >= 0; z--)
-                    contenedor.EnPosicion(new Vector3Int(x, y, z))?.ExpandirLuz();
+                {
+                    Vector3Int posicion = new Vector3Int(x, y, z) + contenedor.m_extremo.m_minimo;
+                    contenedor.EnPosicion(posicion)?.ExpandirLuz();
+                }
     }
 
     public bool Insertar(Elemento elemento)

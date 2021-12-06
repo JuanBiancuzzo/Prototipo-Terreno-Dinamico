@@ -25,7 +25,6 @@ public abstract class Solido : Elemento
 
     public override void Avanzar(int dt)
     {
-
         if (Vacio())
             return;
 
