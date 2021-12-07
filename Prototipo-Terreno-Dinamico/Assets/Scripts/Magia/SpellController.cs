@@ -5,6 +5,8 @@ using UnityEngine;
 public enum Rangos
 {
     Punto,
+    Linea,
+    Area,
     Ambiente
 }
 
@@ -76,11 +78,16 @@ public class SpellController : MonoBehaviour
     private List<IObjetoMagico> ObjetosPorRango(Rangos rango)
     {
         Vector3 posicion = transform.position;
+        Vector3 direccion = m_camara.transform.forward;
 
         switch (rango)
         {
             case Rangos.Punto:
-                return new List<IObjetoMagico> { TargetSystem.ObjetoEnPunto(posicion, m_camara.transform.forward, m_distancia) };
+                return new List<IObjetoMagico> { TargetSystem.ObjetoEnPunto(posicion, direccion, m_distancia) };
+            case Rangos.Linea:
+                return TargetSystem.ObjetoEnLinea(posicion, direccion, m_distancia);
+            case Rangos.Area:
+                return TargetSystem.ObjetosEnArea(posicion, direccion, new Vector2(m_extensionMedia, m_extensionMedia));
             case Rangos.Ambiente:
                 return TargetSystem.ObjetoEnAmbiente(posicion, m_extensionMedia);
         }
