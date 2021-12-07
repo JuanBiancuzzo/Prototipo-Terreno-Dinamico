@@ -11,6 +11,4 @@ public interface IObjetoMagico
     public void RecibirMagia();
     public void DejarDeRecibirMagia();
     public EnergiaCoin Recibir(TipoDeMagia tipoDeMagia, EnergiaCoin cantidad);
-
-    public void ActualizarColor();
 }

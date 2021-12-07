@@ -1,13 +1,14 @@
 using UnityEngine;
 
+[System.Serializable]
 public class ElementoMagico : IObjetoMagico
 {
-    protected Iluminacion m_iluminacion;
-    protected RGB m_rgb;
-    protected Alfa m_alfa;
-    protected Temperatura m_temperatura;
-    protected Concentracion m_concentracion;
-    protected Constitucion m_consitucion;
+    [SerializeField] public Iluminacion m_iluminacion;
+    [SerializeField] public RGB m_rgb;
+    [SerializeField] public Alfa m_alfa;
+    [SerializeField] public Temperatura m_temperatura;
+    [SerializeField] public Concentracion m_concentracion;
+    [SerializeField] public Constitucion m_consitucion;
 
     private Color m_color;
 

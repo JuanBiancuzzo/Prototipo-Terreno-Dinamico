@@ -29,7 +29,7 @@ public class CuerpoEnMundo : MonoBehaviour
     void PedirColision()
     {
         CalcularExtremo();
-        m_mundo.GenerarMeshColision(m_extremo, m_entidadMagica.m_constitucion);
+        m_mundo.GenerarMeshColision(m_extremo, m_entidadMagica.ConstitucionActual());
     }
 
     void CalcularExtremo()

@@ -12,12 +12,12 @@ Shader "Unlit/EntidadShader"
     SubShader
     {
         Tags {
-            "Queue" = "Transparent"
-            "RenderType" = "Transparent"
+            //"Queue" = "Opaque"
+            "RenderType" = "Opaque"
         }
 
-        ZWrite Off
-        Blend SrcAlpha OneMinusSrcAlpha
+        //ZWrite Off
+        //Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {
