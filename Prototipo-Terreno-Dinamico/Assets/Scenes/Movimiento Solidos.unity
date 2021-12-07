@@ -196,6 +196,7 @@ GameObject:
   - component: {fileID: 713432421}
   - component: {fileID: 713432420}
   - component: {fileID: 713432422}
+  - component: {fileID: 713432423}
   m_Layer: 0
   m_Name: Jugador
   m_TagString: Untagged
@@ -210,34 +211,11 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 713432419}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2cd5840e67e5b334eba7358c1c763c91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_iluminacion:
-    m_iluminacion:
-      m_valor: 0
-  m_rgb:
-    r:
-      m_valor: 0
-    g:
-      m_valor: 0
-    b:
-      m_valor: 0
-  m_alfa:
-    m_alfa:
-      m_valor: 0
-  m_temperatura:
-    m_temperatura:
-      m_valor: 0
-  m_concentracion:
-    m_concentracion:
-      m_valor: 0
-  m_constitucion:
-    m_constitucion:
-      m_valor: 0
-  m_material: {fileID: 0}
   m_extensionCarga: 1
   m_mundo: {fileID: 1558492044}
 --- !u!4 &713432421
@@ -277,6 +255,40 @@ MonoBehaviour:
   m_tipoMagiaRecibir: 3
   m_rangoRecibir: 1
   m_energiaRecibir: 10
+--- !u!114 &713432423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 713432419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 809fed66eb5531d46a3592a43e422e72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_iluminacion:
+    m_iluminacion:
+      m_valor: 0
+  m_rgb:
+    r:
+      m_valor: 0
+    g:
+      m_valor: 0
+    b:
+      m_valor: 0
+  m_alfa:
+    m_alfa:
+      m_valor: 0
+  m_temperatura:
+    m_temperatura:
+      m_valor: 0
+  m_concentracion:
+    m_concentracion:
+      m_valor: 0
+  m_constitucion:
+    m_constitucion:
+      m_valor: 70
 --- !u!114 &754344325 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 41822755811475004, guid: e9d1cc4702ff78e41871a7457fa9917b, type: 3}
@@ -567,6 +579,7 @@ GameObject:
   - component: {fileID: 854178319}
   - component: {fileID: 854178318}
   - component: {fileID: 854178322}
+  - component: {fileID: 854178323}
   m_Layer: 0
   m_Name: MaloMaloso
   m_TagString: Untagged
@@ -684,7 +697,18 @@ MonoBehaviour:
   m_constitucion:
     m_constitucion:
       m_valor: 50
-  m_material: {fileID: 2100000, guid: 7014da459e9ce1342a4879f17e549136, type: 2}
+--- !u!114 &854178323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854178317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebde14a0f3d79344db27dccf01d6dac5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1217947051
 GameObject:
   m_ObjectHideFlags: 0

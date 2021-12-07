@@ -8,32 +8,20 @@ public class EntidadMagica : MonoBehaviour, IObjetoMagico
 
     [SerializeField] protected Temperatura m_temperatura;
     [SerializeField] protected Concentracion m_concentracion;
-    [SerializeField] protected Constitucion m_constitucion;
-
-    [Space]
+    [SerializeField] public Constitucion m_constitucion;
 
     private Color m_color;
-    [SerializeField] Material m_material;
 
     public int IluminacionValor => m_iluminacion.IluminacionValor;
     public int TemperaturaValor => m_temperatura.TemperaturaValor;
     public Color ColorValor => m_color;
     public float AlfaValor => m_alfa.AlfaValor;
     public int ConcentracionValor => m_concentracion.ConcentracionValor;
-    public int Constitucion => m_constitucion.ConstitucionValor;
+    public int ConstitucionValor => m_constitucion.ConstitucionValor;
 
     private void Start()
     {
         ActualizarColor();
-    }
-
-    private void Update()
-    {
-        m_material.SetVector("_Color", ColorValor);
-        m_material.SetInt("_Iluminacion", IluminacionValor);
-        m_material.SetInt("_Temperatura", TemperaturaValor);
-        m_material.SetInt("_Concentracion", ConcentracionValor);
-        m_material.SetInt("_Constitucion", Constitucion);
     }
 
     public void DarMagia()

@@ -2,16 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CuerpoEnMundo : EntidadMagica
+[RequireComponent(typeof(EntidadMagica))]
+public class CuerpoEnMundo : MonoBehaviour
 {
     public int m_extensionCarga;
     public FallingSand m_mundo = null;
+    EntidadMagica m_entidadMagica;
 
     Vector3Int m_posicion => Vector3Int.FloorToInt(transform.position);
     Extremo m_extremo;
 
     void Start()
     {
+        m_entidadMagica = GetComponent<EntidadMagica>();
         m_extremo = new Extremo(Vector3Int.zero, Vector3Int.zero);
     }
 
@@ -26,7 +29,7 @@ public class CuerpoEnMundo : EntidadMagica
     void PedirColision()
     {
         CalcularExtremo();
-        m_mundo.GenerarMeshColision(m_extremo, m_constitucion);
+        m_mundo.GenerarMeshColision(m_extremo, m_entidadMagica.m_constitucion);
     }
 
     void CalcularExtremo()
