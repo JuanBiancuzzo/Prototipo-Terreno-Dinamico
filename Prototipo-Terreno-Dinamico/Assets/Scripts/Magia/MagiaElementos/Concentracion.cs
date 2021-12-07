@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Concentracion : IEnergia
 {
     static int minimo = 0, maximo = 100;
-    AtributoInt m_concentracion;
+    [SerializeField] AtributoInt m_concentracion;
 
     public int ConcentracionValor => m_concentracion.Valor;
     public void NuevoValor(int valor)

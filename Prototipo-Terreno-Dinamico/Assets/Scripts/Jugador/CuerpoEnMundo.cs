@@ -26,7 +26,7 @@ public class CuerpoEnMundo : EntidadMagica
     void PedirColision()
     {
         CalcularExtremo();
-        m_mundo.GenerarMeshColision(m_extremo, m_consitucion);
+        m_mundo.GenerarMeshColision(m_extremo, m_constitucion);
     }
 
     void CalcularExtremo()

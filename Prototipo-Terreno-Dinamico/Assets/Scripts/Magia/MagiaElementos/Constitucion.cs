@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Constitucion : IEnergia
 {
     static int minimo = 0, maximo = 100;
-    AtributoInt m_constitucion;
+    [SerializeField] AtributoInt m_constitucion;
 
     public int ConstitucionValor => m_constitucion.Valor;
     public void NuevoValor(int valor) => m_constitucion.NuevoValor(valor);

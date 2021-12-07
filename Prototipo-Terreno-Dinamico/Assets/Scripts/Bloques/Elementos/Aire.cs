@@ -6,7 +6,7 @@ public class Aire : Gaseoso
 {
     public Aire(Vector3Int posicion, Mundo mundo) : base(posicion, mundo)
     {
-        NuevoColor(new Color(0, 0, 0, 0));
+        NuevoColor(new Color(1, 1, 1, 0));
     }
 
     public override Elemento Expandir(Vector3Int posicion)

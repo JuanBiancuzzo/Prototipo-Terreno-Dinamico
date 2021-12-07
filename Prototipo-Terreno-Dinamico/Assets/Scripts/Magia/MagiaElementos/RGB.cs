@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class RGB : IEnergia
 {
     static float minimo = 0, maximo = 15;
-    AtributoFloat r, g, b;
+    [SerializeField] AtributoFloat r, g, b;
 
     public Vector3 RGBValor => new Vector3(r.Valor, g.Valor, b.Valor);
     public void NuevoValor(Color color)
@@ -22,20 +23,28 @@ public class RGB : IEnergia
         b = new AtributoFloat(valor.z, minimo, maximo);
     }
 
+    /*
+     * Disminuir es saca energia y devuelve cuanto consumio
+     * Aumentar es dar energia y devuelve cuanto no pudo agarrar
+     */
+
     public EnergiaCoin Aumentar(EnergiaCoin energia)
     {
         float energiaPorColor = AtributoFloat.EnergiaAAtributo(energia);
+        Color color = new Color(r.Valor, g.Valor, b.Valor);
+        float H, S, V;
+        Color.RGBToHSV(color, out H, out S, out V);
 
-        List<AtributoFloat> rgb = new List<AtributoFloat> { r, g, b };
+        float energiaAAgregar = Mathf.Min(1, V + energiaPorColor);
+        V += energiaAAgregar;
+        S += Mathf.Min(1, S + energiaPorColor);
 
-        float energiaRestanteTotal = 0;
-        foreach (AtributoFloat a in rgb)
-        {
-            float energiaAAgregarPorColor = Mathf.Min(maximo - a.Valor, energiaPorColor);
-            a.Aumentar(energiaAAgregarPorColor);
-            energiaRestanteTotal += energiaPorColor - energiaAAgregarPorColor;
-        }
+        color = Color.HSVToRGB(H, S, V);
+        AtributoFloat[] rgb = { r, g, b };
+        for (int i = 0; i < 3; i++)
+            rgb[i].NuevoValor(color[i]);
 
+        float energiaRestanteTotal = Mathf.Min((V + energiaPorColor) - 1, 0);
         return AtributoFloat.AtributoAEnergia(energiaRestanteTotal, energia);
     }
 
@@ -43,16 +52,19 @@ public class RGB : IEnergia
     {
         float energiaPorColor = AtributoFloat.EnergiaAAtributo(energia);
 
-        List<AtributoFloat> rgb = new List<AtributoFloat> { r, g, b };
+        Color color = new Color(r.Valor, g.Valor, b.Valor);
+        float H, S, V;
+        Color.RGBToHSV(color, out H, out S, out V);
 
-        float energiaRestanteTotal = 0;
-        foreach (AtributoFloat a in rgb)
-        {
-            float energiaAAgregarPorColor = Mathf.Min(a.Valor, energiaPorColor);
-            a.Disminuir(energiaAAgregarPorColor);
-            energiaRestanteTotal += energiaAAgregarPorColor;
-        }
+        float energiaAAgregar = Mathf.Min(V, energiaPorColor);
+        V -= energiaAAgregar;
+        S -= Mathf.Min(S, energiaPorColor);
 
-        return AtributoFloat.AtributoAEnergia(energiaRestanteTotal, energia);
+        color = Color.HSVToRGB(H, S, V);
+        AtributoFloat[] rgb = { r, g, b };
+        for (int i = 0; i < 3; i++)
+            rgb[i].NuevoValor(color[i]);
+
+        return AtributoFloat.AtributoAEnergia(energiaAAgregar, energia);
     }
 }

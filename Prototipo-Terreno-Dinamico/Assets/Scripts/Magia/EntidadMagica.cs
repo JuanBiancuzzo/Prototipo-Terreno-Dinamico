@@ -1,39 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EntidadMagica : MonoBehaviour, IObjetoMagico
 {
-    protected Iluminacion m_iluminacion;
-    [SerializeField] int iluminacion;
-    protected RGB m_rgb;
-    protected Alfa m_alfa;
-    [SerializeField] Color color;
-    protected Temperatura m_temperatura;
-    [SerializeField] int temperatura;
-    protected Concentracion m_concentracion;
-    [SerializeField] int concentracion;
-    protected Constitucion m_consitucion;
-    [SerializeField] int constitucion;
+    [SerializeField] protected Iluminacion m_iluminacion;
+    [SerializeField] protected RGB m_rgb;
+    [SerializeField] protected Alfa m_alfa;
+
+    [SerializeField] protected Temperatura m_temperatura;
+    [SerializeField] protected Concentracion m_concentracion;
+    [SerializeField] protected Constitucion m_constitucion;
+
+    [Space]
 
     private Color m_color;
+    [SerializeField] Material m_material;
 
     public int IluminacionValor => m_iluminacion.IluminacionValor;
     public int TemperaturaValor => m_temperatura.TemperaturaValor;
     public Color ColorValor => m_color;
     public float AlfaValor => m_alfa.AlfaValor;
     public int ConcentracionValor => m_concentracion.ConcentracionValor;
-    public int ConsitucionValor => m_consitucion.ConstitucionValor;
+    public int Constitucion => m_constitucion.ConstitucionValor;
 
-    void Awake()
+    private void Start()
     {
-        m_color = color;
-        m_iluminacion = new Iluminacion(iluminacion);
-        m_temperatura = new Temperatura(temperatura);
-        m_rgb = new RGB(new Vector3(color.r, color.g, color.b));
-        m_alfa = new Alfa(color.a);
-        m_concentracion = new Concentracion(concentracion);
-        m_consitucion = new Constitucion(constitucion);
+        ActualizarColor();
+    }
+
+    private void Update()
+    {
+        m_material.SetVector("_Color", ColorValor);
+        m_material.SetInt("_Iluminacion", IluminacionValor);
+        m_material.SetInt("_Temperatura", TemperaturaValor);
+        m_material.SetInt("_Concentracion", ConcentracionValor);
+        m_material.SetInt("_Constitucion", Constitucion);
     }
 
     public void DarMagia()
@@ -85,7 +85,7 @@ public class EntidadMagica : MonoBehaviour, IObjetoMagico
             case TipoDeMagia.Concentracion:
                 return m_concentracion;
             case TipoDeMagia.Consitucion:
-                return m_consitucion;
+                return m_constitucion;
         }
 
         return null;

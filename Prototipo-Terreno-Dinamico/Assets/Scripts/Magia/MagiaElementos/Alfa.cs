@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Alfa : IEnergia
 {
     static float minimo = 0f, maximo = 1f;
-    AtributoFloat m_alfa;
+    [SerializeField] AtributoFloat m_alfa;
 
     public float AlfaValor => m_alfa.Valor;
     public void NuevoValor(float valor) {

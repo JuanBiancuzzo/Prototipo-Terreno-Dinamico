@@ -1,9 +1,10 @@
 using UnityEngine;
 
+[System.Serializable]
 public class Temperatura : IEnergia
 {
     static int minimo = 0, maximo = 1000;
-    AtributoInt m_temperatura = null;
+    [SerializeField] AtributoInt m_temperatura = null;
 
     public int TemperaturaValor => m_temperatura.Valor;
     public void NuevoValor(int valor) => m_temperatura.NuevoValor(valor);

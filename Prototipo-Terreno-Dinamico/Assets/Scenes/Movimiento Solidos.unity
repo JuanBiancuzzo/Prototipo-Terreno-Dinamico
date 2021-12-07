@@ -215,11 +215,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cd5840e67e5b334eba7358c1c763c91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  iluminacion: 0
-  color: {r: 0, g: 0, b: 0, a: 0}
-  temperatura: 0
-  concentracion: 0
-  constitucion: 50
+  m_iluminacion:
+    m_iluminacion:
+      m_valor: 0
+  m_rgb:
+    r:
+      m_valor: 0
+    g:
+      m_valor: 0
+    b:
+      m_valor: 0
+  m_alfa:
+    m_alfa:
+      m_valor: 0
+  m_temperatura:
+    m_temperatura:
+      m_valor: 0
+  m_concentracion:
+    m_concentracion:
+      m_valor: 0
+  m_constitucion:
+    m_constitucion:
+      m_valor: 0
+  m_material: {fileID: 0}
   m_extensionCarga: 1
   m_mundo: {fileID: 1558492044}
 --- !u!4 &713432421
@@ -251,6 +269,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_mundo: {fileID: 781101057}
   m_camara: {fileID: 1217947053}
+  m_extensionMedia: 2
+  m_distancia: 6
+  m_tipoMagiaDar: 2
+  m_rangoDar: 0
+  m_energiaDar: 10
+  m_tipoMagiaRecibir: 3
+  m_rangoRecibir: 1
+  m_energiaRecibir: 10
 --- !u!114 &754344325 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 41822755811475004, guid: e9d1cc4702ff78e41871a7457fa9917b, type: 3}
@@ -526,7 +552,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
 --- !u!1 &854178317
 GameObject:
@@ -580,7 +606,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 7014da459e9ce1342a4879f17e549136, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -618,11 +644,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 854178317}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1.81, y: -2.57, z: 0.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &854178322
 MonoBehaviour:
@@ -636,11 +662,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 809fed66eb5531d46a3592a43e422e72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  iluminacion: 0
-  color: {r: 0, g: 0, b: 0, a: 0}
-  temperatura: 0
-  concentracion: 0
-  constitucion: 0
+  m_iluminacion:
+    m_iluminacion:
+      m_valor: 10
+  m_rgb:
+    r:
+      m_valor: 1
+    g:
+      m_valor: 1
+    b:
+      m_valor: 1
+  m_alfa:
+    m_alfa:
+      m_valor: 1
+  m_temperatura:
+    m_temperatura:
+      m_valor: 273
+  m_concentracion:
+    m_concentracion:
+      m_valor: 50
+  m_constitucion:
+    m_constitucion:
+      m_valor: 50
+  m_material: {fileID: 2100000, guid: 7014da459e9ce1342a4879f17e549136, type: 2}
 --- !u!1 &1217947051
 GameObject:
   m_ObjectHideFlags: 0
@@ -718,7 +762,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1217947051}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 713432421}
@@ -775,7 +819,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1558492043
 GameObject:
@@ -822,7 +866,7 @@ Transform:
   - {fileID: 781101050}
   - {fileID: 1248762323}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1609879327
 GameObject:
@@ -916,7 +960,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1917770833
 PrefabInstance:
@@ -1020,7 +1064,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &2147068763 stripped
 Transform:

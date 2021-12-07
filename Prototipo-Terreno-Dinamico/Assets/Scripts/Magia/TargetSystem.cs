@@ -86,6 +86,7 @@ public static class TargetSystem
             EntidadMagica entidad = collider.GetComponent<EntidadMagica>();
             if (entidad == null || entidad.Equals(noAfectado))
                 continue;
+
             objetos.Add(entidad);
         }
 

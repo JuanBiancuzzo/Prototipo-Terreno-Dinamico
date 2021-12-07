@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class AtributoInt
 {
     static int m_minimo, m_maximo;
-    int m_valor;
+    [SerializeField] int m_valor;
 
     public int Valor => m_valor;
     public void NuevoValor(int valor)
@@ -54,11 +55,11 @@ public class AtributoInt
         return Mathf.InverseLerp(m_minimo, m_maximo, valor);
     }
 }
-
+[System.Serializable]
 public class AtributoFloat
 {
     static float m_minimo, m_maximo;
-    float m_valor;
+     [SerializeField] float m_valor;
 
     public float Valor => m_valor;
     public void NuevoValor(float valor)
