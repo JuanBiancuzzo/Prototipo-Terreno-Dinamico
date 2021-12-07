@@ -7,6 +7,7 @@ public enum Rangos
     Punto,
     Linea,
     Area,
+    Volumen,
     Esfera,
     Ambiente
 }
@@ -92,6 +93,8 @@ public class SpellController : MonoBehaviour
                 return TargetSystem.ObjetosEnArea(posicion, direccion, new Vector2(m_extensionMedia, m_extensionMedia));
             case Rangos.Esfera:
                 return TargetSystem.ObjetoEnEsfera(posicion, m_radio);
+            case Rangos.Volumen:
+                return TargetSystem.ObjetoEnVolumen(posicion, direccion, new Vector3(m_extensionMedia, m_extensionMedia, m_extensionMedia));
             case Rangos.Ambiente:
                 return TargetSystem.ObjetoEnAmbiente(posicion, m_extensionMedia);
         }

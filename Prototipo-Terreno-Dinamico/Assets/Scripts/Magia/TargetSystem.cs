@@ -114,8 +114,8 @@ public static class TargetSystem
 
     private static void ObjetosEnAreaMundo(Vector3 posicion, Vector3 direccion, Vector2 extension, ref List<IObjetoMagico> objetos)
     {
-        Vector3 direccionCostado = Vector3.right * extension.x;
-        Vector3 direccionArriba = Vector3.up * extension.y;
+        Vector3 direccionCostado = Vector3.right * extension;
+        Vector3 direccionArriba = Vector3.up * extension;
 
         Quaternion rotacion = Quaternion.LookRotation(direccion);
 
@@ -151,6 +151,68 @@ public static class TargetSystem
                 continue;
 
             objetos.Add(entidad);
+        }
+    }
+
+    public static List<IObjetoMagico> ObjetoEnVolumen(Vector3 posicion, Vector3 direccion, Vector3 extension)
+    {
+        List<IObjetoMagico> objetos = new List<IObjetoMagico>();
+
+        ObjetosEnVolumenMundo(posicion, direccion, extension, ref objetos);
+        EntidadesEnVolumen(posicion, direccion, extension, ref objetos);
+
+        return objetos;
+    }
+
+    private static void EntidadesEnVolumen(Vector3 posicion, Vector3 direccion, Vector3 extension, ref List<IObjetoMagico> objetos)
+    {
+        Collider[] colliderArray = Physics.OverlapBox(posicion, extension, Quaternion.LookRotation(direccion));
+        foreach (Collider collider in colliderArray)
+        {
+            EntidadMagica entidad = collider.GetComponent<EntidadMagica>();
+            if (entidad == null)
+                continue;
+
+            objetos.Add(entidad);
+        }
+    }
+
+    private static void ObjetosEnVolumenMundo(Vector3 posicion, Vector3 direccion, Vector3 extension, ref List<IObjetoMagico> objetos)
+    {
+        Vector3 versorX = Vector3.right * extension.x, versorY = Vector3.up * extension.y, versorZ = Vector3.forward * extension.z;
+        Quaternion rotacion = Quaternion.LookRotation(direccion);
+        Vector3 versorXRotado = rotacion * versorX, versorYRotado = rotacion * versorY, versorZRotado = rotacion * versorZ;
+
+        Vector3Int pos = Vector3Int.FloorToInt(posicion);
+        Vector3Int nuevoVersorX = Vector3Int.FloorToInt(versorXRotado);
+        Vector3Int nuevoVersorY = Vector3Int.FloorToInt(versorYRotado);
+        Vector3Int nuevoVersorZ = Vector3Int.FloorToInt(versorZRotado);
+
+        Vector3Int arribaFondoDerecha = pos + nuevoVersorX + nuevoVersorY + nuevoVersorZ;
+        Vector3Int abajoFondoDerecha = pos + nuevoVersorX - nuevoVersorY + nuevoVersorZ;
+        Vector3Int abajoFondeIzquierda = pos - nuevoVersorX - nuevoVersorY + nuevoVersorZ;
+        Vector3Int abajoAdelanteIzquierda = pos - nuevoVersorX - nuevoVersorY - nuevoVersorZ;
+
+
+        foreach (Vector3Int posicionVertical in Mathfs.PosicioneEntreYield(abajoFondoDerecha, arribaFondoDerecha))
+        {
+            Vector3Int diferenciaVertical = posicionVertical - abajoFondoDerecha;
+            Vector3Int posicionDesfasadaVertical = abajoFondeIzquierda + diferenciaVertical;
+
+            foreach (Vector3Int posicionHorizontal in Mathfs.PosicioneEntreYield(posicionDesfasadaVertical, posicionVertical))
+            {
+                Vector3Int diferenciaHorizontal = posicionHorizontal - posicionDesfasadaVertical;
+                Vector3Int posicionDesfasadaHorizontal = abajoAdelanteIzquierda + diferenciaVertical + diferenciaHorizontal;
+
+                foreach (Vector3Int posicionMundo in Mathfs.PosicioneEntreYield(posicionDesfasadaHorizontal, posicionHorizontal))
+                {
+                    Elemento elemento = m_mundo.EnPosicion(posicionMundo);
+                    if (elemento == null)
+                        continue;
+
+                    objetos.Add(elemento);
+                }
+            }
         }
     }
 
