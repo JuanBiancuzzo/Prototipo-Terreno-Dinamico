@@ -42,7 +42,7 @@ public class SpellController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown("space"))
+        if (Input.GetKeyDown(KeyCode.E))
             HacerSpell();
     }
 

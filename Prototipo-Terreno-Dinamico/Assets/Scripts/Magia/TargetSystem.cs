@@ -32,7 +32,7 @@ public static class TargetSystem
         Vector3Int inicio = Vector3Int.FloorToInt(posicion), final = Vector3Int.FloorToInt(posicionFinal);
 
         Elemento elementoMejor = null;
-        foreach (Vector3Int posicionMundo in Mathfs.PosicioneEntreYield(inicio, final))
+        foreach (Vector3Int posicionMundo in Mathfs.PosicionesEntreYield(inicio, final))
         {
             Elemento elemento = m_mundo.EnPosicion(posicionMundo);
             if (elemento == null)
@@ -93,7 +93,7 @@ public static class TargetSystem
 
         Vector3Int inicio = Vector3Int.FloorToInt(posicion), final = Vector3Int.FloorToInt(posicionFinal);
 
-        foreach (Vector3Int posicionMundo in Mathfs.PosicioneEntreYield(inicio, final))
+        foreach (Vector3Int posicionMundo in Mathfs.PosicionesEntreYield(inicio, final))
         {
             Elemento elemento = m_mundo.EnPosicion(posicionMundo);
             if (elemento == null)
@@ -114,24 +114,23 @@ public static class TargetSystem
 
     private static void ObjetosEnAreaMundo(Vector3 posicion, Vector3 direccion, Vector2 extension, ref List<IObjetoMagico> objetos)
     {
-        Vector3 direccionCostado = Vector3.right * extension;
-        Vector3 direccionArriba = Vector3.up * extension;
-
+        Vector3 versorX = Vector3.right * extension.x, versorY = Vector3.up * extension.y;
         Quaternion rotacion = Quaternion.LookRotation(direccion);
 
-        Vector3 direccionCostadoRotada = rotacion * direccionCostado;
-        Vector3 direccionArribaRotada = rotacion * direccionArriba;
+        Vector3 versorXRotado = rotacion * versorX, versorYRotado = rotacion * versorY;
 
-        Vector3Int pos = Vector3Int.FloorToInt(posicion), dirAcostado = Vector3Int.FloorToInt(direccionCostadoRotada), dirArriba = Vector3Int.FloorToInt(direccionArribaRotada);
+        Vector3Int pos = Vector3Int.FloorToInt(posicion), dirX = Vector3Int.FloorToInt(versorXRotado), dirY = Vector3Int.FloorToInt(versorYRotado);
 
-        Vector3Int arribaDerecha = pos + dirAcostado + dirArriba;
-        Vector3Int abajoIzquierda = pos - dirAcostado - dirArriba;
-        Vector3Int abajoDerecha = pos + dirAcostado - dirArriba;
+        Vector3Int arribaDerecha = pos + dirX + dirY;
+        Vector3Int abajoIzquierda = pos - dirX - dirY;
+        Vector3Int abajoDerecha = pos + dirX - dirY;
 
-        foreach (Vector3Int posicionVertica in Mathfs.PosicioneEntreYield(abajoDerecha, arribaDerecha))
+        foreach (Vector3Int posicionVertica in Mathfs.PosicionesEntreYield(abajoDerecha, arribaDerecha))
         {
             Vector3Int diferencia = posicionVertica - abajoDerecha;
-            foreach (Vector3Int posicionHorizontal in Mathfs.PosicioneEntreYield(abajoIzquierda + diferencia, posicionVertica))
+            Vector3Int posicionDesfasada = abajoIzquierda + diferencia;
+
+            foreach (Vector3Int posicionHorizontal in Mathfs.PosicionesEntreYield(posicionDesfasada, posicionVertica))
             {
                 Elemento elemento = m_mundo.EnPosicion(posicionHorizontal);
                 if (elemento == null)
@@ -179,40 +178,18 @@ public static class TargetSystem
 
     private static void ObjetosEnVolumenMundo(Vector3 posicion, Vector3 direccion, Vector3 extension, ref List<IObjetoMagico> objetos)
     {
-        Vector3 versorX = Vector3.right * extension.x, versorY = Vector3.up * extension.y, versorZ = Vector3.forward * extension.z;
+        Vector3 versorZ = Vector3.forward * extension.z;
         Quaternion rotacion = Quaternion.LookRotation(direccion);
-        Vector3 versorXRotado = rotacion * versorX, versorYRotado = rotacion * versorY, versorZRotado = rotacion * versorZ;
+        Vector3 versorZRotado = rotacion * versorZ;
 
         Vector3Int pos = Vector3Int.FloorToInt(posicion);
-        Vector3Int nuevoVersorX = Vector3Int.FloorToInt(versorXRotado);
-        Vector3Int nuevoVersorY = Vector3Int.FloorToInt(versorYRotado);
         Vector3Int nuevoVersorZ = Vector3Int.FloorToInt(versorZRotado);
 
-        Vector3Int arribaFondoDerecha = pos + nuevoVersorX + nuevoVersorY + nuevoVersorZ;
-        Vector3Int abajoFondoDerecha = pos + nuevoVersorX - nuevoVersorY + nuevoVersorZ;
-        Vector3Int abajoFondeIzquierda = pos - nuevoVersorX - nuevoVersorY + nuevoVersorZ;
-        Vector3Int abajoAdelanteIzquierda = pos - nuevoVersorX - nuevoVersorY - nuevoVersorZ;
-
-
-        foreach (Vector3Int posicionVertical in Mathfs.PosicioneEntreYield(abajoFondoDerecha, arribaFondoDerecha))
+        Vector3Int centroAdelante = pos + nuevoVersorZ, centroAtras = pos - nuevoVersorZ;
+        foreach (Vector3Int posicionCentro in Mathfs.PosicionesEntreYield(centroAtras, centroAdelante))
         {
-            Vector3Int diferenciaVertical = posicionVertical - abajoFondoDerecha;
-            Vector3Int posicionDesfasadaVertical = abajoFondeIzquierda + diferenciaVertical;
-
-            foreach (Vector3Int posicionHorizontal in Mathfs.PosicioneEntreYield(posicionDesfasadaVertical, posicionVertical))
-            {
-                Vector3Int diferenciaHorizontal = posicionHorizontal - posicionDesfasadaVertical;
-                Vector3Int posicionDesfasadaHorizontal = abajoAdelanteIzquierda + diferenciaVertical + diferenciaHorizontal;
-
-                foreach (Vector3Int posicionMundo in Mathfs.PosicioneEntreYield(posicionDesfasadaHorizontal, posicionHorizontal))
-                {
-                    Elemento elemento = m_mundo.EnPosicion(posicionMundo);
-                    if (elemento == null)
-                        continue;
-
-                    objetos.Add(elemento);
-                }
-            }
+            Vector2 extensionPlano = new Vector2(extension.x, extension.y);
+            ObjetosEnAreaMundo(posicionCentro, direccion, extensionPlano, ref objetos);
         }
     }
 
@@ -304,7 +281,4 @@ public static class TargetSystem
                     objetos.Add(elemento);
                 }
     }
-
-    
-
 }

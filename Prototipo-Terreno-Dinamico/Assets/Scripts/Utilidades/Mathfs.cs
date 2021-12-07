@@ -47,7 +47,7 @@ public static class Mathfs
         return posiciones;
     }
 
-    public static IEnumerable<Vector3Int> PosicioneEntreYield(Vector3Int inicio, Vector3Int fin)
+    public static IEnumerable<Vector3Int> PosicionesEntreYield(Vector3Int inicio, Vector3Int fin)
     {
         Vector3Int direccion = fin - inicio;
         int variable = MayorComponente(direccion);
