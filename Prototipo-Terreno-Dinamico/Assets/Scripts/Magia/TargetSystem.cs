@@ -67,15 +67,14 @@ public static class TargetSystem
     {
         List<IObjetoMagico> objetos = new List<IObjetoMagico>();
 
-        objetos.AddRange(ObjetosEnLineaMundo(posicion, direccion, distancia));
-        objetos.AddRange(EntidadesEnLinea(posicion, direccion, distancia));
+        ObjetosEnLineaMundo(posicion, direccion, distancia, ref objetos);
+        EntidadesEnLinea(posicion, direccion, distancia, ref objetos);
 
         return objetos;
     }
 
-    private static List<IObjetoMagico> EntidadesEnLinea(Vector3 posicion, Vector3 direccion, float distancia)
+    private static void EntidadesEnLinea(Vector3 posicion, Vector3 direccion, float distancia, ref List<IObjetoMagico> objetos)
     {
-        List<IObjetoMagico> objetos = new List<IObjetoMagico>();
         RaycastHit[] hits = Physics.RaycastAll(posicion, direccion, distancia);
 
         foreach (RaycastHit hit in hits)
@@ -85,14 +84,10 @@ public static class TargetSystem
                 continue;
             objetos.Add(entidad);
         }
-
-        return objetos;
     }
 
-    private static List<IObjetoMagico> ObjetosEnLineaMundo(Vector3 posicion, Vector3 direccion, float distancia)
+    private static void ObjetosEnLineaMundo(Vector3 posicion, Vector3 direccion, float distancia, ref List<IObjetoMagico> objetos)
     {
-        List<IObjetoMagico> objetos = new List<IObjetoMagico>();
-
         Vector3 dirNormalizada = Vector3.Normalize(direccion);
         Vector3 posicionFinal = posicion + dirNormalizada * distancia;
 
@@ -105,24 +100,20 @@ public static class TargetSystem
                 continue;
             objetos.Add(elemento);
         }
-
-        return objetos;
     }
 
     public static List<IObjetoMagico> ObjetosEnArea(Vector3 posicion, Vector3 direccion, Vector2 extension)
     {
         List<IObjetoMagico> objetos = new List<IObjetoMagico>();
 
-        objetos.AddRange(ObjetosEnAreaMundo(posicion, direccion, extension));
-        objetos.AddRange(EntidadesEnArea(posicion, direccion, extension));
+        ObjetosEnAreaMundo(posicion, direccion, extension, ref objetos);
+        EntidadesEnArea(posicion, direccion, extension, ref objetos);
 
         return objetos;
     }
 
-    private static IEnumerable<IObjetoMagico> ObjetosEnAreaMundo(Vector3 posicion, Vector3 direccion, Vector2 extension)
+    private static void ObjetosEnAreaMundo(Vector3 posicion, Vector3 direccion, Vector2 extension, ref List<IObjetoMagico> objetos)
     {
-        List<IObjetoMagico> objetos = new List<IObjetoMagico>();
-
         Vector3 direccionCostado = Vector3.right * extension.x;
         Vector3 direccionArriba = Vector3.up * extension.y;
 
@@ -148,14 +139,10 @@ public static class TargetSystem
                 objetos.Add(elemento);
             }
         }
-
-        return objetos;
     }
 
-    private static List<IObjetoMagico> EntidadesEnArea(Vector3 posicion, Vector3 direccion, Vector2 extension)
+    private static void EntidadesEnArea(Vector3 posicion, Vector3 direccion, Vector2 extension, ref List<IObjetoMagico> objetos)
     {
-        List<IObjetoMagico> objetos = new List<IObjetoMagico>();
-
         Collider[] colliderArray = Physics.OverlapBox(posicion, new Vector3(extension.x, extension.y, 1), Quaternion.LookRotation(direccion));
         foreach (Collider collider in colliderArray)
         {
@@ -165,8 +152,53 @@ public static class TargetSystem
 
             objetos.Add(entidad);
         }
+    }
+
+    public static List<IObjetoMagico> ObjetoEnEsfera(Vector3 posicion, float radio)
+    {
+        List<IObjetoMagico> objetos = new List<IObjetoMagico>();
+
+        ObjetosEnEsferaMundo(posicion, radio, ref objetos);
+        EntidadesEnEsfera(posicion, radio, ref objetos);
 
         return objetos;
+    }
+
+    private static void EntidadesEnEsfera(Vector3 posicion, float radio, ref List<IObjetoMagico> objetos)
+    {
+        Collider[] colliderArray = Physics.OverlapSphere(posicion, radio);
+        foreach (Collider collider in colliderArray)
+        {
+            EntidadMagica entidad = collider.GetComponent<EntidadMagica>();
+            if (entidad == null)
+                continue;
+
+            objetos.Add(entidad);
+        }
+    }
+
+    private static void ObjetosEnEsferaMundo(Vector3 posicion, float radio, ref List<IObjetoMagico> objetos)
+    {
+        Vector3Int pos = Vector3Int.FloorToInt(posicion);
+        int r = Mathf.CeilToInt(radio);
+        Vector3Int extension = new Vector3Int(r, r, r);
+
+        Vector3Int minimo = pos - extension, maximo = pos + extension;
+
+        for (int x = 0; x <= minimo.x; x++)
+            for (int y = 0; y <= minimo.y; y++)
+                for (int z = 0; z <= minimo.z; z++)
+                {
+                    Vector3 posActual = new Vector3(x, y, z);
+                    if ((posicion - posActual).magnitude > radio)
+                        continue;
+
+                    Elemento elemento = m_mundo.EnPosicion(new Vector3Int(x, y, z));
+                    if (elemento == null)
+                        continue;
+
+                    objetos.Add(elemento);
+                }
     }
 
     public static List<IObjetoMagico> ObjetoEnAmbiente(Vector3 posicion, float radio)
@@ -175,16 +207,14 @@ public static class TargetSystem
 
         Vector3 extensionMedia = new Vector3(radio, radio, radio);
 
-        objetos.AddRange(ObjetosEnAmbienteMundo(posicion, extensionMedia));
-        objetos.AddRange(EntidadesEnAmbiente(posicion, extensionMedia));
+        ObjetosEnAmbienteMundo(posicion, extensionMedia, ref objetos);
+        EntidadesEnAmbiente(posicion, extensionMedia, ref objetos);
         
         return objetos;
     }
 
-    private static List<IObjetoMagico> EntidadesEnAmbiente(Vector3 posicion, Vector3 extensionMedia)
+    private static void EntidadesEnAmbiente(Vector3 posicion, Vector3 extensionMedia, ref List<IObjetoMagico> objetos)
     {
-        List<IObjetoMagico> objetos = new List<IObjetoMagico>();
-
         Collider[] colliderArray = Physics.OverlapBox(posicion, extensionMedia);
         foreach (Collider collider in colliderArray)
         {
@@ -194,13 +224,10 @@ public static class TargetSystem
 
             objetos.Add(entidad);
         }
-
-        return objetos;
     }
 
-    private static List<IObjetoMagico> ObjetosEnAmbienteMundo(Vector3 posicionV, Vector3 extensionMediaV)
+    private static void ObjetosEnAmbienteMundo(Vector3 posicionV, Vector3 extensionMediaV, ref List<IObjetoMagico> objetos)
     {
-        List<IObjetoMagico> objetos = new List<IObjetoMagico>();
         Vector3Int posicion = Vector3Int.FloorToInt(posicionV);
         Vector3Int extensionMedia = Vector3Int.FloorToInt(extensionMediaV);
 
@@ -215,9 +242,6 @@ public static class TargetSystem
                         continue;
                     objetos.Add(elemento);
                 }
-
-
-        return objetos;
     }
 
     

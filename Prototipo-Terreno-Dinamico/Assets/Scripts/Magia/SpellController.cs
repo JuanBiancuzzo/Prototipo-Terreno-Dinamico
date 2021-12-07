@@ -7,6 +7,7 @@ public enum Rangos
     Punto,
     Linea,
     Area,
+    Esfera,
     Ambiente
 }
 
@@ -17,6 +18,7 @@ public class SpellController : MonoBehaviour
 
     [SerializeField] float m_extensionMedia;
     [SerializeField] float m_distancia;
+    [SerializeField] float m_radio;
 
     [Space]
 
@@ -88,6 +90,8 @@ public class SpellController : MonoBehaviour
                 return TargetSystem.ObjetoEnLinea(posicion, direccion, m_distancia);
             case Rangos.Area:
                 return TargetSystem.ObjetosEnArea(posicion, direccion, new Vector2(m_extensionMedia, m_extensionMedia));
+            case Rangos.Esfera:
+                return TargetSystem.ObjetoEnEsfera(posicion, m_radio);
             case Rangos.Ambiente:
                 return TargetSystem.ObjetoEnAmbiente(posicion, m_extensionMedia);
         }
