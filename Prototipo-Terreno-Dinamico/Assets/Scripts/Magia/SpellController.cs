@@ -9,6 +9,7 @@ public enum Rangos
     Area,
     Volumen,
     Esfera,
+    Pies,
     Ambiente
 }
 
@@ -20,6 +21,7 @@ public class SpellController : MonoBehaviour
     [SerializeField] float m_extensionMedia;
     [SerializeField] float m_distancia;
     [SerializeField] float m_radio;
+    [SerializeField] Transform pies;
 
     [Space]
 
@@ -95,6 +97,8 @@ public class SpellController : MonoBehaviour
                 return TargetSystem.ObjetoEnEsfera(posicion, m_radio);
             case Rangos.Volumen:
                 return TargetSystem.ObjetoEnVolumen(posicion, direccion, new Vector3(m_extensionMedia, m_extensionMedia, m_extensionMedia));
+            case Rangos.Pies:
+                return TargetSystem.ObjetosEnArea(pies.position, Vector3.up, new Vector3(m_extensionMedia, m_extensionMedia, m_extensionMedia));
             case Rangos.Ambiente:
                 return TargetSystem.ObjetoEnAmbiente(posicion, m_extensionMedia);
         }

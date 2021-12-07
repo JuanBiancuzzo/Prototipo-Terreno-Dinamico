@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))]
 public class FPSController : MonoBehaviour
 {
     public float walkSpeed = 3;
@@ -36,7 +35,7 @@ public class FPSController : MonoBehaviour
 
     void Start()
     {
-        cam = Camera.main;
+        cam = GetComponentInChildren<Camera>();
         if (lockCursor)
         {
             Cursor.lockState = CursorLockMode.Locked;

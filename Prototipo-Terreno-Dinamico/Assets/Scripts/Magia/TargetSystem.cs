@@ -241,18 +241,17 @@ public static class TargetSystem
 
     private static void ObjetosEnEsferaMundo(Vector3 posicion, float radio, ref List<IObjetoMagico> objetos)
     {
-        Vector3Int pos = Vector3Int.FloorToInt(posicion);
-        int r = Mathf.CeilToInt(radio);
-        Vector3Int extension = new Vector3Int(r, r, r);
+        Vector3 extension = new Vector3(radio, radio, radio);
 
-        Vector3Int minimo = pos - extension, maximo = pos + extension;
+        Vector3 minimoV = posicion - extension, maximoV = posicion + extension;
+        Vector3Int minimo = Vector3Int.FloorToInt(minimoV), maximo = Vector3Int.CeilToInt(maximoV);
 
-        for (int x = 0; x <= minimo.x; x++)
-            for (int y = 0; y <= minimo.y; y++)
-                for (int z = 0; z <= minimo.z; z++)
+        for (int x = minimo.x; x < maximo.x; x++)
+            for (int y = minimo.y; y < maximo.y; y++)
+                for (int z = minimo.z; z < maximo.z; z++)
                 {
                     Vector3 posActual = new Vector3(x, y, z);
-                    if ((posicion - posActual).magnitude > radio)
+                    if ((posicion - posActual).magnitude >= radio)
                         continue;
 
                     Elemento elemento = m_mundo.EnPosicion(new Vector3Int(x, y, z));
