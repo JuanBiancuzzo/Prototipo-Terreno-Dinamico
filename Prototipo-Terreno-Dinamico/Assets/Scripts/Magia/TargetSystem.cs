@@ -153,6 +153,7 @@ public static class TargetSystem
         }
     }
 
+    /*
     public static List<IObjetoMagico> ObjetoEnVolumen(Vector3 posicion, Vector3 direccion, Vector3 extension)
     {
         List<IObjetoMagico> objetos = new List<IObjetoMagico>();
@@ -192,7 +193,7 @@ public static class TargetSystem
             ObjetosEnAreaMundo(posicionCentro, direccion, extensionPlano, ref objetos);
         }
     }
-
+    */
     public static List<IObjetoMagico> ObjetoEnEsfera(Vector3 posicion, float radio)
     {
         List<IObjetoMagico> objetos = new List<IObjetoMagico>();

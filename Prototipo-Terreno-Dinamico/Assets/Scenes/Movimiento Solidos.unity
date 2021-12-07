@@ -254,11 +254,11 @@ MonoBehaviour:
   m_distancia: 6
   m_radio: 3
   pies: {fileID: 1563703742}
-  m_tipoMagiaDar: 1
+  m_tipoMagiaDar: 4
   m_rangoDar: 0
   m_energiaDar: 50
-  m_tipoMagiaRecibir: 2
-  m_rangoRecibir: 3
+  m_tipoMagiaRecibir: 3
+  m_rangoRecibir: 5
   m_energiaRecibir: 20
 --- !u!114 &713432423
 MonoBehaviour:
@@ -488,8 +488,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_extremo:
-    m_minimo: {x: -5, y: -5, z: -5}
-    m_maximo: {x: 5, y: 5, z: 5}
+    m_minimo: {x: -7, y: -4, z: -7}
+    m_maximo: {x: 7, y: 4, z: 7}
   m_generador: {fileID: 754344325}
 --- !u!114 &781101056
 MonoBehaviour:
