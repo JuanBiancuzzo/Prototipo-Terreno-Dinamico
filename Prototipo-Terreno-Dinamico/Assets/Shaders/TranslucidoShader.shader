@@ -41,8 +41,9 @@ Shader "Unlit/TranslucidoShader"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
 
-                float3 direccionLuz = _WorldSpaceLightPos0.xyz;
-                float luz = max(v.iluminacion.x, dot(v.normal, direccionLuz));
+                float3 direccionLuz = _WorldSpaceLightPos0.xyz; 
+                float t = max(v.iluminacion.x, dot(v.normal, direccionLuz));
+                float luz = lerp(0.1, 1, t);
                 float3 lightColor = _LightColor0.rgb;
 
                 float3 diffuseLightcolor = lightColor * luz;

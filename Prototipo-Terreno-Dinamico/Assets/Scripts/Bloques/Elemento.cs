@@ -78,7 +78,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
             if (elemento == null)
                 continue;
 
-            int iluminacionElemento = elemento.IluminacionValor - 3;
+            int iluminacionElemento = elemento.IluminacionValor - 1;
             ActualizarLuz(Mathf.Max(iluminacionElemento, IluminacionValor));
         }
     }
