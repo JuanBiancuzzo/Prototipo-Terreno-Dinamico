@@ -131,9 +131,11 @@ public static class TargetSystem
         Vector3 direccionCostadoRotada = rotacion * direccionCostado;
         Vector3 direccionArribaRotada = rotacion * direccionArriba;
 
-        Vector3Int arribaDerecha = Vector3Int.FloorToInt(direccionCostadoRotada) + Vector3Int.FloorToInt(direccionArribaRotada);
-        Vector3Int abajoIzquierda = -Vector3Int.FloorToInt(direccionCostadoRotada) - Vector3Int.FloorToInt(direccionArribaRotada);
-        Vector3Int abajoDerecha = Vector3Int.FloorToInt(direccionCostadoRotada) - Vector3Int.FloorToInt(direccionArribaRotada);
+        Vector3Int pos = Vector3Int.FloorToInt(posicion), dirAcostado = Vector3Int.FloorToInt(direccionCostadoRotada), dirArriba = Vector3Int.FloorToInt(direccionArribaRotada);
+
+        Vector3Int arribaDerecha = pos + dirAcostado + dirArriba;
+        Vector3Int abajoIzquierda = pos - dirAcostado - dirArriba;
+        Vector3Int abajoDerecha = pos + dirAcostado - dirArriba;
 
         foreach (Vector3Int posicionVertica in Mathfs.PosicioneEntreYield(abajoDerecha, arribaDerecha))
         {
