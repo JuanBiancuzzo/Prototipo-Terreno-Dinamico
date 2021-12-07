@@ -23,7 +23,7 @@ struct Dato {
     int3 posicion;
     float valor;
     float4 color;
-    int iluminacion;
+    float iluminacion;
 };
 
 AppendStructuredBuffer<Triangle> triangles;
@@ -44,7 +44,7 @@ float4 elegirColores(float v1, float4 color1, float v2, float4 color2)
 
 float elegirLuz(float v1, float luz1, float v2, float luz2)
 {
-    return luz1 + (v2 < v1) * (luz2 - luz1);
+    return luz1 + (v2 > v1) * (luz2 - luz1);
 }
 
 int indexEnPunto(int x, int y, int z)
@@ -65,14 +65,9 @@ float4 colorEnPunto(int x, int y, int z)
     return datos[indexEnPunto(x, y, z)].color;
 }
 
-float invLerp(float from, float to, float value)
-{
-    return (value - from) / (to - from);
-}
-
 float luzEnPunto(int x, int y, int z)
 {
-    return invLerp(0, 15, datos[indexEnPunto(x, y, z)].iluminacion);
+    return datos[indexEnPunto(x, y, z)].iluminacion;
 }
 
 bool coloresIguales(float4 color1, float4 color2)

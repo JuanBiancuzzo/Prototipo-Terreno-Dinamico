@@ -41,4 +41,13 @@ public class Temperatura : IEnergia
 
         return AtributoInt.AtributoAEnergia(temperaturaASacar, energia);
     }
+
+    public float IluminacionPorTemperatrua()
+    {
+        if (TemperaturaValor < 200)
+            return TemperaturaValor / 20f;
+        if (TemperaturaValor > 800)
+            return (TemperaturaValor - 800) / 20f + 90;
+        return (2 * TemperaturaValor) / 15f - 50f / 3f;
+    }
 }

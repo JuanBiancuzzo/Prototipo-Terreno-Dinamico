@@ -3,7 +3,6 @@ using UnityEngine;
 
 public enum TipoDeMagia
 {
-    Iluminacion,
     Color,
     Alfa,
     Temperatura,

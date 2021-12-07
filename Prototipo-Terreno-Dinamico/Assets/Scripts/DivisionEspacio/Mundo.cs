@@ -28,25 +28,6 @@ public class Mundo : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable, ICo
                 }
     }
 
-    public void CalcularIluminacion()
-    {
-        for (int x = 0; x < contenedor.m_extension.x; x++)
-            for (int y = 0; y < contenedor.m_extension.y; y++)
-                for (int z = 0; z < contenedor.m_extension.z; z++)
-                {
-                    Vector3Int posicion = new Vector3Int(x, y, z) + contenedor.m_extremo.m_minimo;
-                    contenedor.EnPosicion(posicion)?.ExpandirLuz();
-                }
-
-        for (int x = contenedor.m_extension.x - 1; x >= 0; x--)
-            for (int y = contenedor.m_extension.y - 1; y >= 0; y--)
-                for (int z = contenedor.m_extension.z - 1; z >= 0; z--)
-                {
-                    Vector3Int posicion = new Vector3Int(x, y, z) + contenedor.m_extremo.m_minimo;
-                    contenedor.EnPosicion(posicion)?.ExpandirLuz();
-                }
-    }
-
     public bool Insertar(Elemento elemento)
     {
         return contenedor.Insertar(elemento);
@@ -102,7 +83,7 @@ public class Mundo : MonoBehaviour, IContenedor, ISacarDatos, IRenderizable, ICo
         return sacarDatos.GetValor(posicion, tipoMaterial, defaultValor);
     }
 
-    public int GetIluminacion(Vector3Int posicion, int defaultIluminacion = 0)
+    public float GetIluminacion(Vector3Int posicion, float defaultIluminacion = 0)
     {
         return sacarDatos.GetIluminacion(posicion, defaultIluminacion);
     }

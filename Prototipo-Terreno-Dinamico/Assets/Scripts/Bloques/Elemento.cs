@@ -13,7 +13,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     protected Mundo m_mundo;
 
     public Elemento(Vector3Int posicion, Mundo mundo) 
-        : base(13, new Color(1, 1, 1, 1), 290, 25, 50) // iluminacion, color, temperatura, concentracion y constitucion
+        : base(new Color(1, 1, 1, 1), 290, 25, 50) // iluminacion, color, temperatura, concentracion y constitucion
     {
         m_posicion = posicion;
         m_mundo = mundo;
@@ -29,14 +29,13 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     public void AntesDeAvanzar()
     {
         EmpezarAActualizar();
-        ExpandirTemperatura();
+        //ExpandirTemperatura();
     }
 
     public abstract void Avanzar(int dt);
 
     public void DespuesDeAvanzar()
     {
-        ExpandirLuz();
         Reaccionar();
     }
 
@@ -60,35 +59,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
         int temperaturaPromedio = (cantidad == 0) ? 0 : temperaturaTotal / cantidad;
         m_temperatura.NuevoValor(temperaturaPromedio);
     }
-
-    public void ExpandirLuz()
-    {
-        if (Emisor())
-            return;
-
-        List<Vector3Int> opciones = new List<Vector3Int>()
-        {
-            new Vector3Int( 1, 0, 0), new Vector3Int(0,  1, 0), new Vector3Int(0, 0,  1),
-            new Vector3Int(-1, 0, 0), new Vector3Int(0, -1, 0), new Vector3Int(0, 0, -1)
-        };
-
-        foreach (Vector3Int desfase in opciones)
-        {
-            Elemento elemento = m_mundo.EnPosicion(m_posicion + desfase);
-            if (elemento == null)
-                continue;
-
-            int iluminacionElemento = elemento.IluminacionValor - 1;
-            ActualizarLuz(Mathf.Max(iluminacionElemento, IluminacionValor));
-        }
-    }
-
-    protected virtual void ActualizarLuz(int luz)
-    {
-        int nuevoValor = (Visible()) ? 0 : luz;
-        m_iluminacion.NuevoValor(nuevoValor);
-    }
-
+    
     public void Actualizado()
     {
         m_actualizado = true;
@@ -96,32 +67,12 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public void EmpezarAActualizar()
     {
-
         m_actualizado = false;
-        if (!Emisor())
-            m_iluminacion.NuevoValor(0);
     }
 
     public bool EstaActualizado()
     {
         return m_actualizado;
-    }
-
-    public int PasarTemperatura(Elemento elemento, int cantidad)
-    {
-        int cantidadADar = cantidad;
-        if (TemperaturaValor < cantidad)
-            cantidadADar = TemperaturaValor;
-
-        m_temperatura.Disminuir(cantidadADar);
-        elemento.m_temperatura.Aumentar(cantidad);
-
-        return cantidad - cantidadADar;
-    }
-
-    public int RecibirTemperatura(Elemento elemento, int cantidad)
-    {
-        return elemento.PasarTemperatura(this, cantidad);
     }
 
     public abstract void Reaccionar();
@@ -251,7 +202,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     {
         otro.m_concentracion.NuevoValor(ConcentracionValor);
         otro.m_temperatura.NuevoValor(TemperaturaValor);
-        otro.m_iluminacion.NuevoValor(IluminacionValor);
+        //otro.m_iluminacion.NuevoValor(IluminacionValor);
         otro.m_alfa.NuevoValor(AlfaValor);
         otro.m_rgb.NuevoValor(ColorValor);
         otro.ActualizarColor();
@@ -272,11 +223,11 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     {
         return !m_consitucion.Atraviesa(entidad);
     }
-
+    /*
     public virtual bool Emisor()
     {
         return false;
-    }
+    }*/
 
     public float GetValor(TipoMaterial tipoMaterial, float defaultValor)
     {
@@ -294,9 +245,10 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
         return (DarDefualt(tipoMaterial)) ? colorDefault : ColorValor;
     }
 
-    public int GetIluminacion()
+    public float GetIluminacion()
     {
-        return IluminacionValor;
+        //return IluminacionValor;
+        return m_temperatura.IluminacionPorTemperatrua();
     }
 
     public float GetColision(Constitucion otro, float defaultColision)

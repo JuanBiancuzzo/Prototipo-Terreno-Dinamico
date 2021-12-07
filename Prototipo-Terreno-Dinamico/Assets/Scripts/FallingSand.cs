@@ -45,7 +45,6 @@ public class FallingSand : MonoBehaviour
         foreach (Elemento elemento in m_mapa.ElementoParaActualizar())
             elemento.DespuesDeAvanzar();
 
-        m_mapa.CalcularIluminacion();
         Renderizar();
     }
 

@@ -8,7 +8,7 @@ public interface ISacarDatos
 
     Color GetColor(Vector3Int posicion, TipoMaterial tipoMaterial, Color defaultColor = new Color());
 
-    int GetIluminacion(Vector3Int posicion, int defaultIluminacion = 0);
+    float GetIluminacion(Vector3Int posicion, float defaultIluminacion = 0);
 
     float GetColision(Vector3Int posicion, Constitucion otro, float defaultColision = 0f);
 }
@@ -19,7 +19,7 @@ public interface ITenerDatos
 
     Color GetColor(TipoMaterial tipoMaterial, Color defaultColor);
 
-    int GetIluminacion();
+    float GetIluminacion();
 
     float GetColision(Constitucion otro, float defaultColision);
 }

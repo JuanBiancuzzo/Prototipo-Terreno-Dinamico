@@ -36,7 +36,7 @@ public class SacarDatosMundo : MonoBehaviour, ISacarDatos
         return elemento.GetColor(tipoMaterial, defaultColor);
     }
 
-    public int GetIluminacion(Vector3Int posicion, int defaultIluminacion = 0)
+    public float GetIluminacion(Vector3Int posicion, float defaultIluminacion = 0)
     {
         if (!mundo.EnRango(posicion))
             return defaultIluminacion;

@@ -3,7 +3,6 @@ using UnityEngine;
 [System.Serializable]
 public class ElementoMagico : IObjetoMagico
 {
-    [SerializeField] public Iluminacion m_iluminacion;
     [SerializeField] public RGB m_rgb;
     [SerializeField] public Alfa m_alfa;
     [SerializeField] public Temperatura m_temperatura;
@@ -12,17 +11,16 @@ public class ElementoMagico : IObjetoMagico
 
     private Color m_color;
 
-    public int IluminacionValor => m_iluminacion.IluminacionValor;
+    public float IluminacionValor => m_temperatura.IluminacionPorTemperatrua();
     public int TemperaturaValor => m_temperatura.TemperaturaValor;
     public Color ColorValor => m_color;
     public float AlfaValor => m_alfa.AlfaValor;
     public int ConcentracionValor => m_concentracion.ConcentracionValor;
     public int ConstitucionValor => m_consitucion.ConstitucionValor;
 
-    public ElementoMagico(int iluminacion, Color color, int temperatura, int concentracion, int constitucion)
+    public ElementoMagico(Color color, int temperatura, int concentracion, int constitucion)
     {
         m_color = color;
-        m_iluminacion = new Iluminacion(iluminacion);
         m_temperatura = new Temperatura(temperatura);
         m_rgb = new RGB(new Vector3(color.r, color.g, color.b));
         m_alfa = new Alfa(color.a);
@@ -66,8 +64,6 @@ public class ElementoMagico : IObjetoMagico
     {
         switch (tipoDeMagia)
         {
-            case TipoDeMagia.Iluminacion:
-                return m_iluminacion;
             case TipoDeMagia.Color:
                 ActualizarColor();
                 return m_rgb;

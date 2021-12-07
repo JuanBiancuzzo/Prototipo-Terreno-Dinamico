@@ -86,9 +86,9 @@ public class MarchingCubes : MonoBehaviour, IRender
 		Vector3Int posicion;
 		float valor;
 		Color color;
-		int iluminacion;
+		float iluminacion;
 
-		public Dato(Vector3Int posicion, float valor, Color color, int iluminacion)
+		public Dato(Vector3Int posicion, float valor, Color color, float iluminacion)
         {
 			this.posicion = posicion;
 			this.valor = valor;
@@ -129,7 +129,7 @@ public class MarchingCubes : MonoBehaviour, IRender
 						posicion,
 						datos.GetValor(posicion, m_tipoMaterial),
 						datos.GetColor(posicion, m_tipoMaterial),
-						datos.GetIluminacion(posicion)
+						Mathf.InverseLerp(0, 100, datos.GetIluminacion(posicion))
 					);
 				}
 
