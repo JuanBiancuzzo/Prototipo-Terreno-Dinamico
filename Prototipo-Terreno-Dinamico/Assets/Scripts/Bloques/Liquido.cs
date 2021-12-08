@@ -22,7 +22,7 @@ public abstract class Liquido : Elemento
 
     public override void Avanzar(int dt)
     {
-        if (Vacio() || !Flowing() || TieneSoporte())
+        if (Vacio() || !Flowing())
             return;
 
         ActualizarVelocidad(dt);
@@ -61,23 +61,6 @@ public abstract class Liquido : Elemento
 
             break;
         }
-    }
-
-    private bool TieneSoporte()
-    {
-        Vector3Int desfase = new Vector3Int(0, -1, 0);
-
-        Elemento elemento = m_mundo.EnPosicion(m_posicion + desfase);
-        if (elemento == null || !MismoTipo(elemento))
-            return false;
-
-        bool loSoportan = ElementoPuedeSoportar(elemento);
-        return loSoportan;
-    }
-
-    protected virtual bool ElementoPuedeSoportar(Elemento elemento)
-    {
-        return elemento.ConstitucionValor > ConcentracionValor;
     }
 
     private IEnumerable<Vector3Int> Opciones()

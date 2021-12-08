@@ -4,31 +4,36 @@ using UnityEngine;
 
 public abstract class Solido : Elemento
 {
-    protected const int gravedad = -1;
-
-    protected int m_velocidad, m_aceleracion;
     protected Vector3Int m_estabilidad;
-    protected int m_ficDinamica, m_ficEstatica, m_filtracion;
+    protected int m_ficDinamica, m_ficEstatica;
 
     protected int m_flowRate;
+    bool m_enMovimiento;
 
     protected Solido(Vector3Int posicion, Mundo mundo) : base(posicion, mundo)
     {
         m_estabilidad = Vector3Int.zero;
-        m_ficDinamica = 2;
-        m_ficEstatica = 4;
-        m_filtracion = 1;
-        m_velocidad = 0;
-        m_aceleracion = 0;
+
+        m_ficDinamica = 70;
+        m_ficEstatica = 50;
+
         m_flowRate = 25;
+        m_enMovimiento = true;
     }
 
     public override void Avanzar(int dt)
     {
-        if (Vacio() || TieneSoporte())
+        if (Vacio())
+        {
+            m_enMovimiento = false;
             return;
+        }
 
-        ActualizarVelocidad(dt);
+        if (TieneSoporte())
+        {
+            m_enMovimiento = false;
+            return;
+        }
 
         foreach (Vector3Int desfase in Opciones())
         {
@@ -67,14 +72,16 @@ public abstract class Solido : Elemento
 
             break;
         }
+
+        m_enMovimiento = true;
     }
 
     private bool TieneSoporte()
     {
         List<Vector3Int> opciones = new List<Vector3Int>()
         {
-            new Vector3Int( 1, 0, 0), new Vector3Int(0,  1, 0), new Vector3Int(0, 0,  1),
-            new Vector3Int(-1, 0, 0), new Vector3Int(0, -1, 0), new Vector3Int(0, 0, -1)
+            new Vector3Int( 1, 0, 0), new Vector3Int(0, 0,  1),
+            new Vector3Int(-1, 0, 0), new Vector3Int(0, 0, -1)
         };
 
         foreach (Vector3Int desfase in opciones)
@@ -83,19 +90,19 @@ public abstract class Solido : Elemento
             if (elemento == null || !MismoTipo(elemento))
                 continue;
 
-            bool loSoportan = ElementoPuedeSoportar(elemento);
-            if (!loSoportan)
-                continue;
-            else
-                return true;
+            bool loSoportan = ElementoPuedeSoportar((Solido)elemento);
+            if (loSoportan)
+                return true; 
         }
 
         return false;
     }
 
-    protected virtual bool ElementoPuedeSoportar(Elemento elemento)
+    protected virtual bool ElementoPuedeSoportar(Solido solido)
     {
-        return elemento.ConstitucionValor > ConcentracionValor;
+        if (m_enMovimiento)
+            return ConcentracionValor > solido.m_ficDinamica;
+        return ConcentracionValor > solido.m_ficEstatica;
     }
 
     private IEnumerable<Vector3Int> Opciones()
@@ -116,11 +123,6 @@ public abstract class Solido : Elemento
             yield return diagonales[index];
             diagonales.RemoveAt(index);
         }
-    }
-
-    protected void ActualizarVelocidad(int dt)
-    {
-        m_velocidad += (m_aceleracion + gravedad) * dt;
     }
 
     public override bool PermiteMoverse(Elemento elemento)
@@ -170,12 +172,5 @@ public abstract class Solido : Elemento
     public override bool MismoTipo(Gaseoso gaseoso)
     {
         return false;
-    }
-
-    public override void DividirAtributos(Elemento otro)
-    {
-        base.DividirAtributos(otro);
-        Solido solido = (Solido)otro;
-        solido.m_velocidad = m_velocidad;
     }
 }

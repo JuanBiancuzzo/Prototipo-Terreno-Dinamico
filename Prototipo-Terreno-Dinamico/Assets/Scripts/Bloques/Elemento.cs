@@ -13,7 +13,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     protected Mundo m_mundo;
 
     public Elemento(Vector3Int posicion, Mundo mundo) 
-        : base(new Color(1, 1, 1, 1), 90, 25, 50) // iluminacion, color, temperatura, concentracion y constitucion
+        : base(new Color(1, 1, 1, 1), 90, 25, 20) // iluminacion, color, temperatura, concentracion y constitucion
     {
         m_posicion = posicion;
         m_mundo = mundo;

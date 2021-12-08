@@ -290,7 +290,7 @@ MonoBehaviour:
         m_valor: 50
     m_consitucion:
       m_constitucion:
-        m_valor: 50
+        m_valor: 80
 --- !u!114 &713432424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -629,7 +629,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!135 &854178318
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -868,10 +868,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   simulacion: {fileID: 1558492044}
-  m_materialSeleccionado: 6
+  m_materialSeleccionado: 1
   anchoPlancha: 0
   tirar: 1
-  continuo: 0
+  continuo: 1
 --- !u!4 &1527085762
 Transform:
   m_ObjectHideFlags: 0
@@ -880,7 +880,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1527085760}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.4, y: 3.52, z: 5.68}
+  m_LocalPosition: {x: 0.03, y: 3.52, z: 4.82}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
