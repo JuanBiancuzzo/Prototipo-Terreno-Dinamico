@@ -254,11 +254,11 @@ MonoBehaviour:
   m_distancia: 6
   m_radio: 3
   pies: {fileID: 1563703742}
-  m_tipoMagiaDar: 3
-  m_rangoDar: 0
-  m_tipoMagiaRecibir: 1
-  m_rangoRecibir: 3
-  m_energiaDeseada: 50
+  m_tipoMagiaDar: 0
+  m_rangoDar: 3
+  m_tipoMagiaRecibir: 2
+  m_rangoRecibir: 0
+  m_energiaDeseada: 100
 --- !u!114 &713432423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -854,7 +854,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1527085761
 MonoBehaviour:
   m_ObjectHideFlags: 0

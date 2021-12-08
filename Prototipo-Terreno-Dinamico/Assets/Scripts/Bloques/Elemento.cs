@@ -13,7 +13,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     protected Mundo m_mundo;
 
     public Elemento(Vector3Int posicion, Mundo mundo) 
-        : base(new Color(1, 1, 1, 1), 90, 25, 20) // iluminacion, color, temperatura, concentracion y constitucion
+        : base(new Color(1, 1, 1, 1), 293, 25, 20) // iluminacion, color, temperatura, concentracion y constitucion
     {
         m_posicion = posicion;
         m_mundo = mundo;
@@ -76,23 +76,17 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
             if (direccion < 0)
                 continue;
 
-            //Debug.Log("Temperatura actual: " + TemperaturaValor + " y el otro: " + elemento.TemperaturaValor);
-
             float promedio = (m_temperatura.Conductividad + elemento.m_temperatura.Conductividad) / 2f;
             int deltaTemperatura = elemento.TemperaturaValor - TemperaturaValor;
 
-            float transferencia = (deltaTemperatura * promedio) / 100f;
+            float transferencia = (deltaTemperatura * promedio) / 1000f;
 
-            // transferencia <= deltaTemperatura / (2 * direccion)
             float maxTransferencia = (float)deltaTemperatura / (2 * direccion);
 
             transferencia = Mathf.Min(transferencia, maxTransferencia);
 
             elemento.m_temperatura.Disminuir(direccion * Mathf.FloorToInt(transferencia));
             m_temperatura.Aumentar(direccion * Mathf.FloorToInt(transferencia));
-
-            //Debug.Log("Temperatura actual: " + TemperaturaValor + " y el otro: " + elemento.TemperaturaValor);
-            //Debug.LogError("Hola");
         }
     }
 

@@ -3,9 +3,9 @@ using UnityEngine;
 [System.Serializable]
 public class Temperatura : IEnergia
 {
-    static int minimo = 0, maximo = 1000;
+    static int minimo = 0, maximo = 3000;
     int m_conductividad = 50;
-    private float Costo => m_conductividad / 100f;
+    private float Costo => (m_conductividad * 10f) / maximo;
     [SerializeField] AtributoInt m_temperatura = null;
 
     public int TemperaturaValor => m_temperatura.Valor;
@@ -59,12 +59,11 @@ public class Temperatura : IEnergia
     }
 
     public float IluminacionPorTemperatrua()
-    {
-        if (TemperaturaValor < 100)
-            return TemperaturaValor / 10f;
-        if (TemperaturaValor > 700)
-            return (TemperaturaValor - 700) / 30f + 90;
-
-        return (2 * TemperaturaValor) / 15f - 10f / 3f;
+    { 
+        if (TemperaturaValor < 800)
+            return 0;
+        if (TemperaturaValor > 1000)
+            return 100;
+        return (TemperaturaValor - 800) / 2f;
     }
 }
