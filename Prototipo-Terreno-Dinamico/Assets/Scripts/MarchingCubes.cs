@@ -129,7 +129,7 @@ public class MarchingCubes : MonoBehaviour, IRender
 						posicion,
 						datos.GetValor(posicion, m_tipoMaterial),
 						datos.GetColor(posicion, m_tipoMaterial),
-						Mathf.InverseLerp(0, 100, datos.GetIluminacion(posicion))
+						datos.GetIluminacion(posicion) / 100f
 					);
 				}
 

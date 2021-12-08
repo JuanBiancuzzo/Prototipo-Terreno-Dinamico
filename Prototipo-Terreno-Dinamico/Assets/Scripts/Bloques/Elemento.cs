@@ -13,10 +13,15 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     protected Mundo m_mundo;
 
     public Elemento(Vector3Int posicion, Mundo mundo) 
-        : base(new Color(1, 1, 1, 1), 290, 25, 50) // iluminacion, color, temperatura, concentracion y constitucion
+        : base(new Color(1, 1, 1, 1), 90, 25, 50) // iluminacion, color, temperatura, concentracion y constitucion
     {
         m_posicion = posicion;
         m_mundo = mundo;
+    }
+
+    protected void NuevaConductividad(int conductividad)
+    {
+        m_temperatura.NuevaConductividad(conductividad);
     }
 
     protected void NuevoColor(Color color)
@@ -29,37 +34,69 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     public void AntesDeAvanzar()
     {
         EmpezarAActualizar();
-        //ExpandirTemperatura();
     }
 
     public abstract void Avanzar(int dt);
 
     public void DespuesDeAvanzar()
     {
+        ExpandirTemperatura();
         Reaccionar();
     }
 
     protected void ExpandirTemperatura()
     {
-        int cantidad = 0;
-        int temperaturaTotal = 0;
-
+        List<Elemento> elementoAlrededor = new List<Elemento>();
         for (int x = -1; x <= 1; x++)
             for (int y = -1; y <= 1; y++)
                 for (int z = -1; z <= 1; z++)
                 {
-                    Vector3Int desfase = new Vector3Int(x, y, z);
-                    Elemento elemento = m_mundo.EnPosicion(m_posicion + desfase);
+                    if (x == 0 && y == 0 && z == 0)
+                        continue;
+
+                    Elemento elemento = m_mundo.EnPosicion(m_posicion + new Vector3Int(x, y, z));
                     if (elemento == null)
                         continue;
-                    temperaturaTotal += elemento.TemperaturaValor;
-                    cantidad++;
+
+                    elementoAlrededor.Add(elemento);
                 }
 
-        int temperaturaPromedio = (cantidad == 0) ? 0 : temperaturaTotal / cantidad;
-        m_temperatura.NuevoValor(temperaturaPromedio);
+        // ordena de mayor a menor por conductividad termica
+        elementoAlrededor.Sort( (e1, e2) =>
+            e1.m_temperatura.Conductividad.CompareTo(e2.m_temperatura.Conductividad)
+        );
+
+        foreach (Elemento elemento in elementoAlrededor)
+        {
+            int deltaConductividad = elemento.m_temperatura.Conductividad - m_temperatura.Conductividad;
+            int margen = deltaConductividad * 10;
+
+
+            int direccion = (TemperaturaValor >= elemento.TemperaturaValor + margen) ? -1 : 1;
+            if (direccion < 0)
+                continue;
+
+            //Debug.Log("Temperatura actual: " + TemperaturaValor + " y el otro: " + elemento.TemperaturaValor);
+
+            float promedio = (m_temperatura.Conductividad + elemento.m_temperatura.Conductividad) / 2f;
+            int deltaTemperatura = elemento.TemperaturaValor - TemperaturaValor;
+
+            float transferencia = (deltaTemperatura * promedio) / 100f;
+
+            // transferencia <= deltaTemperatura / (2 * direccion)
+            float maxTransferencia = (float)deltaTemperatura / (2 * direccion);
+
+            transferencia = Mathf.Min(transferencia, maxTransferencia);
+
+            elemento.m_temperatura.Disminuir(direccion * Mathf.FloorToInt(transferencia));
+            m_temperatura.Aumentar(direccion * Mathf.FloorToInt(transferencia));
+
+            //Debug.Log("Temperatura actual: " + TemperaturaValor + " y el otro: " + elemento.TemperaturaValor);
+            //Debug.LogError("Hola");
+        }
     }
-    
+
+
     public void Actualizado()
     {
         m_actualizado = true;
@@ -202,7 +239,6 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     {
         otro.m_concentracion.NuevoValor(ConcentracionValor);
         otro.m_temperatura.NuevoValor(TemperaturaValor);
-        //otro.m_iluminacion.NuevoValor(IluminacionValor);
         otro.m_alfa.NuevoValor(AlfaValor);
         otro.m_rgb.NuevoValor(ColorValor);
         otro.ActualizarColor();
@@ -223,11 +259,6 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     {
         return !m_consitucion.Atraviesa(entidad);
     }
-    /*
-    public virtual bool Emisor()
-    {
-        return false;
-    }*/
 
     public float GetValor(TipoMaterial tipoMaterial, float defaultValor)
     {
@@ -247,7 +278,6 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public float GetIluminacion()
     {
-        //return IluminacionValor;
         return m_temperatura.IluminacionPorTemperatrua();
     }
 

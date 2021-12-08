@@ -6,6 +6,8 @@ using UnityEngine;
 public class Constitucion : IEnergia
 {
     static int minimo = 0, maximo = 100;
+    static float m_costeParaAgregar = 1f;
+    static float m_costeParaSacar = 5f;
     [SerializeField] AtributoInt m_constitucion;
 
     public int ConstitucionValor => m_constitucion.Valor;
@@ -31,21 +33,21 @@ public class Constitucion : IEnergia
      */
     public EnergiaCoin Aumentar(EnergiaCoin energia)
     {
-        int constitucionAAgregar = AtributoInt.EnergiaAAtributo(energia);
+        int constitucionAAgregar = m_constitucion.EnergiaAAtributo(energia);
         int constitucionPosible = Mathf.Min(maximo - m_constitucion.Valor, constitucionAAgregar);
 
         m_constitucion.Aumentar(constitucionPosible);
 
-        return AtributoInt.AtributoAEnergia(constitucionAAgregar - constitucionPosible, energia);
+        return m_constitucion.AtributoAEnergia(constitucionAAgregar - constitucionPosible, energia, m_costeParaAgregar);
     }
 
     public EnergiaCoin Disminuir(EnergiaCoin energia)
     {
-        int constitucionASacar = AtributoInt.EnergiaAAtributo(energia);
+        int constitucionASacar = m_constitucion.EnergiaAAtributo(energia);
         constitucionASacar = Mathf.Min(m_constitucion.Valor, constitucionASacar);
 
         m_constitucion.Disminuir(constitucionASacar);
 
-        return AtributoInt.AtributoAEnergia(constitucionASacar, energia);
+        return m_constitucion.AtributoAEnergia(constitucionASacar, energia, m_costeParaSacar);
     }
 }

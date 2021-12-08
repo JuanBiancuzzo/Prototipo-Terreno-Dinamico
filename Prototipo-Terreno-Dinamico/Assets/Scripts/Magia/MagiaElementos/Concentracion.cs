@@ -6,6 +6,8 @@ using UnityEngine;
 public class Concentracion : IEnergia
 {
     static int minimo = 0, maximo = 100;
+    static float m_costeParaAgregar = 3f;
+    static float m_costeParaSacar = 5f;
     [SerializeField] AtributoInt m_concentracion;
 
     public int ConcentracionValor => m_concentracion.Valor;
@@ -33,21 +35,21 @@ public class Concentracion : IEnergia
      */
     public EnergiaCoin Aumentar(EnergiaCoin energia)
     {
-        int concentracionAAgregar = AtributoInt.EnergiaAAtributo(energia);
+        int concentracionAAgregar = m_concentracion.EnergiaAAtributo(energia);
         int concentracionPosible = Mathf.Min(maximo - m_concentracion.Valor, concentracionAAgregar);
 
         m_concentracion.Aumentar(concentracionPosible);
 
-        return AtributoInt.AtributoAEnergia(concentracionAAgregar - concentracionPosible, energia);
+        return m_concentracion.AtributoAEnergia(concentracionAAgregar - concentracionPosible, energia, m_costeParaAgregar);
     }
 
     public EnergiaCoin Disminuir(EnergiaCoin energia)
     {
-        int concentracionASacar = AtributoInt.EnergiaAAtributo(energia);
+        int concentracionASacar = m_concentracion.EnergiaAAtributo(energia);
         concentracionASacar = Mathf.Min(m_concentracion.Valor, concentracionASacar);
 
         m_concentracion.Disminuir(concentracionASacar);
 
-        return AtributoInt.AtributoAEnergia(concentracionASacar, energia);
+        return m_concentracion.AtributoAEnergia(concentracionASacar, energia, m_costeParaSacar);
     }
 }

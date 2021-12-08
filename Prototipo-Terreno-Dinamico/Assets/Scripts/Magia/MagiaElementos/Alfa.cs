@@ -23,21 +23,21 @@ public class Alfa : IEnergia
      */
     public EnergiaCoin Aumentar(EnergiaCoin energia)
     {
-        float alfaAAgregar = AtributoFloat.EnergiaAAtributo(energia);
+        float alfaAAgregar = m_alfa.EnergiaAAtributo(energia);
         float alfaPosible = Mathf.Min(maximo - m_alfa.Valor, alfaAAgregar);
 
         m_alfa.Aumentar(alfaPosible);
 
-        return AtributoFloat.AtributoAEnergia(alfaAAgregar - alfaPosible, energia);
+        return m_alfa.AtributoAEnergia(alfaAAgregar - alfaPosible, energia);
     }
 
     public EnergiaCoin Disminuir(EnergiaCoin energia)
     {
-        float alfaASacar = AtributoFloat.EnergiaAAtributo(energia);
+        float alfaASacar = m_alfa.EnergiaAAtributo(energia);
         alfaASacar = Mathf.Min(m_alfa.Valor, alfaASacar);
 
         m_alfa.Disminuir(alfaASacar);
 
-        return AtributoFloat.AtributoAEnergia(alfaASacar, energia);
+        return m_alfa.AtributoAEnergia(alfaASacar, energia);
     }
 }

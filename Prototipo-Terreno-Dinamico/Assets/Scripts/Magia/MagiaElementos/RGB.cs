@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -27,10 +25,9 @@ public class RGB : IEnergia
      * Disminuir es saca energia y devuelve cuanto consumio
      * Aumentar es dar energia y devuelve cuanto no pudo agarrar
      */
-
     public EnergiaCoin Aumentar(EnergiaCoin energia)
     {
-        float energiaPorColor = AtributoFloat.EnergiaAAtributo(energia);
+        float energiaPorColor = r.EnergiaAAtributo(energia);
         Color color = new Color(r.Valor, g.Valor, b.Valor);
         float H, S, V;
         Color.RGBToHSV(color, out H, out S, out V);
@@ -45,12 +42,12 @@ public class RGB : IEnergia
             rgb[i].NuevoValor(color[i]);
 
         float energiaRestanteTotal = Mathf.Min((V + energiaPorColor) - 1, 0);
-        return AtributoFloat.AtributoAEnergia(energiaRestanteTotal, energia);
+        return r.AtributoAEnergia(energiaRestanteTotal, energia);
     }
 
     public EnergiaCoin Disminuir(EnergiaCoin energia)
     {
-        float energiaPorColor = AtributoFloat.EnergiaAAtributo(energia);
+        float energiaPorColor = r.EnergiaAAtributo(energia);
 
         Color color = new Color(r.Valor, g.Valor, b.Valor);
         float H, S, V;
@@ -65,6 +62,6 @@ public class RGB : IEnergia
         for (int i = 0; i < 3; i++)
             rgb[i].NuevoValor(color[i]);
 
-        return AtributoFloat.AtributoAEnergia(energiaAAgregar, energia);
+        return r.AtributoAEnergia(energiaAAgregar, energia);
     }
 }

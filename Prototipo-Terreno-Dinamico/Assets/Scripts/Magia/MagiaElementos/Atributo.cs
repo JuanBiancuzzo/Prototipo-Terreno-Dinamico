@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class AtributoInt
 {
-    static int m_minimo, m_maximo;
+    int m_minimo, m_maximo;
     [SerializeField] int m_valor;
 
     public int Valor => m_valor;
@@ -29,15 +29,15 @@ public class AtributoInt
         m_maximo = maximo;
     }
 
-    public static int EnergiaAAtributo(EnergiaCoin energia)
+    public int EnergiaAAtributo(EnergiaCoin energia)
     {
         float t = energia.EnergiaActualInterpolada();
         return ValorAtributo(t);
     }
 
-    public static EnergiaCoin AtributoAEnergia(int valor, EnergiaCoin energiaAModificar = null)
+    public EnergiaCoin AtributoAEnergia(int valor, EnergiaCoin energiaAModificar = null, float modificador = 1f)
     {
-        float t = AtributoInterpolada(valor);
+        float t = AtributoInterpolada(valor) * modificador;
         if (energiaAModificar == null)
             energiaAModificar = new EnergiaCoin();
 
@@ -45,20 +45,21 @@ public class AtributoInt
         return energiaAModificar;
     }
 
-    public static int ValorAtributo(float t)
+    public int ValorAtributo(float t)
     {
         return Mathf.FloorToInt(Mathf.Lerp(m_minimo, m_maximo, t));
     }
 
-    public static float AtributoInterpolada(int valor)
+    public float AtributoInterpolada(int valor)
     {
         return Mathf.InverseLerp(m_minimo, m_maximo, valor);
     }
 }
+
 [System.Serializable]
 public class AtributoFloat
 {
-    static float m_minimo, m_maximo;
+     float m_minimo, m_maximo;
      [SerializeField] float m_valor;
 
     public float Valor => m_valor;
@@ -79,15 +80,15 @@ public class AtributoFloat
         m_minimo = minimo;
         m_maximo = maximo;
     }
-    public static float EnergiaAAtributo(EnergiaCoin energia)
+    public float EnergiaAAtributo(EnergiaCoin energia)
     {
         float t = energia.EnergiaActualInterpolada();
         return ValorAtributo(t);
     }
 
-    public static EnergiaCoin AtributoAEnergia(float valor, EnergiaCoin energiaAModificar = null)
+    public EnergiaCoin AtributoAEnergia(float valor, EnergiaCoin energiaAModificar = null, float modificador = 1f)
     {
-        float t = AtributoInterpolada(valor);
+        float t = AtributoInterpolada(valor) * modificador;
         if (energiaAModificar == null)
             energiaAModificar = new EnergiaCoin();
 
@@ -95,12 +96,12 @@ public class AtributoFloat
         return energiaAModificar;
     }
 
-    public static float ValorAtributo(float t)
+    public float ValorAtributo(float t)
     {
         return Mathf.Lerp(m_minimo, m_maximo, t);
     }
 
-    public static float AtributoInterpolada(float valor)
+    public float AtributoInterpolada(float valor)
     {
         return Mathf.InverseLerp(m_minimo, m_maximo, valor);
     }

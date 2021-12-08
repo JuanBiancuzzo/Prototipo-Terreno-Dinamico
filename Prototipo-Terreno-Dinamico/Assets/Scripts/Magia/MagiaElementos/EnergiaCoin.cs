@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class EnergiaCoin 
 {
-    static int minimo = 0, maximo = 300;
+    static int minimo = 0;
+    static int densidad = 100;
     int m_cantidad;
 
     public int Valor => m_cantidad;
 
     public EnergiaCoin(int cantidad = 0)
     {
-        m_cantidad = Mathf.Max(minimo, Mathf.Min(maximo, cantidad));
+        m_cantidad = Mathf.Max(minimo, cantidad);
     }
 
     public void AumentarEnergia(EnergiaCoin energia)
@@ -41,11 +42,11 @@ public class EnergiaCoin
 
     public static int ValorEnergia(float t)
     {
-        return Mathf.FloorToInt(Mathf.Lerp(minimo, maximo, t));
+        return Mathf.FloorToInt(t * densidad);
     }
 
     public static float EnergiaInterpolada(int cantidad)
     {
-        return Mathf.InverseLerp(minimo, maximo, cantidad);
+        return (float) cantidad / densidad;
     }
 }

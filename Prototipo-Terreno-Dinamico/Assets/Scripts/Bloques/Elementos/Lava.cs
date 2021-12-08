@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class Lava : Liquido
 {
-    int temperaturaMaxima = 400;
+    int temperaturaMaxima = 800;
 
     public Lava(Vector3Int posicion, Mundo mundo) : base(posicion, mundo)
     {
         NuevoColor(new Color(0.72f, 0.15f, 0.16f, 0.80f));
         m_flowRate = 10;
         m_temperatura.NuevoValor(temperaturaMaxima);
+        NuevaConductividad(10);
     }
 
     public override Elemento Expandir(Vector3Int posicion)
@@ -22,8 +23,5 @@ public class Lava : Liquido
 
     public override void Reaccionar()
     {
-        float t = Mathf.InverseLerp(0, temperaturaMaxima, TemperaturaValor);
-        int nuevaIluminacion = Mathf.RoundToInt(Mathf.Lerp(m_minimoLuz, m_maximoLuz, t));
-        m_temperatura.NuevoValor(Mathf.Max(0, TemperaturaValor - 1));
     }
 }
