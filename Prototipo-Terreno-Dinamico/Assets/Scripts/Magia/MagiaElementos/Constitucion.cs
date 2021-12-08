@@ -50,4 +50,14 @@ public class Constitucion : IEnergia
 
         return m_constitucion.AtributoAEnergia(constitucionASacar, energia, m_costeParaSacar);
     }
+
+    public EnergiaCoin EnergiaCapazDeDar()
+    {
+        return m_constitucion.AtributoAEnergia(ConstitucionValor, null, m_costeParaSacar);
+    }
+
+    public EnergiaCoin EnergiaCapazDeRecibir()
+    {
+        return m_constitucion.AtributoAEnergia(Mathf.Max(minimo, maximo - ConstitucionValor), null, m_costeParaAgregar);
+    }
 }

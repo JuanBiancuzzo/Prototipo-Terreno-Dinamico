@@ -40,4 +40,14 @@ public class Alfa : IEnergia
 
         return m_alfa.AtributoAEnergia(alfaASacar, energia);
     }
+
+    public EnergiaCoin EnergiaCapazDeDar()
+    {
+        return m_alfa.AtributoAEnergia(AlfaValor);
+    }
+
+    public EnergiaCoin EnergiaCapazDeRecibir()
+    {
+        return m_alfa.AtributoAEnergia(Mathf.Max(minimo, maximo - AlfaValor));
+    }
 }

@@ -36,6 +36,11 @@ public class EntidadMagica : MonoBehaviour, IObjetoMagico
         return m_elemento.Dar(tipoDeMagia, cantidad);
     }
 
+    public EnergiaCoin EnergiaCapazDeDar(TipoDeMagia tipoDeMagia)
+    {
+        return m_elemento.EnergiaCapazDeDar(tipoDeMagia);
+    }
+
     public void RecibirMagia()
     {
         m_elemento.RecibirMagia();
@@ -49,5 +54,10 @@ public class EntidadMagica : MonoBehaviour, IObjetoMagico
     public virtual EnergiaCoin Recibir(TipoDeMagia tipoDeMagia, EnergiaCoin cantidad)
     {
         return m_elemento.Recibir(tipoDeMagia, cantidad);
+    }
+
+    public EnergiaCoin EnergiaCapazDeRecibir(TipoDeMagia tipoDeMagia)
+    {
+        return m_elemento.EnergiaCapazDeRecibir(tipoDeMagia);
     }
 }

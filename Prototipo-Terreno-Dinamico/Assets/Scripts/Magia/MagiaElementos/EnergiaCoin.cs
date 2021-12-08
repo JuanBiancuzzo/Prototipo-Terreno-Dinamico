@@ -19,6 +19,11 @@ public class EnergiaCoin
     {
         m_cantidad += energia.Valor;
     }
+    
+    public void DisminuirEnergia(EnergiaCoin energia)
+    {
+        m_cantidad -= energia.Valor;
+    }
 
     public EnergiaCoin MayorEnergia(EnergiaCoin energia)
     {

@@ -54,7 +54,17 @@ public class Temperatura : IEnergia
             return (TemperaturaValor - 700) / 30f + 90;
 
         //return (8 * TemperaturaValor - 1910f) / 41f;
-        Debug.Log(TemperaturaValor);
+        //Debug.Log(TemperaturaValor);
         return (2 * TemperaturaValor) / 15f - 10f / 3f;
+    }
+
+    public EnergiaCoin EnergiaCapazDeDar()
+    {
+        return m_temperatura.AtributoAEnergia(TemperaturaValor, null, m_conductividad / 100f);
+    }
+
+    public EnergiaCoin EnergiaCapazDeRecibir()
+    {
+        return m_temperatura.AtributoAEnergia(Mathf.Max(minimo, maximo - TemperaturaValor), null, m_conductividad / 100f);
     }
 }

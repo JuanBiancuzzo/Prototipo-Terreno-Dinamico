@@ -44,6 +44,12 @@ public class ElementoMagico : IObjetoMagico
         return (energia == null) ? null : energia.Disminuir(cantidad);
     }
 
+    public EnergiaCoin EnergiaCapazDeDar(TipoDeMagia tipoDeMagia)
+    {
+        IEnergia energia = TipoAEnergia(tipoDeMagia);
+        return (energia == null) ? null : energia.EnergiaCapazDeDar();
+    }
+
     public void RecibirMagia()
     {
         EventHandlerMagia.current.recibirEnergia += Recibir;
@@ -58,6 +64,12 @@ public class ElementoMagico : IObjetoMagico
     {
         IEnergia energia = TipoAEnergia(tipoDeMagia);
         return (energia == null) ? null : energia.Aumentar(cantidad);
+    }
+
+    public EnergiaCoin EnergiaCapazDeRecibir(TipoDeMagia tipoDeMagia)
+    {
+        IEnergia energia = TipoAEnergia(tipoDeMagia);
+        return (energia == null) ? null : energia.EnergiaCapazDeRecibir();
     }
 
     protected IEnergia TipoAEnergia(TipoDeMagia tipoDeMagia)

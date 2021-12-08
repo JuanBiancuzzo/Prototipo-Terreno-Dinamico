@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[System.Serializable]
+[System.Serializable] // plantearme si se puede hacer HVS en vez de RGB
 public class RGB : IEnergia
 {
     static float minimo = 0, maximo = 15;
@@ -63,5 +63,21 @@ public class RGB : IEnergia
             rgb[i].NuevoValor(color[i]);
 
         return r.AtributoAEnergia(energiaAAgregar, energia);
+    }
+
+    public EnergiaCoin EnergiaCapazDeDar()
+    {
+        float H, S, V;
+        Color color = new Color(r.Valor, g.Valor, b.Valor);
+        Color.RGBToHSV(color, out H, out S, out V);
+        return r.AtributoAEnergia(V);
+    }
+
+    public EnergiaCoin EnergiaCapazDeRecibir()
+    {
+        float H, S, V;
+        Color color = new Color(r.Valor, g.Valor, b.Valor);
+        Color.RGBToHSV(color, out H, out S, out V);
+        return r.AtributoAEnergia(Mathf.Max(minimo, maximo - V));
     }
 }

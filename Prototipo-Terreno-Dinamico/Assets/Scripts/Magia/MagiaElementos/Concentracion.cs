@@ -52,4 +52,14 @@ public class Concentracion : IEnergia
 
         return m_concentracion.AtributoAEnergia(concentracionASacar, energia, m_costeParaSacar);
     }
+
+    public EnergiaCoin EnergiaCapazDeDar()
+    {
+        return m_concentracion.AtributoAEnergia(ConcentracionValor, null, m_costeParaSacar);
+    }
+
+    public EnergiaCoin EnergiaCapazDeRecibir()
+    {
+        return m_concentracion.AtributoAEnergia(Mathf.Max(minimo, maximo - ConcentracionValor), null, m_costeParaAgregar);
+    }
 }

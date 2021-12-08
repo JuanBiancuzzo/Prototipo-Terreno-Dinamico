@@ -26,13 +26,15 @@ public class SpellController : MonoBehaviour
 
     [SerializeField] TipoDeMagia m_tipoMagiaDar;
     [SerializeField] Rangos m_rangoDar;
-    [SerializeField] int m_energiaDar;
 
     [Space]
 
     [SerializeField] TipoDeMagia m_tipoMagiaRecibir;
     [SerializeField] Rangos m_rangoRecibir;
-    [SerializeField] int m_energiaRecibir;
+
+    [Space]
+
+    [SerializeField] int m_energiaDeseada;
 
     private void Awake()
     {
@@ -53,7 +55,6 @@ public class SpellController : MonoBehaviour
             Grupo dar = new Grupo()
             {
                 elemento = objetoMagico,
-                energia = new EnergiaCoin(m_energiaDar),
                 tipoDeMagia = m_tipoMagiaDar
             };
 
@@ -66,13 +67,12 @@ public class SpellController : MonoBehaviour
             Grupo recibir = new Grupo()
             {
                 elemento = objetoMagico,
-                energia = new EnergiaCoin(m_energiaRecibir),
                 tipoDeMagia = m_tipoMagiaRecibir
             };
             recibirLista.Add(recibir);
         }
 
-        bool resultado = SpellSystem.Spell(darLista, recibirLista);
+        bool resultado = SpellSystem.Spell(darLista, recibirLista, new EnergiaCoin(m_energiaDeseada));
 
         if (!resultado)
             Debug.LogError("El spell no funciono");
