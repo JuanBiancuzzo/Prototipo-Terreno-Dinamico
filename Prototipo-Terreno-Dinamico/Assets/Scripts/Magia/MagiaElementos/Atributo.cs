@@ -29,9 +29,9 @@ public class AtributoInt
         m_maximo = maximo;
     }
 
-    public int EnergiaAAtributo(EnergiaCoin energia)
+    public int EnergiaAAtributo(EnergiaCoin energia, float modificador = 1f)
     {
-        float t = energia.EnergiaActualInterpolada();
+        float t = energia.EnergiaActualInterpolada() * modificador;
         return ValorAtributo(t);
     }
 
@@ -80,9 +80,9 @@ public class AtributoFloat
         m_minimo = minimo;
         m_maximo = maximo;
     }
-    public float EnergiaAAtributo(EnergiaCoin energia)
+    public float EnergiaAAtributo(EnergiaCoin energia, float modificador = 1f)
     {
-        float t = energia.EnergiaActualInterpolada();
+        float t = energia.EnergiaActualInterpolada() * modificador;
         return ValorAtributo(t);
     }
 

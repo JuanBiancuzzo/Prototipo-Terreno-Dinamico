@@ -27,11 +27,15 @@ public class EnergiaCoin
 
     public EnergiaCoin MayorEnergia(EnergiaCoin energia)
     {
+        if (energia == null)
+            return this;
         return (m_cantidad > energia.m_cantidad) ? this : energia;
     }
 
     public EnergiaCoin MenorEnergia(EnergiaCoin energia)
     {
+        if (energia == null)
+            return this;
         return (m_cantidad < energia.m_cantidad) ? this : energia;
     }
 

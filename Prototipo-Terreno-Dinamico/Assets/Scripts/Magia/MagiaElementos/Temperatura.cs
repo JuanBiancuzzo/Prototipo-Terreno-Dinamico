@@ -5,6 +5,7 @@ public class Temperatura : IEnergia
 {
     static int minimo = 0, maximo = 1000;
     int m_conductividad = 50;
+    private float Costo => m_conductividad / 100f;
     [SerializeField] AtributoInt m_temperatura = null;
 
     public int TemperaturaValor => m_temperatura.Valor;
@@ -33,7 +34,13 @@ public class Temperatura : IEnergia
 
         m_temperatura.Aumentar(temperaturaPosible);
 
-        return m_temperatura.AtributoAEnergia(temperaturaAAgregar - temperaturaPosible, energia, m_conductividad / 100f);
+        return m_temperatura.AtributoAEnergia(temperaturaAAgregar - temperaturaPosible, energia);
+    }
+
+    public EnergiaCoin EnergiaCapazDeRecibir(EnergiaCoin energiaDeseada)
+    {
+        EnergiaCoin capacidadMaxima = m_temperatura.AtributoAEnergia(Mathf.Max(minimo, maximo - TemperaturaValor));
+        return capacidadMaxima.MenorEnergia(energiaDeseada);
     }
 
     public EnergiaCoin Disminuir(EnergiaCoin energia)
@@ -43,7 +50,12 @@ public class Temperatura : IEnergia
 
         m_temperatura.Disminuir(temperaturaASacar);
 
-        return m_temperatura.AtributoAEnergia(temperaturaASacar, energia, m_conductividad / 100f);
+        return m_temperatura.AtributoAEnergia(temperaturaASacar, energia);
+    }
+    public EnergiaCoin EnergiaCapazDeDar(EnergiaCoin energiaDeseada)
+    {
+        EnergiaCoin capacidadMaxima = m_temperatura.AtributoAEnergia(TemperaturaValor);
+        return capacidadMaxima.MenorEnergia(energiaDeseada);
     }
 
     public float IluminacionPorTemperatrua()
@@ -53,18 +65,6 @@ public class Temperatura : IEnergia
         if (TemperaturaValor > 700)
             return (TemperaturaValor - 700) / 30f + 90;
 
-        //return (8 * TemperaturaValor - 1910f) / 41f;
-        //Debug.Log(TemperaturaValor);
         return (2 * TemperaturaValor) / 15f - 10f / 3f;
-    }
-
-    public EnergiaCoin EnergiaCapazDeDar()
-    {
-        return m_temperatura.AtributoAEnergia(TemperaturaValor, null, m_conductividad / 100f);
-    }
-
-    public EnergiaCoin EnergiaCapazDeRecibir()
-    {
-        return m_temperatura.AtributoAEnergia(Mathf.Max(minimo, maximo - TemperaturaValor), null, m_conductividad / 100f);
     }
 }

@@ -4,7 +4,6 @@ public class EntidadMagica : MonoBehaviour, IObjetoMagico
 {
     [SerializeField] protected ElementoMagico m_elemento;
 
-    //public int IluminacionValor => m_elemento.IluminacionValor;
     public int TemperaturaValor => m_elemento.TemperaturaValor;
     public Color ColorValor => m_elemento.ColorValor;
     public float AlfaValor => m_elemento.AlfaValor;
@@ -36,9 +35,9 @@ public class EntidadMagica : MonoBehaviour, IObjetoMagico
         return m_elemento.Dar(tipoDeMagia, cantidad);
     }
 
-    public EnergiaCoin EnergiaCapazDeDar(TipoDeMagia tipoDeMagia)
+    public EnergiaCoin EnergiaCapazDeDar(TipoDeMagia tipoDeMagia, EnergiaCoin energiaDeseada = null)
     {
-        return m_elemento.EnergiaCapazDeDar(tipoDeMagia);
+        return m_elemento.EnergiaCapazDeDar(tipoDeMagia, energiaDeseada);
     }
 
     public void RecibirMagia()
@@ -56,8 +55,8 @@ public class EntidadMagica : MonoBehaviour, IObjetoMagico
         return m_elemento.Recibir(tipoDeMagia, cantidad);
     }
 
-    public EnergiaCoin EnergiaCapazDeRecibir(TipoDeMagia tipoDeMagia)
+    public EnergiaCoin EnergiaCapazDeRecibir(TipoDeMagia tipoDeMagia, EnergiaCoin energiaDeseada = null)
     {
-        return m_elemento.EnergiaCapazDeRecibir(tipoDeMagia);
+        return m_elemento.EnergiaCapazDeRecibir(tipoDeMagia, energiaDeseada);
     }
 }

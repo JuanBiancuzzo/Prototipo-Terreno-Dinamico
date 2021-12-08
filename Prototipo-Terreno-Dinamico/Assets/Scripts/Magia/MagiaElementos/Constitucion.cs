@@ -38,7 +38,13 @@ public class Constitucion : IEnergia
 
         m_constitucion.Aumentar(constitucionPosible);
 
-        return m_constitucion.AtributoAEnergia(constitucionAAgregar - constitucionPosible, energia, m_costeParaAgregar);
+        return m_constitucion.AtributoAEnergia(constitucionAAgregar - constitucionPosible, energia);
+    }
+
+    public EnergiaCoin EnergiaCapazDeRecibir(EnergiaCoin energiaDeseada)
+    {
+        EnergiaCoin capacidadMaxima = m_constitucion.AtributoAEnergia(Mathf.Max(minimo, maximo - ConstitucionValor));
+        return capacidadMaxima.MenorEnergia(energiaDeseada);
     }
 
     public EnergiaCoin Disminuir(EnergiaCoin energia)
@@ -48,16 +54,12 @@ public class Constitucion : IEnergia
 
         m_constitucion.Disminuir(constitucionASacar);
 
-        return m_constitucion.AtributoAEnergia(constitucionASacar, energia, m_costeParaSacar);
+        return m_constitucion.AtributoAEnergia(constitucionASacar, energia);
     }
 
-    public EnergiaCoin EnergiaCapazDeDar()
+    public EnergiaCoin EnergiaCapazDeDar(EnergiaCoin energiaDeseada)
     {
-        return m_constitucion.AtributoAEnergia(ConstitucionValor, null, m_costeParaSacar);
-    }
-
-    public EnergiaCoin EnergiaCapazDeRecibir()
-    {
-        return m_constitucion.AtributoAEnergia(Mathf.Max(minimo, maximo - ConstitucionValor), null, m_costeParaAgregar);
+        EnergiaCoin capacidadMaxima = m_constitucion.AtributoAEnergia(ConstitucionValor);
+        return capacidadMaxima.MenorEnergia(energiaDeseada);
     }
 }

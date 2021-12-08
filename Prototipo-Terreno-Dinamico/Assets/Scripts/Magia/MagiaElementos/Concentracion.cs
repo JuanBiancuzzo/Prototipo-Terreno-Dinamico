@@ -40,7 +40,13 @@ public class Concentracion : IEnergia
 
         m_concentracion.Aumentar(concentracionPosible);
 
-        return m_concentracion.AtributoAEnergia(concentracionAAgregar - concentracionPosible, energia, m_costeParaAgregar);
+        return m_concentracion.AtributoAEnergia(concentracionAAgregar - concentracionPosible, energia);
+    }
+
+    public EnergiaCoin EnergiaCapazDeRecibir(EnergiaCoin energiaDeseada)
+    {
+        EnergiaCoin capacidadMaxima = m_concentracion.AtributoAEnergia(Mathf.Max(minimo, maximo - ConcentracionValor));
+        return capacidadMaxima.MenorEnergia(energiaDeseada);
     }
 
     public EnergiaCoin Disminuir(EnergiaCoin energia)
@@ -50,16 +56,12 @@ public class Concentracion : IEnergia
 
         m_concentracion.Disminuir(concentracionASacar);
 
-        return m_concentracion.AtributoAEnergia(concentracionASacar, energia, m_costeParaSacar);
+        return m_concentracion.AtributoAEnergia(concentracionASacar, energia);
     }
 
-    public EnergiaCoin EnergiaCapazDeDar()
+    public EnergiaCoin EnergiaCapazDeDar(EnergiaCoin energiaDeseada)
     {
-        return m_concentracion.AtributoAEnergia(ConcentracionValor, null, m_costeParaSacar);
-    }
-
-    public EnergiaCoin EnergiaCapazDeRecibir()
-    {
-        return m_concentracion.AtributoAEnergia(Mathf.Max(minimo, maximo - ConcentracionValor), null, m_costeParaAgregar);
+        EnergiaCoin capacidadMaxima = m_concentracion.AtributoAEnergia(ConcentracionValor);
+        return capacidadMaxima.MenorEnergia(energiaDeseada);
     }
 }

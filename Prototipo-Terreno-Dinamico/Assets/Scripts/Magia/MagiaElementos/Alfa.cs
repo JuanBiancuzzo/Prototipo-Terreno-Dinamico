@@ -18,8 +18,8 @@ public class Alfa : IEnergia
     }
 
     /*
-     * Disminuir es saca energia y devuelve cuanto consumio
      * Aumentar es dar energia y devuelve cuanto no pudo agarrar
+     * Disminuir es saca energia y devuelve cuanto consumio
      */
     public EnergiaCoin Aumentar(EnergiaCoin energia)
     {
@@ -29,6 +29,12 @@ public class Alfa : IEnergia
         m_alfa.Aumentar(alfaPosible);
 
         return m_alfa.AtributoAEnergia(alfaAAgregar - alfaPosible, energia);
+    }
+
+    public EnergiaCoin EnergiaCapazDeRecibir(EnergiaCoin energiaDeseada)
+    {
+        EnergiaCoin capacidadMaxima = m_alfa.AtributoAEnergia(Mathf.Max(minimo, maximo - AlfaValor));
+        return capacidadMaxima.MenorEnergia(energiaDeseada);
     }
 
     public EnergiaCoin Disminuir(EnergiaCoin energia)
@@ -41,13 +47,9 @@ public class Alfa : IEnergia
         return m_alfa.AtributoAEnergia(alfaASacar, energia);
     }
 
-    public EnergiaCoin EnergiaCapazDeDar()
+    public EnergiaCoin EnergiaCapazDeDar(EnergiaCoin energiaDeseada)
     {
-        return m_alfa.AtributoAEnergia(AlfaValor);
-    }
-
-    public EnergiaCoin EnergiaCapazDeRecibir()
-    {
-        return m_alfa.AtributoAEnergia(Mathf.Max(minimo, maximo - AlfaValor));
+        EnergiaCoin capacidadMaxima = m_alfa.AtributoAEnergia(AlfaValor);
+        return capacidadMaxima.MenorEnergia(energiaDeseada);
     }
 }

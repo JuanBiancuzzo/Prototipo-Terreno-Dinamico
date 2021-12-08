@@ -44,10 +44,10 @@ public class ElementoMagico : IObjetoMagico
         return (energia == null) ? null : energia.Disminuir(cantidad);
     }
 
-    public EnergiaCoin EnergiaCapazDeDar(TipoDeMagia tipoDeMagia)
+    public EnergiaCoin EnergiaCapazDeDar(TipoDeMagia tipoDeMagia, EnergiaCoin energiaDeseada = null)
     {
         IEnergia energia = TipoAEnergia(tipoDeMagia);
-        return (energia == null) ? null : energia.EnergiaCapazDeDar();
+        return (energia == null) ? null : energia.EnergiaCapazDeDar(energiaDeseada);
     }
 
     public void RecibirMagia()
@@ -66,10 +66,10 @@ public class ElementoMagico : IObjetoMagico
         return (energia == null) ? null : energia.Aumentar(cantidad);
     }
 
-    public EnergiaCoin EnergiaCapazDeRecibir(TipoDeMagia tipoDeMagia)
+    public EnergiaCoin EnergiaCapazDeRecibir(TipoDeMagia tipoDeMagia, EnergiaCoin energiaDeseada = null)
     {
         IEnergia energia = TipoAEnergia(tipoDeMagia);
-        return (energia == null) ? null : energia.EnergiaCapazDeRecibir();
+        return (energia == null) ? null : energia.EnergiaCapazDeRecibir(energiaDeseada);
     }
 
     protected IEnergia TipoAEnergia(TipoDeMagia tipoDeMagia)

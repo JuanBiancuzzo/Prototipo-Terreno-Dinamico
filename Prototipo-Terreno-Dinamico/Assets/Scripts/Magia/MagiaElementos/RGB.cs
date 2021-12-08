@@ -65,19 +65,23 @@ public class RGB : IEnergia
         return r.AtributoAEnergia(energiaAAgregar, energia);
     }
 
-    public EnergiaCoin EnergiaCapazDeDar()
+    public EnergiaCoin EnergiaCapazDeDar(EnergiaCoin energiaDeseada)
     {
         float H, S, V;
         Color color = new Color(r.Valor, g.Valor, b.Valor);
         Color.RGBToHSV(color, out H, out S, out V);
-        return r.AtributoAEnergia(V);
+
+        EnergiaCoin capacidadMaxima = r.AtributoAEnergia(V);
+        return capacidadMaxima.MenorEnergia(energiaDeseada);
     }
 
-    public EnergiaCoin EnergiaCapazDeRecibir()
+    public EnergiaCoin EnergiaCapazDeRecibir(EnergiaCoin energiaDeseada)
     {
         float H, S, V;
         Color color = new Color(r.Valor, g.Valor, b.Valor);
         Color.RGBToHSV(color, out H, out S, out V);
-        return r.AtributoAEnergia(Mathf.Max(minimo, maximo - V));
+
+        EnergiaCoin capacidadMaxima = r.AtributoAEnergia(Mathf.Max(minimo, maximo - V));
+        return capacidadMaxima.MenorEnergia(energiaDeseada);
     }
 }
