@@ -25,7 +25,7 @@ public abstract class Solido : Elemento
 
     public override void Avanzar(int dt)
     {
-        if (Vacio())
+        if (Vacio() || TieneSoporte())
             return;
 
         ActualizarVelocidad(dt);
@@ -67,6 +67,35 @@ public abstract class Solido : Elemento
 
             break;
         }
+    }
+
+    private bool TieneSoporte()
+    {
+        List<Vector3Int> opciones = new List<Vector3Int>()
+        {
+            new Vector3Int( 1, 0, 0), new Vector3Int(0,  1, 0), new Vector3Int(0, 0,  1),
+            new Vector3Int(-1, 0, 0), new Vector3Int(0, -1, 0), new Vector3Int(0, 0, -1)
+        };
+
+        foreach (Vector3Int desfase in opciones)
+        {
+            Elemento elemento = m_mundo.EnPosicion(m_posicion + desfase);
+            if (elemento == null || !MismoTipo(elemento))
+                continue;
+
+            bool loSoportan = ElementoPuedeSoportar(elemento);
+            if (!loSoportan)
+                continue;
+            else
+                return true;
+        }
+
+        return false;
+    }
+
+    protected virtual bool ElementoPuedeSoportar(Elemento elemento)
+    {
+        return elemento.ConstitucionValor > ConcentracionValor;
     }
 
     private IEnumerable<Vector3Int> Opciones()
