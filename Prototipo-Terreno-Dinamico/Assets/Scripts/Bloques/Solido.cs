@@ -78,6 +78,8 @@ public abstract class Solido : Elemento
 
     private bool TieneSoporte()
     {
+        return false;
+        /*
         List<Vector3Int> opciones = new List<Vector3Int>()
         {
             new Vector3Int( 1, 0, 0), new Vector3Int(0, 0,  1),
@@ -95,7 +97,7 @@ public abstract class Solido : Elemento
                 return true; 
         }
 
-        return false;
+        return false;*/
     }
 
     protected virtual bool ElementoPuedeSoportar(Solido solido)
