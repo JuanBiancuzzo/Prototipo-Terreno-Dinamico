@@ -258,7 +258,7 @@ MonoBehaviour:
   m_rangoDar: 3
   m_tipoMagiaRecibir: 5
   m_rangoRecibir: 0
-  m_energiaDeseada: 100
+  m_energiaDeseada: 1000
 --- !u!114 &713432423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,24 +273,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_elemento:
     m_rgb:
-      r:
-        m_valor: 1
-      g:
-        m_valor: 1
-      b:
-        m_valor: 1
+      m_hue: 0.722
+      m_intensidad: 95
     m_alfa:
-      m_alfa:
-        m_valor: 1
+      m_alfa: 1
     m_temperatura:
-      m_temperatura:
-        m_valor: 293
+      m_temperatura: 293
     m_concentracion:
-      m_concentracion:
-        m_valor: 50
+      m_concentracion: 50
     m_consitucion:
-      m_constitucion:
-        m_valor: 80
+      m_constitucion: 50
 --- !u!114 &713432424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -720,24 +712,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_elemento:
     m_rgb:
-      r:
-        m_valor: 1
-      g:
-        m_valor: 1
-      b:
-        m_valor: 1
+      m_hue: 0
+      m_intensidad: 0
     m_alfa:
-      m_alfa:
-        m_valor: 1
+      m_alfa: 0
     m_temperatura:
-      m_temperatura:
-        m_valor: 293
+      m_temperatura: 0
     m_concentracion:
-      m_concentracion:
-        m_valor: 50
+      m_concentracion: 0
     m_consitucion:
-      m_constitucion:
-        m_valor: 50
+      m_constitucion: 0
 --- !u!114 &854178323
 MonoBehaviour:
   m_ObjectHideFlags: 0

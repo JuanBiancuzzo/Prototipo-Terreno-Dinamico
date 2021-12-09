@@ -1,24 +1,25 @@
 using UnityEngine;
 
-[System.Serializable] // plantearme si se puede hacer HVS en vez de RGB
+[System.Serializable] 
 public class RGB : IEnergia
 {
-    static float minimo = 0, maximo = 15;
-    [SerializeField] AtributoFloat r, g, b;
+    static float minimo = 0, maximo = 1;
+    [SerializeField] float m_hue, m_intensidad;
+    static float m_costo = 1f;
 
-    public Vector3 RGBValor => new Vector3(r.Valor, g.Valor, b.Valor);
+    public Color RGBValor => Color.HSVToRGB(m_hue, m_intensidad, m_intensidad);
     public void NuevoValor(Color color)
     {
-        r.NuevoValor(color.r);
-        g.NuevoValor(color.g);
-        b.NuevoValor(color.b);
+        float s, v;
+        Color.RGBToHSV(color, out m_hue, out s, out v);
+        m_intensidad = (s + v) / 2;
     }
 
-    public RGB(Vector3 valor)
+    public void NuevaIntensidad(float valor) => m_intensidad = Mathf.Min(maximo, Mathf.Max(minimo, valor)); 
+
+    public RGB(Color color)
     {
-        r = new AtributoFloat(valor.x, minimo, maximo);
-        g = new AtributoFloat(valor.y, minimo, maximo);
-        b = new AtributoFloat(valor.z, minimo, maximo);
+        NuevoValor(color);
     }
 
     /*
@@ -27,61 +28,58 @@ public class RGB : IEnergia
      */
     public EnergiaCoin Recibir(EnergiaCoin energia)
     {
-        float energiaPorColor = r.EnergiaAAtributo(energia);
-        Color color = new Color(r.Valor, g.Valor, b.Valor);
-        float H, S, V;
-        Color.RGBToHSV(color, out H, out S, out V);
+        float intensidadAAgregar = EnergiaAAtributo(energia);
+        float intensidadPosible = Mathf.Min(maximo - m_intensidad, intensidadAAgregar);
 
-        float energiaAAgregar = Mathf.Min(1, V + energiaPorColor);
-        V += energiaAAgregar;
-        S += Mathf.Min(1, S + energiaPorColor);
+        NuevaIntensidad(m_intensidad + intensidadPosible);
 
-        color = Color.HSVToRGB(H, S, V);
-        AtributoFloat[] rgb = { r, g, b };
-        for (int i = 0; i < 3; i++)
-            rgb[i].NuevoValor(color[i]);
-
-        float energiaRestanteTotal = Mathf.Min((V + energiaPorColor) - 1, 0);
-        return r.AtributoAEnergia(energiaRestanteTotal, energia);
-    }
-
-    public EnergiaCoin Dar(EnergiaCoin energia)
-    {
-        float energiaPorColor = r.EnergiaAAtributo(energia);
-
-        Color color = new Color(r.Valor, g.Valor, b.Valor);
-        float H, S, V;
-        Color.RGBToHSV(color, out H, out S, out V);
-
-        float energiaAAgregar = Mathf.Min(V, energiaPorColor);
-        V -= energiaAAgregar;
-        S -= Mathf.Min(S, energiaPorColor);
-
-        color = Color.HSVToRGB(H, S, V);
-        AtributoFloat[] rgb = { r, g, b };
-        for (int i = 0; i < 3; i++)
-            rgb[i].NuevoValor(color[i]);
-
-        return r.AtributoAEnergia(energiaAAgregar, energia);
-    }
-
-    public EnergiaCoin EnergiaCapazDeDar(EnergiaCoin energiaDeseada)
-    {
-        float H, S, V;
-        Color color = new Color(r.Valor, g.Valor, b.Valor);
-        Color.RGBToHSV(color, out H, out S, out V);
-
-        EnergiaCoin capacidadMaxima = r.AtributoAEnergia(V);
-        return capacidadMaxima.MenorEnergia(energiaDeseada);
+        return AtributoAEnergia(intensidadAAgregar - intensidadPosible);
     }
 
     public EnergiaCoin EnergiaCapazDeRecibir(EnergiaCoin energiaDeseada)
     {
-        float H, S, V;
-        Color color = new Color(r.Valor, g.Valor, b.Valor);
-        Color.RGBToHSV(color, out H, out S, out V);
-
-        EnergiaCoin capacidadMaxima = r.AtributoAEnergia(Mathf.Max(minimo, maximo - V));
+        EnergiaCoin capacidadMaxima = AtributoAEnergia(Mathf.Max(minimo, maximo - m_intensidad));
         return capacidadMaxima.MenorEnergia(energiaDeseada);
+    }
+
+    public EnergiaCoin Dar(EnergiaCoin energia)
+    {
+        float intensidadASacar = EnergiaAAtributo(energia);
+        intensidadASacar = Mathf.Min(m_intensidad, intensidadASacar);
+
+        NuevaIntensidad(m_intensidad - intensidadASacar);
+
+        return AtributoAEnergia(intensidadASacar);
+    }
+
+    public EnergiaCoin EnergiaCapazDeDar(EnergiaCoin energiaDeseada)
+    {
+        EnergiaCoin capacidadMaxima = AtributoAEnergia(m_intensidad);
+        return capacidadMaxima.MenorEnergia(energiaDeseada);
+    }
+
+    public float EnergiaAAtributo(EnergiaCoin energia)
+    {
+        float porcentajeEnergia = energia.EnergiaActualInterpolada();
+        float conversion = PorcentajeDeEnergiaAColor(porcentajeEnergia);
+        return Mathf.Lerp(minimo, maximo, conversion);
+    }
+
+    public EnergiaCoin AtributoAEnergia(float color)
+    {
+        float colorRelativa = color / maximo;
+        EnergiaCoin energia = new EnergiaCoin();
+        energia.ValorActualEnergia(PorcentajeDeColorAEnergia(colorRelativa));
+        return energia;
+    }
+
+    private float PorcentajeDeColorAEnergia(float porcentajeDeColor)
+    {
+        return porcentajeDeColor * m_costo;
+    }
+
+    private float PorcentajeDeEnergiaAColor(float porcentajeDeEnergia)
+    {
+        return porcentajeDeEnergia / m_costo;
     }
 }

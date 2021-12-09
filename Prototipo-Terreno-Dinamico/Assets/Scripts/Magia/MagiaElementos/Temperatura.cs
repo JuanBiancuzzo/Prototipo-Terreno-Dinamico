@@ -7,21 +7,22 @@ public class Temperatura : IEnergia
     static int minimo = 0, maximo = 3000;
     int m_conductividad = 50;
     //private float Costo => (m_conductividad * 10f) / maximo;
-    [SerializeField] public AtributoInt m_temperatura = null;
+    static float m_costo = 30f;
 
-    public int TemperaturaValor => m_temperatura.Valor;
-    public void NuevoValor(int valor) => m_temperatura.NuevoValor(valor);
-    public void Aumentar(int cantidad) => Recibir(m_temperatura.AtributoAEnergia(cantidad));
-    public void Disminuir(int cantidad) => Dar(m_temperatura.AtributoAEnergia(cantidad));
+    public int m_temperatura;
+    public int TemperaturaValor => m_temperatura;
+    public void NuevoValor(int valor) => m_temperatura = Mathf.Max(minimo, Mathf.Min(maximo, valor));
+    public void Aumentar(int cantidad) => Recibir(AtributoAEnergia(cantidad));
+    public void Disminuir(int cantidad) => Dar(AtributoAEnergia(cantidad));
 
     public int Conductividad => m_conductividad;
     public void NuevaConductividad(int valor) => m_conductividad = valor;
 
-    public EnergiaCoin EnergiaActual => m_temperatura.AtributoAEnergia(TemperaturaValor);
+    public EnergiaCoin EnergiaActual => AtributoAEnergia(TemperaturaValor);
 
     public Temperatura(int temperatura)
     {
-        m_temperatura = new AtributoInt(temperatura, minimo, maximo);
+        NuevoValor(temperatura);
     }
 
 
@@ -32,34 +33,59 @@ public class Temperatura : IEnergia
 
     public EnergiaCoin Recibir(EnergiaCoin energia)
     {
-        int temperaturaAAgregar = m_temperatura.EnergiaAAtributo(energia);
-        int temperaturaPosible = Mathf.Min(maximo - m_temperatura.Valor, temperaturaAAgregar);
+        int temperaturaAAgregar = EnergiaAAtributo(energia);
+        int temperaturaPosible = Mathf.Min(maximo - m_temperatura, temperaturaAAgregar);
 
-        m_temperatura.Aumentar(temperaturaPosible);
+        NuevoValor(m_temperatura + temperaturaPosible);
 
-        return m_temperatura.AtributoAEnergia(temperaturaAAgregar - temperaturaPosible, energia);
+        return AtributoAEnergia(temperaturaAAgregar - temperaturaPosible);
     }
 
     public EnergiaCoin EnergiaCapazDeRecibir(EnergiaCoin energiaDeseada)
     {
-        EnergiaCoin capacidadMaxima = m_temperatura.AtributoAEnergia(Mathf.Max(minimo, maximo - TemperaturaValor));
+        EnergiaCoin capacidadMaxima = AtributoAEnergia(Mathf.Max(minimo, maximo - TemperaturaValor));
         return capacidadMaxima.MenorEnergia(energiaDeseada);
     }
 
     public EnergiaCoin Dar(EnergiaCoin energia)
     {
-        int temperaturaASacar = m_temperatura.EnergiaAAtributo(energia);
-        temperaturaASacar = Mathf.Min(m_temperatura.Valor, temperaturaASacar);
+        int temperaturaASacar = EnergiaAAtributo(energia);
+        temperaturaASacar = Mathf.Min(m_temperatura, temperaturaASacar);
 
-        m_temperatura.Disminuir(temperaturaASacar);
+        NuevoValor(m_temperatura - temperaturaASacar);
 
-        return m_temperatura.AtributoAEnergia(temperaturaASacar, energia);
+        return AtributoAEnergia(temperaturaASacar);
     }
 
     public EnergiaCoin EnergiaCapazDeDar(EnergiaCoin energiaDeseada)
     {
-        EnergiaCoin capacidadMaxima = m_temperatura.AtributoAEnergia(TemperaturaValor);
+        EnergiaCoin capacidadMaxima = AtributoAEnergia(TemperaturaValor);
         return capacidadMaxima.MenorEnergia(energiaDeseada);
+    }
+
+    public int EnergiaAAtributo(EnergiaCoin energia)
+    {
+        float porcentajeEnergia = energia.EnergiaActualInterpolada();
+        float conversion = PorcentajeDeEnergiaATemperatura(porcentajeEnergia);
+        return Mathf.FloorToInt(Mathf.Lerp(minimo, maximo, conversion));
+    }
+
+    public EnergiaCoin AtributoAEnergia(int temperatura)
+    {
+        float temperaturaRelativa = ((float)temperatura / maximo);
+        EnergiaCoin energia = new EnergiaCoin();
+        energia.ValorActualEnergia(PorcentajeDeTemperaturaAEnergia(temperaturaRelativa));
+        return energia;
+    }
+
+    private float PorcentajeDeTemperaturaAEnergia(float porcentajeDeTemperatura)
+    {
+        return porcentajeDeTemperatura * m_costo;
+    }
+
+    private float PorcentajeDeEnergiaATemperatura(float porcentajeDeEnergia)
+    {
+        return porcentajeDeEnergia / m_costo;
     }
 
     public int IluminacionPorTemperatrua()

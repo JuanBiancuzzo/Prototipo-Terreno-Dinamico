@@ -6,16 +6,17 @@ using UnityEngine;
 public class Alfa : IEnergia
 {
     static float minimo = 0f, maximo = 1f;
-    [SerializeField] AtributoFloat m_alfa;
+    [SerializeField] float m_alfa;
+    static float m_costo = 1f;
 
-    public float AlfaValor => m_alfa.Valor;
-    public void NuevoValor(float valor) => m_alfa.NuevoValor(valor);
-    public void Aumentar(float cantidad) => Recibir(m_alfa.AtributoAEnergia(cantidad));
-    public void Disminuir(float cantidad) => Dar(m_alfa.AtributoAEnergia(cantidad));
+    public float AlfaValor => m_alfa;
+    public void NuevoValor(float valor) => m_alfa = Mathf.Max(minimo, Mathf.Min(maximo, valor));
+    public void Aumentar(float cantidad) => Recibir(AtributoAEnergia(cantidad));
+    public void Disminuir(float cantidad) => Dar(AtributoAEnergia(cantidad));
 
     public Alfa(float alfa)
     {
-        m_alfa = new AtributoFloat(alfa, minimo, maximo);
+        NuevoValor(alfa);
     }
 
     /*
@@ -24,33 +25,58 @@ public class Alfa : IEnergia
      */
     public EnergiaCoin Recibir(EnergiaCoin energia)
     {
-        float alfaAAgregar = m_alfa.EnergiaAAtributo(energia);
-        float alfaPosible = Mathf.Min(maximo - m_alfa.Valor, alfaAAgregar);
+        float alfaAAgregar = EnergiaAAtributo(energia);
+        float alfaPosible = Mathf.Min(maximo - m_alfa, alfaAAgregar);
 
-        m_alfa.Aumentar(alfaPosible);
+        NuevoValor(m_alfa + alfaPosible);
 
-        return m_alfa.AtributoAEnergia(alfaAAgregar - alfaPosible, energia);
+        return AtributoAEnergia(alfaAAgregar - alfaPosible);
     }
 
     public EnergiaCoin EnergiaCapazDeRecibir(EnergiaCoin energiaDeseada)
     {
-        EnergiaCoin capacidadMaxima = m_alfa.AtributoAEnergia(Mathf.Max(minimo, maximo - AlfaValor));
+        EnergiaCoin capacidadMaxima = AtributoAEnergia(Mathf.Max(minimo, maximo - AlfaValor));
         return capacidadMaxima.MenorEnergia(energiaDeseada);
     }
 
     public EnergiaCoin Dar(EnergiaCoin energia)
     {
-        float alfaASacar = m_alfa.EnergiaAAtributo(energia);
-        alfaASacar = Mathf.Min(m_alfa.Valor, alfaASacar);
+        float alfaASacar = EnergiaAAtributo(energia);
+        alfaASacar = Mathf.Min(m_alfa, alfaASacar);
 
-        m_alfa.Disminuir(alfaASacar);
+        NuevoValor(m_alfa - alfaASacar);
 
-        return m_alfa.AtributoAEnergia(alfaASacar, energia);
+        return AtributoAEnergia(alfaASacar);
     }
 
     public EnergiaCoin EnergiaCapazDeDar(EnergiaCoin energiaDeseada)
     {
-        EnergiaCoin capacidadMaxima = m_alfa.AtributoAEnergia(AlfaValor);
+        EnergiaCoin capacidadMaxima = AtributoAEnergia(AlfaValor);
         return capacidadMaxima.MenorEnergia(energiaDeseada);
+    }
+
+    public float EnergiaAAtributo(EnergiaCoin energia)
+    {
+        float porcentajeEnergia = energia.EnergiaActualInterpolada();
+        float conversion = PorcentajeDeEnergiaAAlfa(porcentajeEnergia); 
+        return Mathf.Lerp(minimo, maximo, conversion);
+    }
+
+    public EnergiaCoin AtributoAEnergia(float alfa)
+    {
+        float alfaRelativa = alfa / maximo;
+        EnergiaCoin energia = new EnergiaCoin();
+        energia.ValorActualEnergia(PorcentajeDeAlfaAEnergia(alfaRelativa));
+        return energia;
+    }
+
+    private float PorcentajeDeAlfaAEnergia(float porcentajeDeAlfa)
+    {
+        return porcentajeDeAlfa * m_costo;
+    }
+
+    private float PorcentajeDeEnergiaAAlfa(float porcentajeDeEnergia)
+    {
+        return porcentajeDeEnergia / m_costo;
     }
 }

@@ -6,18 +6,17 @@ using UnityEngine;
 public class Concentracion : IEnergia
 {
     static int minimo = 0, maximo = 100;
-    //static float m_costeParaAgregar = 3f;
-    //static float m_costeParaSacar = 5f;
-    [SerializeField] AtributoInt m_concentracion;
+    [SerializeField] int m_concentracion;
+    static float m_costo = 1f;
 
-    public int ConcentracionValor => m_concentracion.Valor;
-    public void NuevoValor(int valor) => m_concentracion.NuevoValor(valor);
-    public void Aumentar(int cantidad) => Recibir(m_concentracion.AtributoAEnergia(cantidad));
-    public void Disminuir(int cantidad) => Dar(m_concentracion.AtributoAEnergia(cantidad));
+    public int ConcentracionValor => m_concentracion;
+    public void NuevoValor(int valor) => m_concentracion = Mathf.Min(maximo, Mathf.Max(minimo, valor));
+    public void Aumentar(int cantidad) => Recibir(AtributoAEnergia(cantidad));
+    public void Disminuir(int cantidad) => Dar(AtributoAEnergia(cantidad));
 
     public Concentracion(int concentracion)
     {
-        m_concentracion = new AtributoInt(concentracion, minimo, maximo);
+        NuevoValor(concentracion);
     }
 
     /*
@@ -26,33 +25,58 @@ public class Concentracion : IEnergia
      */
     public EnergiaCoin Recibir(EnergiaCoin energia)
     {
-        int concentracionAAgregar = m_concentracion.EnergiaAAtributo(energia);
-        int concentracionPosible = Mathf.Min(maximo - m_concentracion.Valor, concentracionAAgregar);
+        int concentracionAAgregar = EnergiaAAtributo(energia);
+        int concentracionPosible = Mathf.Min(maximo - m_concentracion, concentracionAAgregar);
 
-        m_concentracion.Aumentar(concentracionPosible);
+        NuevoValor(m_concentracion + concentracionPosible);
 
-        return m_concentracion.AtributoAEnergia(concentracionAAgregar - concentracionPosible, energia);
+        return AtributoAEnergia(concentracionAAgregar - concentracionPosible);
     }
 
     public EnergiaCoin EnergiaCapazDeRecibir(EnergiaCoin energiaDeseada)
     {
-        EnergiaCoin capacidadMaxima = m_concentracion.AtributoAEnergia(Mathf.Max(minimo, maximo - ConcentracionValor));
+        EnergiaCoin capacidadMaxima = AtributoAEnergia(Mathf.Max(minimo, maximo - ConcentracionValor));
         return capacidadMaxima.MenorEnergia(energiaDeseada);
     }
 
     public EnergiaCoin Dar(EnergiaCoin energia)
     {
-        int concentracionASacar = m_concentracion.EnergiaAAtributo(energia);
-        concentracionASacar = Mathf.Min(m_concentracion.Valor, concentracionASacar);
+        int concentracionASacar = EnergiaAAtributo(energia);
+        concentracionASacar = Mathf.Min(m_concentracion, concentracionASacar);
 
-        m_concentracion.Disminuir(concentracionASacar);
+        NuevoValor(m_concentracion - concentracionASacar);
 
-        return m_concentracion.AtributoAEnergia(concentracionASacar, energia);
+        return AtributoAEnergia(concentracionASacar);
     }
 
     public EnergiaCoin EnergiaCapazDeDar(EnergiaCoin energiaDeseada)
     {
-        EnergiaCoin capacidadMaxima = m_concentracion.AtributoAEnergia(ConcentracionValor);
+        EnergiaCoin capacidadMaxima = AtributoAEnergia(ConcentracionValor);
         return capacidadMaxima.MenorEnergia(energiaDeseada);
+    }
+
+    public int EnergiaAAtributo(EnergiaCoin energia)
+    {
+        float porcentajeEnergia = energia.EnergiaActualInterpolada();
+        float conversion = PorcentajeDeEnergiaAConcentracion(porcentajeEnergia);
+        return Mathf.FloorToInt(Mathf.Lerp(minimo, maximo, conversion));
+    }
+
+    public EnergiaCoin AtributoAEnergia(int concentracion)
+    {
+        float concentracionRelativa = (float)concentracion / maximo;
+        EnergiaCoin energia = new EnergiaCoin();
+        energia.ValorActualEnergia(PorcentajeDeConcentracionAEnergia(concentracionRelativa));
+        return energia;
+    }
+
+    private float PorcentajeDeConcentracionAEnergia(float porcentajeDeConcentracion)
+    {
+        return porcentajeDeConcentracion * m_costo;
+    }
+
+    private float PorcentajeDeEnergiaAConcentracion(float porcentajeDeEnergia)
+    {
+        return porcentajeDeEnergia / m_costo;
     }
 }

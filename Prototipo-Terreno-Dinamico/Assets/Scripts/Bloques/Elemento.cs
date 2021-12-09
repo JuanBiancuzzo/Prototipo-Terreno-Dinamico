@@ -13,7 +13,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     protected Mundo m_mundo;
 
     public Elemento(Vector3Int posicion, Mundo mundo) 
-        : base(new Color(1, 1, 1, 1), 293, 25, 20, 0) // iluminacion, color, temperatura, concentracion y constitucion
+        : base(new Color(1, 1, 1, 1), 293, 25, 80, 0) // color, temperatura, concentracion, constitucion, iluminacion
     {
         m_posicion = posicion;
         m_mundo = mundo;
@@ -310,7 +310,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public float GetIluminacion()
     {
-        return Mathf.Clamp(Mathf.Lerp(0f, 3f, IluminacionValor / 100f), 0f, 1f);
+        return Mathf.Clamp(Mathf.Lerp(0f, 1f, IluminacionValor / 100f), 0f, 1f);
     }
 
     public float GetColision(Constitucion otro, float defaultColision)

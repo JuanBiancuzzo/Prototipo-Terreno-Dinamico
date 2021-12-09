@@ -23,7 +23,7 @@ public class ElementoMagico : IObjetoMagico
     {
         m_color = color;
         m_temperatura = new Temperatura(temperatura);
-        m_rgb = new RGB(new Vector3(color.r, color.g, color.b));
+        m_rgb = new RGB(color);
         m_alfa = new Alfa(color.a);
         m_concentracion = new Concentracion(concentracion);
         m_consitucion = new Constitucion(constitucion);
@@ -99,7 +99,7 @@ public class ElementoMagico : IObjetoMagico
 
     public void ActualizarColor()
     {
-        Vector3 rgb = m_rgb.RGBValor;
+        Color rgb = m_rgb.RGBValor;
         for (int i = 0; i < 3; i++)
             m_color[i] = rgb[i];
         m_color.a = m_alfa.AlfaValor;
