@@ -11,18 +11,9 @@ public class Concentracion : IEnergia
     [SerializeField] AtributoInt m_concentracion;
 
     public int ConcentracionValor => m_concentracion.Valor;
-    public void NuevoValor(int valor)
-    {
-        m_concentracion.NuevoValor(valor);
-    }
-    public void Aumentar(int cantidad)
-    {
-        m_concentracion.Aumentar(cantidad);
-    }
-    public void Disminuir(int cantidad)
-    {
-        m_concentracion.Disminuir(cantidad);
-    }
+    public void NuevoValor(int valor) => m_concentracion.NuevoValor(valor);
+    public void Aumentar(int cantidad) => Recibir(m_concentracion.AtributoAEnergia(cantidad));
+    public void Disminuir(int cantidad) => Dar(m_concentracion.AtributoAEnergia(cantidad));
 
     public Concentracion(int concentracion)
     {

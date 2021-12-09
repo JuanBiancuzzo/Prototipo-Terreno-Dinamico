@@ -254,7 +254,7 @@ MonoBehaviour:
   m_distancia: 6
   m_radio: 3
   pies: {fileID: 1563703742}
-  m_tipoMagiaDar: 0
+  m_tipoMagiaDar: 2
   m_rangoDar: 3
   m_tipoMagiaRecibir: 5
   m_rangoRecibir: 0

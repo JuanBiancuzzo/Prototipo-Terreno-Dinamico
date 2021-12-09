@@ -12,8 +12,8 @@ public class Constitucion : IEnergia
 
     public int ConstitucionValor => m_constitucion.Valor;
     public void NuevoValor(int valor) => m_constitucion.NuevoValor(valor);
-    public void Aumentar(int cantidad) => m_constitucion.Aumentar(cantidad);
-    public void Disminuir(int cantidad) => m_constitucion.Disminuir(cantidad);
+    public void Aumentar(int cantidad) => Recibir(m_constitucion.AtributoAEnergia(cantidad));
+    public void Disminuir(int cantidad) => Dar(m_constitucion.AtributoAEnergia(cantidad));
 
     public Constitucion(int constitucion)
     {

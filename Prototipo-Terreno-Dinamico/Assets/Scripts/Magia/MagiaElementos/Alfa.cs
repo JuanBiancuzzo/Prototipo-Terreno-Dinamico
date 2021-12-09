@@ -9,9 +9,10 @@ public class Alfa : IEnergia
     [SerializeField] AtributoFloat m_alfa;
 
     public float AlfaValor => m_alfa.Valor;
-    public void NuevoValor(float valor) {
-        m_alfa.NuevoValor(valor);
-    }
+    public void NuevoValor(float valor) => m_alfa.NuevoValor(valor);
+    public void Aumentar(float cantidad) => Recibir(m_alfa.AtributoAEnergia(cantidad));
+    public void Disminuir(float cantidad) => Dar(m_alfa.AtributoAEnergia(cantidad));
+
     public Alfa(float alfa)
     {
         m_alfa = new AtributoFloat(alfa, minimo, maximo);
