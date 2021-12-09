@@ -44,6 +44,8 @@ Shader "Unlit/OpacoShader"
                 float3 diffuseLightcolor = lightColor * luz;
                 o.color = float4(v.color.rgb * diffuseLightcolor, v.color.a);
 
+                o.color = float4(v.iluminacion.xxx, v.color.a);
+
                 return o;
             }
 

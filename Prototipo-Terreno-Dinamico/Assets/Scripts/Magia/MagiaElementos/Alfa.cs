@@ -21,7 +21,7 @@ public class Alfa : IEnergia
      * Aumentar es dar energia y devuelve cuanto no pudo agarrar
      * Disminuir es saca energia y devuelve cuanto consumio
      */
-    public EnergiaCoin Aumentar(EnergiaCoin energia)
+    public EnergiaCoin Recibir(EnergiaCoin energia)
     {
         float alfaAAgregar = m_alfa.EnergiaAAtributo(energia);
         float alfaPosible = Mathf.Min(maximo - m_alfa.Valor, alfaAAgregar);
@@ -37,7 +37,7 @@ public class Alfa : IEnergia
         return capacidadMaxima.MenorEnergia(energiaDeseada);
     }
 
-    public EnergiaCoin Disminuir(EnergiaCoin energia)
+    public EnergiaCoin Dar(EnergiaCoin energia)
     {
         float alfaASacar = m_alfa.EnergiaAAtributo(energia);
         alfaASacar = Mathf.Min(m_alfa.Valor, alfaASacar);

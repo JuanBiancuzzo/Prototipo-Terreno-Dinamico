@@ -25,7 +25,7 @@ public class RGB : IEnergia
      * Disminuir es saca energia y devuelve cuanto consumio
      * Aumentar es dar energia y devuelve cuanto no pudo agarrar
      */
-    public EnergiaCoin Aumentar(EnergiaCoin energia)
+    public EnergiaCoin Recibir(EnergiaCoin energia)
     {
         float energiaPorColor = r.EnergiaAAtributo(energia);
         Color color = new Color(r.Valor, g.Valor, b.Valor);
@@ -45,7 +45,7 @@ public class RGB : IEnergia
         return r.AtributoAEnergia(energiaRestanteTotal, energia);
     }
 
-    public EnergiaCoin Disminuir(EnergiaCoin energia)
+    public EnergiaCoin Dar(EnergiaCoin energia)
     {
         float energiaPorColor = r.EnergiaAAtributo(energia);
 

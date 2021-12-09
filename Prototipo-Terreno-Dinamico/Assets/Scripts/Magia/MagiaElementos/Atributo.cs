@@ -11,15 +11,17 @@ public class AtributoInt
     public int Valor => m_valor;
     public void NuevoValor(int valor)
     {
-        m_valor = valor;
+        m_valor = Mathf.Max(m_minimo, Mathf.Min(m_maximo, valor));
     }
     public void Aumentar(int cantidad)
     {
         m_valor += cantidad;
+        m_valor = Mathf.Min(m_valor, m_maximo);
     }
     public void Disminuir(int cantidad)
     {
         m_valor -= cantidad;
+        m_valor = Mathf.Max(m_valor, m_minimo);
     }
 
     public AtributoInt(int valor, int minimo, int maximo)
@@ -65,13 +67,15 @@ public class AtributoFloat
     public float Valor => m_valor;
     public void NuevoValor(float valor)
     {
-        m_valor = valor;
+        m_valor = Mathf.Max(m_minimo, Mathf.Min(m_maximo, valor));
     }
     public void Aumentar(float cantidad){
         m_valor += cantidad;
+        m_valor = Mathf.Min(m_valor, m_maximo);
     }
     public void Disminuir(float cantidad){
         m_valor -= cantidad;
+        m_valor = Mathf.Max(m_valor, m_minimo);
     }
 
     public AtributoFloat(float valor, float minimo, float maximo)

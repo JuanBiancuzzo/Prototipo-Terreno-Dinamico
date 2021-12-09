@@ -4,6 +4,7 @@ public class EntidadMagica : MonoBehaviour, IObjetoMagico
 {
     [SerializeField] protected ElementoMagico m_elemento;
 
+    public int IluminacionValor => m_elemento.IluminacionValor;
     public int TemperaturaValor => m_elemento.TemperaturaValor;
     public Color ColorValor => m_elemento.ColorValor;
     public float AlfaValor => m_elemento.AlfaValor;

@@ -6,8 +6,8 @@ using UnityEngine;
 public class Concentracion : IEnergia
 {
     static int minimo = 0, maximo = 100;
-    static float m_costeParaAgregar = 3f;
-    static float m_costeParaSacar = 5f;
+    //static float m_costeParaAgregar = 3f;
+    //static float m_costeParaSacar = 5f;
     [SerializeField] AtributoInt m_concentracion;
 
     public int ConcentracionValor => m_concentracion.Valor;
@@ -33,7 +33,7 @@ public class Concentracion : IEnergia
      * Disminuir es saca energia y devuelve cuanto consumio
      * Aumentar es dar energia y devuelve cuanto no pudo agarrar
      */
-    public EnergiaCoin Aumentar(EnergiaCoin energia)
+    public EnergiaCoin Recibir(EnergiaCoin energia)
     {
         int concentracionAAgregar = m_concentracion.EnergiaAAtributo(energia);
         int concentracionPosible = Mathf.Min(maximo - m_concentracion.Valor, concentracionAAgregar);
@@ -49,7 +49,7 @@ public class Concentracion : IEnergia
         return capacidadMaxima.MenorEnergia(energiaDeseada);
     }
 
-    public EnergiaCoin Disminuir(EnergiaCoin energia)
+    public EnergiaCoin Dar(EnergiaCoin energia)
     {
         int concentracionASacar = m_concentracion.EnergiaAAtributo(energia);
         concentracionASacar = Mathf.Min(m_concentracion.Valor, concentracionASacar);

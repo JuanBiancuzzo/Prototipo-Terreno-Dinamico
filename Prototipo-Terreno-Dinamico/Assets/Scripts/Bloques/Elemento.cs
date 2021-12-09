@@ -13,7 +13,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     protected Mundo m_mundo;
 
     public Elemento(Vector3Int posicion, Mundo mundo) 
-        : base(new Color(1, 1, 1, 1), 293, 25, 20) // iluminacion, color, temperatura, concentracion y constitucion
+        : base(new Color(1, 1, 1, 1), 293, 25, 20, 0) // iluminacion, color, temperatura, concentracion y constitucion
     {
         m_posicion = posicion;
         m_mundo = mundo;
@@ -41,6 +41,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
     public void DespuesDeAvanzar()
     {
         ExpandirTemperatura();
+        ExpandirIluminacion();
         Reaccionar();
     }
 
@@ -71,9 +72,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
             int deltaConductividad = elemento.m_temperatura.Conductividad - m_temperatura.Conductividad;
             int margen = deltaConductividad * 10;
 
-
-            int direccion = (TemperaturaValor >= elemento.TemperaturaValor + margen) ? -1 : 1;
-            if (direccion < 0)
+            if (TemperaturaValor >= elemento.TemperaturaValor + margen)
                 continue;
 
             float promedio = (m_temperatura.Conductividad + elemento.m_temperatura.Conductividad) / 2f;
@@ -81,15 +80,53 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
             float transferencia = (deltaTemperatura * promedio) / 1000f;
 
-            float maxTransferencia = (float)deltaTemperatura / (2 * direccion);
+            float maxTransferencia = deltaTemperatura / 2f;
 
             transferencia = Mathf.Min(transferencia, maxTransferencia);
 
-            elemento.m_temperatura.Disminuir(direccion * Mathf.FloorToInt(transferencia));
-            m_temperatura.Aumentar(direccion * Mathf.FloorToInt(transferencia));
+            elemento.m_temperatura.Disminuir(Mathf.FloorToInt(transferencia));
+            m_temperatura.Aumentar(Mathf.FloorToInt(transferencia));
         }
     }
 
+    protected void ExpandirIluminacion()
+    {
+        List<Elemento> elementoAlrededor = new List<Elemento>();
+        for (int x = -1; x <= 1; x++)
+            for (int y = -1; y <= 1; y++)
+                for (int z = -1; z <= 1; z++)
+                {
+                    if (x == 0 && y == 0 && z == 0)
+                        continue;
+
+                    Elemento elemento = m_mundo.EnPosicion(m_posicion + new Vector3Int(x, y, z));
+                    if (elemento == null)
+                        continue;
+
+                    elementoAlrededor.Add(elemento);
+                }
+
+        // ordena de menor a mayor, con los elementos que tiene menos luz
+        elementoAlrededor.Sort((e1, e2) =>
+           e2.IluminacionValor.CompareTo(e1.IluminacionValor)
+        );
+
+        foreach (Elemento elemento in elementoAlrededor)
+        {
+            if (IluminacionValor >= elemento.IluminacionValor)
+                continue;
+
+            int deltaIluminacion = elemento.IluminacionValor - IluminacionValor;
+            float transferencia = deltaIluminacion / 10f;
+
+            float maxTransferencia = deltaIluminacion / 2f;
+
+            transferencia = Mathf.Min(transferencia, maxTransferencia);
+
+            elemento.m_iluminacion.Disminuir(Mathf.FloorToInt(transferencia));
+            m_iluminacion.Aumentar(Mathf.FloorToInt(transferencia));
+        }
+    }
 
     public void Actualizado()
     {
@@ -183,6 +220,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
         return cantidad;
     }
 
+    // remplazar que esto ya existe
     public virtual int Agregar(int cantidadDensidad)
     {
         m_concentracion.Aumentar(cantidadDensidad);
@@ -272,7 +310,7 @@ public abstract class Elemento : ElementoMagico, ITenerDatos
 
     public float GetIluminacion()
     {
-        return m_temperatura.IluminacionPorTemperatrua();
+        return Mathf.Clamp(Mathf.Lerp(0f, 3f, IluminacionValor / 100f), 0f, 1f);
     }
 
     public float GetColision(Constitucion otro, float defaultColision)

@@ -20,9 +20,17 @@ public class EnergiaCoin
         m_cantidad += energia.Valor;
     }
     
-    public void DisminuirEnergia(EnergiaCoin energia)
+    public EnergiaCoin DisminuirEnergia(EnergiaCoin energia)
     {
-        m_cantidad -= energia.Valor;
+        int energiaSacar = energia.Valor;
+        int resto = 0;
+        if (m_cantidad - energiaSacar < 0)
+            resto = Mathf.Abs(m_cantidad - energiaSacar);
+
+        m_cantidad -= energiaSacar;
+        m_cantidad = Mathf.Max(m_cantidad, minimo);
+
+        return new EnergiaCoin(resto);
     }
 
     public EnergiaCoin MayorEnergia(EnergiaCoin energia)

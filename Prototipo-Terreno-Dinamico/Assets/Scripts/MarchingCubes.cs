@@ -129,7 +129,7 @@ public class MarchingCubes : MonoBehaviour, IRender
 						posicion,
 						datos.GetValor(posicion, m_tipoMaterial),
 						datos.GetColor(posicion, m_tipoMaterial),
-						datos.GetIluminacion(posicion) / 100f
+						datos.GetIluminacion(posicion)
 					);
 				}
 
