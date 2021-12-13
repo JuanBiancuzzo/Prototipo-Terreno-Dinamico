@@ -80,6 +80,16 @@ public static class Mathfs
         return 2;
     }
 
+    public static int MayorComponente(Vector3 vector)
+    {
+        float x = Mathf.Abs(vector.x), y = Mathf.Abs(vector.y), z = Mathf.Abs(vector.z);
+        if (x >= y && x >= z)
+            return 0;
+        if (y >= x && y >= z)
+            return 1;
+        return 2;
+    }
+
     public static Vector3Int Normal(Vector3 vector)
     {
         Vector3 versor = vector.normalized;
