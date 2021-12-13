@@ -119,6 +119,5 @@ public class FPSController : MonoBehaviour
 
         transform.eulerAngles = Vector3.up * smoothYaw;
         cam.transform.localEulerAngles = Vector3.right * smoothPitch;
-
     }
 }
