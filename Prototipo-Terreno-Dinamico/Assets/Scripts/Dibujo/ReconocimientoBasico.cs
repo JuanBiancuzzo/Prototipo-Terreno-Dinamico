@@ -34,24 +34,35 @@ public class ReconocimientoBasico : MonoBehaviour
     Vector3 m_maximo, m_minimo;
     bool m_cambioDireccion;
 
+    bool m_empezandoNuevoGlyph = true;
+
     PlanoDireccionado m_plano;
 
-    private void Awake() => CrearPuntos.CrearPunto += TomarPunto;
-    private void Disable() => CrearPuntos.CrearPunto -= TomarPunto;
+    private void Awake()
+    {
+        CrearPuntos.EmpezarMovimiento += EmpezarMovimiento;
+        CrearPuntos.UpdateMovimiento += UpdateMovimiento;
+        CrearPuntos.FinalizarMovimiento += TerminarMovimiento;
+        CrearPuntos.TerminarGlyph += DetermianrPlano;
+    }
+    private void Disable()
+    {
+        CrearPuntos.EmpezarMovimiento -= EmpezarMovimiento;
+        CrearPuntos.UpdateMovimiento -= UpdateMovimiento;
+        CrearPuntos.FinalizarMovimiento -= TerminarMovimiento;
+        CrearPuntos.TerminarGlyph -= DetermianrPlano;
+    }
 
     public static event Action<PlanoDireccionado, List<Vector3>> PlanoCreado;
 
-    private void TomarPunto(Vector3 punto, bool movimientoActual)
+    private void EmpezarMovimiento(Vector3 punto)
     {
-        if (!m_enMovimiento && movimientoActual)
-            EmpezarMovimiento(punto);
-        else if (m_enMovimiento && !movimientoActual)
-            TerminarMovimiento(punto);
-        else if (m_enMovimiento && movimientoActual)
-            UpdateMovimiento(punto);
+        if (m_empezandoNuevoGlyph)
+            InicializarValores(punto);
+        m_empezandoNuevoGlyph = false;
     }
 
-    private void EmpezarMovimiento(Vector3 punto)
+    private void InicializarValores(Vector3 punto)
     {
         m_puntos.Clear();
         m_posicionPromedio = punto;
@@ -90,6 +101,11 @@ public class ReconocimientoBasico : MonoBehaviour
     {
         UpdateMovimiento(punto);
         m_enMovimiento = false;
+    }
+
+    private void DetermianrPlano()
+    {
+        m_empezandoNuevoGlyph = true;
 
         if (m_puntos.Count <= 2)
             return;
@@ -102,7 +118,7 @@ public class ReconocimientoBasico : MonoBehaviour
         {
             direccionArriba = m_puntos[0] - m_posicionPromedio;
             direccionNormal = Vector3.up * Mathf.Sign(m_direccionCamara.y);
-        } 
+        }
         else
         {
             direccionNormal.y = 0;

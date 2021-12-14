@@ -9,8 +9,8 @@ public class CrearPuntos : MonoBehaviour
 
     Vector3 Posicion => m_camara.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, m_distanciaDelJugador));
 
-    public static event Action<Vector3, bool> CrearPunto;
-    public static event Action TerminarSpell; 
+    public static event Action<Vector3> EmpezarMovimiento, UpdateMovimiento, FinalizarMovimiento;
+    public static event Action TerminarGlyph, TerminarSpell;
 
     private void Update()
     {
@@ -19,20 +19,33 @@ public class CrearPuntos : MonoBehaviour
         if (!m_enMovimiento && disparando)
         {
             m_enMovimiento = true;
-            CrearPunto?.Invoke(Posicion, m_enMovimiento);
-        }    
+            EmpezarMovimiento?.Invoke(Posicion);
+        }
         else if (m_enMovimiento && !disparando)
         {
             m_enMovimiento = false;
-            CrearPunto?.Invoke(Posicion, m_enMovimiento);
+            FinalizarMovimiento?.Invoke(Posicion);
         }
         else if (m_enMovimiento && disparando)
         {
-            CrearPunto?.Invoke(Posicion, m_enMovimiento);
+            UpdateMovimiento(Posicion);
+        }
+        else if (Input.GetKeyDown(KeyCode.E))
+        {
+            DejarDeCrearPuntos();
         }
 
-        bool terminar = Input.GetButtonDown("Fire2");
+        bool terminar = Input.GetKeyDown(KeyCode.Mouse1);
         if (terminar)
+        {
+            DejarDeCrearPuntos();
             TerminarSpell?.Invoke();
+        }
+    }
+
+    void DejarDeCrearPuntos()
+    {
+        m_enMovimiento = false;
+        TerminarGlyph?.Invoke();
     }
 }

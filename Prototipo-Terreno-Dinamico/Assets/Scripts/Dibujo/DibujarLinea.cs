@@ -14,38 +14,22 @@ public class DibujarLinea : MonoBehaviour
 
     private void Awake()
     {
-        CrearPuntos.CrearPunto += TomarPunto;
+        CrearPuntos.EmpezarMovimiento += EmpezarMovimiento;
+        CrearPuntos.UpdateMovimiento += UpdateMovimiento;
+        CrearPuntos.FinalizarMovimiento += TerminarMovimiento;
         CrearPuntos.TerminarSpell += Reiniciar;
     }
     private void Disable()
     {
-        CrearPuntos.CrearPunto -= TomarPunto;
+        CrearPuntos.EmpezarMovimiento -= EmpezarMovimiento;
+        CrearPuntos.UpdateMovimiento -= UpdateMovimiento;
+        CrearPuntos.FinalizarMovimiento -= TerminarMovimiento;
         CrearPuntos.TerminarSpell -= Reiniciar;
-    }
-
-    private void TomarPunto(Vector3 punto, bool movimientoActual)
-    {
-        if (!m_enMovimiento && movimientoActual)
-            EmpezarMovimiento(punto);
-        else if (m_enMovimiento && !movimientoActual)
-            TerminarMovimiento(punto);
-        else if (m_enMovimiento && movimientoActual)
-            UpdateMovimiento(punto);
     }
 
     private void EmpezarMovimiento(Vector3 punto)
     {
-        GameObject nuevaLinea = Instantiate(m_lineaPrefab);
-
-        m_linea = nuevaLinea.GetComponent<LineRenderer>();
-        if (m_linea == null)
-        {
-            Destroy(nuevaLinea);
-            return;
-        }
-        m_lineas.Add(nuevaLinea);
-
-        m_index = 0;
+        CrearLinea();
         UpdateMovimiento(punto);
     }
 
@@ -63,6 +47,20 @@ public class DibujarLinea : MonoBehaviour
         m_enMovimiento = false;
     }
 
+    private void CrearLinea()
+    {
+        GameObject nuevaLinea = Instantiate(m_lineaPrefab);
+        m_linea = nuevaLinea.GetComponent<LineRenderer>();
+        if (m_linea == null)
+        {
+            Destroy(nuevaLinea);
+            return;
+        }
+        m_lineas.Add(nuevaLinea);
+
+        m_index = 0;
+    }
+
     private void Reiniciar()
     {
         int cantidad = m_lineas.Count;
@@ -77,6 +75,6 @@ public class DibujarLinea : MonoBehaviour
         
         GameObject obj = m_lineas[m_lineas.Count - 1];
         Destroy(obj);
-        m_lineas.Remove(obj);        
+        m_lineas.Remove(obj);
     }
 }
