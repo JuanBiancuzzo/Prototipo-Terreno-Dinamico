@@ -28,7 +28,6 @@ public class ReconocimientoBasico : MonoBehaviour
     [SerializeField] Camera m_camara;
 
     List<Vector3> m_puntos = new List<Vector3>();
-    bool m_enMovimiento = false;
 
     Vector3 m_posicionPromedio, m_direccionCamara;
     Vector3 m_maximo, m_minimo;
@@ -71,7 +70,6 @@ public class ReconocimientoBasico : MonoBehaviour
         m_minimo = punto;
 
         m_puntos.Add(punto);
-        m_enMovimiento = true;
         m_cambioDireccion = false;
     }
 
@@ -100,7 +98,6 @@ public class ReconocimientoBasico : MonoBehaviour
     private void TerminarMovimiento(Vector3 punto)
     {
         UpdateMovimiento(punto);
-        m_enMovimiento = false;
     }
 
     private void DetermianrPlano()
@@ -125,9 +122,13 @@ public class ReconocimientoBasico : MonoBehaviour
         }
 
         Plane plano = new Plane(direccionNormal, m_posicionPromedio);
+        Vector3 extension = m_maximo - m_minimo;
 
         direccionArriba = (plano.ClosestPointOnPlane(direccionArriba + m_posicionPromedio) - m_posicionPromedio).normalized;
         Vector3 direccionDerecha = Vector3.Cross(direccionArriba, direccionNormal);
+
+        direccionArriba = Vector3.Project(extension, direccionArriba);
+        direccionDerecha = Vector3.Project(extension, direccionDerecha);
 
         m_plano = new PlanoDireccionado
         (
@@ -135,7 +136,7 @@ public class ReconocimientoBasico : MonoBehaviour
             m_posicionPromedio,
             direccionArriba,
             direccionDerecha,
-             m_maximo - m_minimo
+            extension
         );
 
         PlanoCreado?.Invoke(m_plano, m_puntos);

@@ -7,7 +7,6 @@ public class DibujarLinea : MonoBehaviour
 {
     [SerializeField] GameObject m_lineaPrefab;
     LineRenderer m_linea;
-    bool m_enMovimiento = false;
     int m_index;
 
     List<GameObject> m_lineas = new List<GameObject>();
@@ -38,13 +37,11 @@ public class DibujarLinea : MonoBehaviour
         m_linea.positionCount = m_index + 1;
         m_linea.SetPosition(m_index, punto);
         m_index++;
-        m_enMovimiento = true;
     }
 
     private void TerminarMovimiento(Vector3 punto)
     {
         UpdateMovimiento(punto);
-        m_enMovimiento = false;
     }
 
     private void CrearLinea()

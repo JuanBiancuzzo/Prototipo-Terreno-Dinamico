@@ -5,7 +5,6 @@ using UnityEngine;
 public class Visualizar : MonoBehaviour
 {
     [SerializeField] LineRenderer m_linea;
-    [SerializeField] Camera m_camara;
 
     private void Awake() => ReconocimientoBasico.PlanoCreado += VisualizarPunto;
     private void Disable() => ReconocimientoBasico.PlanoCreado -= VisualizarPunto;

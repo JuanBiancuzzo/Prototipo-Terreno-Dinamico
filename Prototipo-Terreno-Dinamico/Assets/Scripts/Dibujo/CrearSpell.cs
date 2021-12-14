@@ -6,8 +6,10 @@ using UnityEngine;
 public class CrearSpell : MonoBehaviour
 {
     PlanoDireccionado planoActual;
-    [SerializeField] bool crear;
-    [SerializeField] string nombre;
+    //[SerializeField] bool crear;
+    //[SerializeField] string nombre;
+
+    [SerializeField] List<Glyph> m_glyphs = new List<Glyph>();
 
     List<Gesture> m_trainingSet = new List<Gesture>();
 
@@ -16,44 +18,51 @@ public class CrearSpell : MonoBehaviour
 
     private void Start()
     {
-        string[] gestureFiles = Directory.GetFiles(Application.persistentDataPath, "*.xml");
-        foreach (string file in gestureFiles)
-            m_trainingSet.Add(GestureIO.ReadGestureFromFile(file));
+        List<Glyph> elementosAEliminar = new List<Glyph>();
+
+        foreach (Glyph glyph in m_glyphs)
+        {
+            string[] file = Directory.GetFiles(Application.persistentDataPath, glyph.m_nombre + ".xml");
+            if (file.Length == 0)
+            {
+                elementosAEliminar.Add(glyph);
+                continue;
+            }
+            m_trainingSet.Add(GestureIO.ReadGestureFromFile(file[0]));
+        }
+
+        foreach (Glyph glyph in elementosAEliminar)
+            m_glyphs.Remove(glyph);
     }
-
-    /*
-     * para crear un simbolo nuevo
-     * 
-        newGesture.Name = m_nombre;
-        m_trainingList.Add(newGesture);
-
-        string fileName = Application.persistentDataPath + "/" + m_nombre + ".xml";
-        GestureIO.WriteGesture(pointArray, m_nombre, fileName);
-     */
 
     void NuevoGlyph(PlanoDireccionado plano, List<Vector3> puntos)
     {
-        if (crear)
-        {
-            Point[] pointArray = new Point[puntos.Count];
-            for (int i = 0; i < puntos.Count; i++)
-            {
-                Vector2 proyeccion = ReconocimientoBasico.ProyeccionEnPlano(plano, puntos[i]);
-                pointArray[i] = new Point(proyeccion.x, proyeccion.y, 0);
-            }
-
-            Gesture newGesture = new Gesture(pointArray);
-
-            newGesture.Name = nombre;
-            m_trainingSet.Add(newGesture);
-
-            string fileName = Application.persistentDataPath + "/" + nombre + ".xml";
-            GestureIO.WriteGesture(pointArray, nombre, fileName);
-        }
-        else
-        {
-            Result resultado = ReconocimientoBasico.ReconocerFigura(puntos, plano, m_trainingSet);
-            Debug.Log(resultado.GestureClass + " con " + resultado.Score);
-        }
+       
+        Result resultado = ReconocimientoBasico.ReconocerFigura(puntos, plano, m_trainingSet);
+        Debug.Log(resultado.GestureClass + " con " + resultado.Score);
     }
 }
+
+
+/*if (crear)
+       {
+           Point[] pointArray = new Point[puntos.Count];
+           for (int i = 0; i < puntos.Count; i++)
+           {
+               Vector2 proyeccion = ReconocimientoBasico.ProyeccionEnPlano(plano, puntos[i]);
+               pointArray[i] = new Point(proyeccion.x, proyeccion.y, 0);
+           }
+
+           Gesture newGesture = new Gesture(pointArray);
+
+           newGesture.Name = nombre;
+           m_trainingSet.Add(newGesture);
+
+           string fileName = Application.persistentDataPath + "/" + nombre + ".xml";
+           GestureIO.WriteGesture(pointArray, nombre, fileName);
+
+           Debug.Log("Spell " + nombre + " creado");
+       }
+       else
+       {
+       }*/
