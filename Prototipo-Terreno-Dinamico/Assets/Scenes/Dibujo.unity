@@ -154,6 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_distanciaMinimaSeparacion: 0.01
+  m_cambioDeDireccion: 0.61
   m_camara: {fileID: 2142369658}
 --- !u!4 &360957609
 Transform:
@@ -181,6 +182,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdeafd41d294d12469586b77cb8cc304, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  crear: 0
+  nombre: Circulo
 --- !u!1 &444504607
 GameObject:
   m_ObjectHideFlags: 0

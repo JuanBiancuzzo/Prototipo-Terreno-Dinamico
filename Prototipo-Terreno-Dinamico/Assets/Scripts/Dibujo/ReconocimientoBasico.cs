@@ -24,13 +24,13 @@ public struct PlanoDireccionado
 public class ReconocimientoBasico : MonoBehaviour
 {
     [SerializeField] float m_distanciaMinimaSeparacion;
-    [SerializeField] float m_cambioDeDireccion;
+    [SerializeField] [Range(0, 1)] float m_cambioDeDireccion;
     [SerializeField] Camera m_camara;
 
     List<Vector3> m_puntos = new List<Vector3>();
     bool m_enMovimiento = false;
 
-    Vector3 m_posicionPromedio, m_direccionNormal, m_direccionCamaraInicial;
+    Vector3 m_posicionPromedio, m_direccionCamara;
     Vector3 m_maximo, m_minimo;
     bool m_cambioDireccion;
 
@@ -55,13 +55,13 @@ public class ReconocimientoBasico : MonoBehaviour
     {
         m_puntos.Clear();
         m_posicionPromedio = punto;
-        m_direccionNormal = Vector3.zero;
-        m_direccionCamaraInicial = m_camara.transform.forward;
+        m_direccionCamara = m_camara.transform.forward;
         m_maximo = punto;
         m_minimo = punto;
 
         m_puntos.Add(punto);
         m_enMovimiento = true;
+        m_cambioDireccion = false;
     }
 
     private void UpdateMovimiento(Vector3 punto)
@@ -78,21 +78,10 @@ public class ReconocimientoBasico : MonoBehaviour
             m_minimo[i] = Mathf.Min(m_minimo[i], punto[i]);
         }
 
-        int cantidad = m_puntos.Count;
-        if (cantidad <= 2)
-        {
-            m_puntos.Add(punto);
-            return;
-        }
-
-        Vector3 punto2 = m_puntos[cantidad - 1], punto3 = m_puntos[cantidad - 2];
-        Vector3 nuevaNormal = Vector3.Cross(punto2 - punto, punto3 - punto);
-
-        for (int i = 0; i < 3; i++)
-            nuevaNormal[i] = Mathf.Abs(nuevaNormal[i]);
-
-        m_direccionNormal += nuevaNormal;
-
+        Vector3 direccionCamara = m_camara.transform.forward;
+        if (!m_cambioDireccion && 1 - Vector3.Dot(direccionCamara, m_direccionCamara) > m_cambioDeDireccion)
+            m_cambioDireccion = true;
+        m_direccionCamara += direccionCamara;
 
         m_puntos.Add(punto);
     }
@@ -107,22 +96,22 @@ public class ReconocimientoBasico : MonoBehaviour
 
         m_posicionPromedio /= m_puntos.Count;
 
-        Vector3 extension = m_maximo - m_minimo;
+        Vector3 direccionNormal = m_direccionCamara.normalized;
         Vector3 direccionArriba = Vector3.up;
-        if (extension.y < extension.x || extension.y < extension.z)
+        if (m_cambioDireccion || Mathf.Abs(direccionNormal.y) > m_cambioDeDireccion)
         {
             direccionArriba = m_puntos[0] - m_posicionPromedio;
-
-            m_direccionNormal = m_direccionCamaraInicial;
-            m_direccionNormal.y = 0;
+            direccionNormal = Vector3.up * Mathf.Sign(m_direccionCamara.y);
+        } 
+        else
+        {
+            direccionNormal.y = 0;
         }
 
-        m_direccionNormal = m_direccionNormal.normalized;
-
-        Plane plano = new Plane(m_direccionNormal, m_posicionPromedio);
+        Plane plano = new Plane(direccionNormal, m_posicionPromedio);
 
         direccionArriba = (plano.ClosestPointOnPlane(direccionArriba + m_posicionPromedio) - m_posicionPromedio).normalized;
-        Vector3 direccionDerecha = Vector3.Cross(direccionArriba, m_direccionNormal);
+        Vector3 direccionDerecha = Vector3.Cross(direccionArriba, direccionNormal);
 
         m_plano = new PlanoDireccionado
         (
@@ -130,7 +119,7 @@ public class ReconocimientoBasico : MonoBehaviour
             m_posicionPromedio,
             direccionArriba,
             direccionDerecha,
-            extension
+             m_maximo - m_minimo
         );
 
         PlanoCreado?.Invoke(m_plano, m_puntos);
