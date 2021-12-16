@@ -9,8 +9,6 @@ public class CrearSpell : MonoBehaviour
     //[SerializeField] bool crear;
     //[SerializeField] string nombre;
 
-    [SerializeField] List<Glyph> m_glyphs = new List<Glyph>();
-
     List<Gesture> m_trainingSet = new List<Gesture>();
 
     private void Awake() => ReconocimientoBasico.PlanoCreado += NuevoGlyph;
@@ -18,21 +16,9 @@ public class CrearSpell : MonoBehaviour
 
     private void Start()
     {
-        List<Glyph> elementosAEliminar = new List<Glyph>();
-
-        foreach (Glyph glyph in m_glyphs)
-        {
-            string[] file = Directory.GetFiles(Application.persistentDataPath, glyph.m_nombre + ".xml");
-            if (file.Length == 0)
-            {
-                elementosAEliminar.Add(glyph);
-                continue;
-            }
-            m_trainingSet.Add(GestureIO.ReadGestureFromFile(file[0]));
-        }
-
-        foreach (Glyph glyph in elementosAEliminar)
-            m_glyphs.Remove(glyph);
+        string[] files = Directory.GetFiles(Application.persistentDataPath, "*.xml");
+        foreach (string file in files)
+            m_trainingSet.Add(GestureIO.ReadGestureFromFile(file));
     }
 
     void NuevoGlyph(PlanoDireccionado plano, List<Vector3> puntos)

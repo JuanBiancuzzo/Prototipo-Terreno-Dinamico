@@ -41,14 +41,14 @@ public class ReconocimientoBasico : MonoBehaviour
     {
         CrearPuntos.EmpezarMovimiento += EmpezarMovimiento;
         CrearPuntos.UpdateMovimiento += UpdateMovimiento;
-        CrearPuntos.FinalizarMovimiento += TerminarMovimiento;
+        CrearPuntos.FinalizarMovimiento += UpdateMovimiento;
         CrearPuntos.TerminarGlyph += DetermianrPlano;
     }
     private void Disable()
     {
         CrearPuntos.EmpezarMovimiento -= EmpezarMovimiento;
         CrearPuntos.UpdateMovimiento -= UpdateMovimiento;
-        CrearPuntos.FinalizarMovimiento -= TerminarMovimiento;
+        CrearPuntos.FinalizarMovimiento -= UpdateMovimiento;
         CrearPuntos.TerminarGlyph -= DetermianrPlano;
     }
 
@@ -95,11 +95,6 @@ public class ReconocimientoBasico : MonoBehaviour
         m_puntos.Add(punto);
     }
 
-    private void TerminarMovimiento(Vector3 punto)
-    {
-        UpdateMovimiento(punto);
-    }
-
     private void DetermianrPlano()
     {
         m_empezandoNuevoGlyph = true;
@@ -125,17 +120,29 @@ public class ReconocimientoBasico : MonoBehaviour
         Vector3 extension = m_maximo - m_minimo;
 
         direccionArriba = (plano.ClosestPointOnPlane(direccionArriba + m_posicionPromedio) - m_posicionPromedio).normalized;
-        Vector3 direccionDerecha = Vector3.Cross(direccionArriba, direccionNormal);
+        Vector3 direccionDerecha = Vector3.Cross(direccionArriba, direccionNormal).normalized;
 
-        direccionArriba = Vector3.Project(extension, direccionArriba);
-        direccionDerecha = Vector3.Project(extension, direccionDerecha);
+        Vector3 mayorEnDireccionArriba = Vector3.zero, mayorEnDireccionDerecha = Vector3.zero;
+        foreach (Vector3 punto in m_puntos)
+        {
+            Vector3 puntoEnPlano = plano.ClosestPointOnPlane(punto);
+
+            Vector3 enDireccionArriba = Vector3.Project(puntoEnPlano - m_posicionPromedio, direccionArriba);
+            Vector3 enDireccionDerecha = Vector3.Project(puntoEnPlano - m_posicionPromedio, direccionDerecha);
+
+            if (enDireccionArriba.magnitude > mayorEnDireccionArriba.magnitude)
+                mayorEnDireccionArriba = enDireccionArriba * Mathf.Sign(Vector3.Dot(enDireccionArriba, direccionArriba)); 
+
+            if (enDireccionDerecha.magnitude > mayorEnDireccionDerecha.magnitude)
+                mayorEnDireccionDerecha = enDireccionDerecha * Mathf.Sign(Vector3.Dot(enDireccionDerecha, direccionDerecha));
+        }
 
         m_plano = new PlanoDireccionado
         (
             plano,
             m_posicionPromedio,
-            direccionArriba,
-            direccionDerecha,
+            mayorEnDireccionArriba,
+            mayorEnDireccionDerecha,
             extension
         );
 
@@ -154,6 +161,7 @@ public class ReconocimientoBasico : MonoBehaviour
         return PointCloudRecognizer.Classify(new Gesture(pointArray), trainginSet.ToArray());
     }
 
+    // posicionado con respecto al (0, 0)
     public static Vector2 ProyeccionEnPlano(PlanoDireccionado planoDireccionado, Vector3 punto)
     {
         Vector3 puntoEnPlano = planoDireccionado.plano.ClosestPointOnPlane(punto) - planoDireccionado.posicion;
@@ -167,6 +175,15 @@ public class ReconocimientoBasico : MonoBehaviour
         Vector3 proyDerecha = Vector3.Project(puntoEnPlano, planoDireccionado.derecha);
         int direccionDerecha = (Vector3.Dot(proyDerecha, planoDireccionado.derecha) > 0) ? 1 : -1;
 
-        return new Vector2(direccionDerecha * proyDerecha.magnitude, direccionArriba * proyArriba.magnitude);
+        float maximaDireccion;
+        if (planoDireccionado.derecha.magnitude > planoDireccionado.arriba.magnitude)
+            maximaDireccion = planoDireccionado.derecha.magnitude;
+        else
+            maximaDireccion = planoDireccionado.arriba.magnitude;
+
+        return new Vector2(
+            direccionDerecha * proyDerecha.magnitude / maximaDireccion,
+            direccionArriba * proyArriba.magnitude / maximaDireccion
+        );
     }
 }

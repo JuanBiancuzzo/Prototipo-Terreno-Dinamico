@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-[CreateAssetMenu(menuName = "Glyph/Lugar")]
-public class GlyphLugar : Glyph
+public class Glyph
 {
+    List<Vector3> m_puntos;
 
+   
 }
