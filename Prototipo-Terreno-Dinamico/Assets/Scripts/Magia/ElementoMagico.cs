@@ -88,7 +88,7 @@ public class ElementoMagico : IObjetoMagico
                 return m_temperatura;
             case TipoDeMagia.Concentracion:
                 return m_concentracion;
-            case TipoDeMagia.Consitucion:
+            case TipoDeMagia.Constitucion:
                 return m_consitucion;
             case TipoDeMagia.Iluminacion:
                 return m_iluminacion;

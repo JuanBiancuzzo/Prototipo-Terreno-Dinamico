@@ -2,16 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum Rangos
-{
-    Punto,
-    Linea,
-    Area,
-    Esfera,
-    Pies,
-    Ambiente
-}
-
 public class SpellController : MonoBehaviour
 {
     [SerializeField] Mundo m_mundo;
@@ -25,12 +15,12 @@ public class SpellController : MonoBehaviour
     [Space]
 
     [SerializeField] TipoDeMagia m_tipoMagiaDar;
-    [SerializeField] Rangos m_rangoDar;
+    [SerializeField] LugaresDeEfecto m_rangoDar;
 
     [Space]
 
     [SerializeField] TipoDeMagia m_tipoMagiaRecibir;
-    [SerializeField] Rangos m_rangoRecibir;
+    [SerializeField] LugaresDeEfecto m_rangoRecibir;
 
     [Space]
 
@@ -79,26 +69,26 @@ public class SpellController : MonoBehaviour
 
     }
 
-    private List<IObjetoMagico> ObjetosPorRango(Rangos rango)
+    private List<IObjetoMagico> ObjetosPorRango(LugaresDeEfecto rango)
     {
         Vector3 posicion = transform.position;
         Vector3 direccion = m_camara.transform.forward;
 
         switch (rango)
         {
-            case Rangos.Punto:
+            case LugaresDeEfecto.Punto:
                 return new List<IObjetoMagico> { TargetSystem.ObjetoEnPunto(posicion, direccion, m_distancia) };
-            case Rangos.Linea:
+            case LugaresDeEfecto.Linea:
                 return TargetSystem.ObjetoEnLinea(posicion, direccion, m_distancia);
-            case Rangos.Area:
+            case LugaresDeEfecto.Area:
                 return TargetSystem.ObjetosEnArea(posicion + Vector3.forward * direccion.z, direccion, new Vector2(m_extensionMedia, m_extensionMedia));
-            case Rangos.Esfera:
+            case LugaresDeEfecto.Esfera:
                 return TargetSystem.ObjetoEnEsfera(posicion, m_radio);
             //case Rangos.Volumen:
             //    return TargetSystem.ObjetoEnVolumen(posicion, direccion, new Vector3(m_extensionMedia, m_extensionMedia, m_extensionMedia));
-            case Rangos.Pies:
-                return TargetSystem.ObjetosEnArea(pies.position, Vector3.up, new Vector3(m_extensionMedia, m_extensionMedia, m_extensionMedia));
-            case Rangos.Ambiente:
+            //case LugaresDeEfecto.Pies:
+            //    return TargetSystem.ObjetosEnArea(pies.position, Vector3.up, new Vector3(m_extensionMedia, m_extensionMedia, m_extensionMedia));
+            case LugaresDeEfecto.Ambiente:
                 return TargetSystem.ObjetoEnAmbiente(posicion, m_extensionMedia);
         }
 

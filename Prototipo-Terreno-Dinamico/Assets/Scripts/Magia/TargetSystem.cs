@@ -4,13 +4,14 @@ using UnityEngine;
 
 public static class TargetSystem
 {
-    public static Mundo m_mundo;
+    public static Mundo m_mundo = null;
 
     public static IObjetoMagico ObjetoEnPunto(Vector3 posicion, Vector3 direccion, float distancia)
     {
-
-        float distanciaDelObjetoMundo;
-        IObjetoMagico elementoEnElMundo = ObjetoEnDireccionMundo(posicion, direccion, distancia, out distanciaDelObjetoMundo);
+        float distanciaDelObjetoMundo = -1f;
+        IObjetoMagico elementoEnElMundo = null; 
+        if (m_mundo != null)
+            elementoEnElMundo = ObjetoEnDireccionMundo(posicion, direccion, distancia, out distanciaDelObjetoMundo);
 
         float distanciaDeEntidad;
         IObjetoMagico entidad = EntidadEnDireccion(posicion, direccion, distancia, out distanciaDeEntidad);
@@ -67,7 +68,8 @@ public static class TargetSystem
     {
         List<IObjetoMagico> objetos = new List<IObjetoMagico>();
 
-        ObjetosEnLineaMundo(posicion, direccion, distancia, ref objetos);
+        if (m_mundo != null)
+            ObjetosEnLineaMundo(posicion, direccion, distancia, ref objetos);
         EntidadesEnLinea(posicion, direccion, distancia, ref objetos);
 
         return objetos;
@@ -106,7 +108,8 @@ public static class TargetSystem
     {
         List<IObjetoMagico> objetos = new List<IObjetoMagico>();
 
-        ObjetosEnAreaMundo(posicion, direccion, extension, ref objetos);
+        if (m_mundo != null)
+            ObjetosEnAreaMundo(posicion, direccion, extension, ref objetos);
         EntidadesEnArea(posicion, direccion, extension, ref objetos);
 
         return objetos;
@@ -198,7 +201,8 @@ public static class TargetSystem
     {
         List<IObjetoMagico> objetos = new List<IObjetoMagico>();
 
-        ObjetosEnEsferaMundo(posicion, radio, ref objetos);
+        if (m_mundo != null)
+            ObjetosEnEsferaMundo(posicion, radio, ref objetos);
         EntidadesEnEsfera(posicion, radio, ref objetos);
 
         return objetos;
@@ -246,7 +250,8 @@ public static class TargetSystem
 
         Vector3 extensionMedia = new Vector3(radio, radio, radio);
 
-        ObjetosEnAmbienteMundo(posicion, extensionMedia, ref objetos);
+        if (m_mundo != null)
+            ObjetosEnAmbienteMundo(posicion, extensionMedia, ref objetos);
         EntidadesEnAmbiente(posicion, extensionMedia, ref objetos);
         
         return objetos;

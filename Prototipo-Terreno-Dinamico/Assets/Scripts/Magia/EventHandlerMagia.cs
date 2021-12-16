@@ -1,16 +1,6 @@
 using System;
 using UnityEngine;
 
-public enum TipoDeMagia
-{
-    Color,
-    Alfa,
-    Temperatura,
-    Concentracion,
-    Consitucion,
-    Iluminacion
-};
-
 public class EventHandlerMagia : MonoBehaviour
 {
     public static EventHandlerMagia current;

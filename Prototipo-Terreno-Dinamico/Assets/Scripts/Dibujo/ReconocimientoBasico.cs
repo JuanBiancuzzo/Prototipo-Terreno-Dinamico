@@ -9,15 +9,13 @@ public struct PlanoDireccionado
     public Vector3 posicion;
     public Vector3 arriba;
     public Vector3 derecha;
-    public Vector3 extension;
 
-    public PlanoDireccionado(Plane plano, Vector3 posicion, Vector3 arriba, Vector3 derecha, Vector3 extension)
+    public PlanoDireccionado(Plane plano, Vector3 posicion, Vector3 arriba, Vector3 derecha)
     {
         this.plano = plano;
         this.posicion = posicion;
         this.arriba = arriba;
         this.derecha = derecha;
-        this.extension = extension;
     }
 }
 
@@ -30,7 +28,6 @@ public class ReconocimientoBasico : MonoBehaviour
     List<Vector3> m_puntos = new List<Vector3>();
 
     Vector3 m_posicionPromedio, m_direccionCamara;
-    Vector3 m_maximo, m_minimo;
     bool m_cambioDireccion;
 
     bool m_empezandoNuevoGlyph = true;
@@ -66,8 +63,6 @@ public class ReconocimientoBasico : MonoBehaviour
         m_puntos.Clear();
         m_posicionPromedio = punto;
         m_direccionCamara = m_camara.transform.forward;
-        m_maximo = punto;
-        m_minimo = punto;
 
         m_puntos.Add(punto);
         m_cambioDireccion = false;
@@ -81,11 +76,6 @@ public class ReconocimientoBasico : MonoBehaviour
             return;
 
         m_posicionPromedio += punto;
-        for (int i = 0; i < 3; i++)
-        {
-            m_maximo[i] = Mathf.Max(m_maximo[i], punto[i]);
-            m_minimo[i] = Mathf.Min(m_minimo[i], punto[i]);
-        }
 
         Vector3 direccionCamara = m_camara.transform.forward;
         if (!m_cambioDireccion && 1 - Vector3.Dot(direccionCamara, m_direccionCamara) > m_cambioDeDireccion)
@@ -117,7 +107,6 @@ public class ReconocimientoBasico : MonoBehaviour
         }
 
         Plane plano = new Plane(direccionNormal, m_posicionPromedio);
-        Vector3 extension = m_maximo - m_minimo;
 
         direccionArriba = (plano.ClosestPointOnPlane(direccionArriba + m_posicionPromedio) - m_posicionPromedio).normalized;
         Vector3 direccionDerecha = Vector3.Cross(direccionArriba, direccionNormal).normalized;
@@ -142,8 +131,7 @@ public class ReconocimientoBasico : MonoBehaviour
             plano,
             m_posicionPromedio,
             mayorEnDireccionArriba,
-            mayorEnDireccionDerecha,
-            extension
+            mayorEnDireccionDerecha
         );
 
         PlanoCreado?.Invoke(m_plano, m_puntos);

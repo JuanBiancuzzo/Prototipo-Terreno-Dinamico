@@ -5,27 +5,37 @@ using UnityEngine;
 
 public class CrearSpell : MonoBehaviour
 {
-    PlanoDireccionado planoActual;
-    //[SerializeField] bool crear;
-    //[SerializeField] string nombre;
+    GameObject spellPrefab = null;
+    Spell spellActual = null;
 
-    List<Gesture> m_trainingSet = new List<Gesture>();
+    private void OnEnable() => ReconocimientoBasico.PlanoCreado += NuevoGlyph;
+    private void OnDisable() => ReconocimientoBasico.PlanoCreado -= NuevoGlyph;
 
-    private void Awake() => ReconocimientoBasico.PlanoCreado += NuevoGlyph;
-    private void Disable() => ReconocimientoBasico.PlanoCreado -= NuevoGlyph;
-
-    private void Start()
-    {
-        string[] files = Directory.GetFiles(Application.persistentDataPath, "*.xml");
-        foreach (string file in files)
-            m_trainingSet.Add(GestureIO.ReadGestureFromFile(file));
-    }
 
     void NuevoGlyph(PlanoDireccionado plano, List<Vector3> puntos)
     {
-       
-        Result resultado = ReconocimientoBasico.ReconocerFigura(puntos, plano, m_trainingSet);
-        Debug.Log(resultado.GestureClass + " con " + resultado.Score);
+        if (spellPrefab == null)
+        {
+            Debug.LogError("Falta el prefab");
+            return;
+        }
+
+        // se pone una base
+        if (spellActual == null)
+        {
+            GameObject spell = Instantiate(spellPrefab);
+            spellActual = spell.GetComponent<Spell>();
+            if (spellActual == null)
+            {
+                Debug.LogError("El prefab no tiene el spell");
+                return;
+            }
+
+            spellActual.AgregarBase(plano, puntos);
+            return;
+        }
+
+        spellActual.AgregarGlyph(puntos, plano.posicion);        
     }
 }
 
