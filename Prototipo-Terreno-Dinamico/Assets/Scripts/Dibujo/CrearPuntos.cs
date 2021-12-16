@@ -38,7 +38,7 @@ public class CrearPuntos : MonoBehaviour
         bool terminar = Input.GetKeyDown(KeyCode.Mouse1);
         if (terminar)
         {
-            DejarDeCrearPuntos();
+            //DejarDeCrearPuntos();
             TerminarSpell?.Invoke();
         }
     }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c376a7e5f46eb94084627076470acef, type: 3}
   m_Name: Recibir
   m_EditorClassIdentifier: 
-  m_posicion: 2
+  m_posicion: 3
   m_rangos:
   - minimo: {x: -0.8, y: 0.6}
     maximo: {x: 0.8, y: 1.2}

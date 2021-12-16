@@ -5,12 +5,16 @@ using UnityEngine;
 
 public class CrearSpell : MonoBehaviour
 {
-    GameObject spellPrefab = null;
+    [SerializeField] GameObject spellPrefab = null;
     Spell spellActual = null;
 
     private void OnEnable() => ReconocimientoBasico.PlanoCreado += NuevoGlyph;
     private void OnDisable() => ReconocimientoBasico.PlanoCreado -= NuevoGlyph;
 
+    private void Update()
+    {
+        
+    }
 
     void NuevoGlyph(PlanoDireccionado plano, List<Vector3> puntos)
     {

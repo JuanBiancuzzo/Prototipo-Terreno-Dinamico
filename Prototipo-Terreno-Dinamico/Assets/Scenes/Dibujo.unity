@@ -183,12 +183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdeafd41d294d12469586b77cb8cc304, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_glyphs:
-  - {fileID: 11400000, guid: 0e802befdc1ed11429b20b61c08c3c23, type: 2}
-  - {fileID: 11400000, guid: fad32dfd71e72934dbbbe9c5b847f7cc, type: 2}
-  - {fileID: 11400000, guid: d11bee18bc7623e419a7ba07c9d08f25, type: 2}
-  - {fileID: 11400000, guid: b248483001f3f3141acebdddccde72a3, type: 2}
-  - {fileID: 11400000, guid: 3182883409485734b84ffe4d1092e79d, type: 2}
+  spellPrefab: {fileID: 7008764091840726635, guid: 6d0022316b005d447af591fe3d59a960, type: 3}
 --- !u!114 &360957611
 MonoBehaviour:
   m_ObjectHideFlags: 0

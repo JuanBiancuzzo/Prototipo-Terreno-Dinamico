@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Temperatura
   m_EditorClassIdentifier: 
   m_nombre: Temperatura
-  m_rango:
+  m_rangos:
   - {fileID: 11400000, guid: e84350504bd7e53479d9a2dc52aaef32, type: 2}

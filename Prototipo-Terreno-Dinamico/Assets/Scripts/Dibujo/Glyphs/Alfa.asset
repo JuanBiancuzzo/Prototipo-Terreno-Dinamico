@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27822025c65cd1c44a7f982ce0da8568, type: 3}
-  m_Name: Punto
+  m_Script: {fileID: 11500000, guid: 0f61ed48d3b8b204eb37d9967beb415e, type: 3}
+  m_Name: Alfa
   m_EditorClassIdentifier: 
-  m_nombre: Punto
+  m_nombre: Alfa
   m_rangos:
-  - {fileID: 11400000, guid: f10c36292bcb6c74c825741b8c0379ca, type: 2}
-  - {fileID: 11400000, guid: 8521313ec0dfe584ca675b3516260df4, type: 2}
+  - {fileID: 11400000, guid: e84350504bd7e53479d9a2dc52aaef32, type: 2}

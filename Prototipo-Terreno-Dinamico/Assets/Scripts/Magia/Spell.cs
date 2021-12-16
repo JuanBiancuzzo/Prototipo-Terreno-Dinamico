@@ -24,16 +24,17 @@ public class Spell : MonoBehaviour
 
     PlanoDireccionado m_planoBase;
     bool m_planoSeleccionado = false;
-    LugaresDeEfecto m_rangoDar, m_rangoRecibir;
+    LugaresDeEfecto m_rangoDar = LugaresDeEfecto.Esfera, m_rangoRecibir = LugaresDeEfecto.Punto;
     List<TipoDeMagia> m_magiaDar = new List<TipoDeMagia>(), m_magiaRecibir = new List<TipoDeMagia>();
+
+    private void OnEnable() => CrearPuntos.TerminarSpell += CastearSpell;
+    private void OnDisable() => CrearPuntos.TerminarSpell -= CastearSpell;
+
 
     private void Awake()
     {
         TargetSystem.m_mundo = m_mundo;
-    }
 
-    private void Start()
-    {
         AgregarLista(m_bases);
         AgregarLista(m_caracteristicas);
     }
@@ -52,7 +53,10 @@ public class Spell : MonoBehaviour
     {
         Result respuesta = ReconocimientoBasico.ReconocerFigura(puntos, plano, m_trainingSet);
         if (respuesta.Score < m_margenDeError)
+        {
+            Debug.Log("No tiene suficientes puntos con: " + respuesta.Score + " de tipo " + respuesta.GestureClass);
             return;
+        }
 
         GlyphElemento basePosible = null;
         foreach (GlyphElemento baseActual in m_bases)
@@ -63,7 +67,10 @@ public class Spell : MonoBehaviour
             }
 
         if (basePosible == null)
+        {
+            Debug.Log("No se encontro base");
             return;
+        }
 
         Reiniciar();
         m_planoBase = plano;
@@ -84,7 +91,10 @@ public class Spell : MonoBehaviour
 
         Result respuesta = ReconocimientoBasico.ReconocerFigura(puntos, m_planoBase, m_trainingSet);
         if (respuesta.Score < m_margenDeError)
+        {
+            Debug.Log("No tiene suficientes puntos con: " + respuesta.Score + " de tipo " + respuesta.GestureClass);
             return;
+        }
 
         GlyphElemento caracteristicaPosible = null;
         foreach (GlyphElemento caracteristica in m_caracteristicas)
@@ -94,8 +104,20 @@ public class Spell : MonoBehaviour
                 break;
             }
 
-        if (caracteristicaPosible == null || !caracteristicaPosible.EnRango(posicion))
+        if (caracteristicaPosible == null)
+        {
+            Debug.Log("No se encontro la magia/lugar");
             return;
+        }
+
+        posicion = ReconocimientoBasico.ProyeccionEnPlano(m_planoBase, posicion);
+
+        if (!caracteristicaPosible.EnRango(posicion))
+        {
+            Debug.Log("De tipo: " + respuesta.GestureClass);
+            Debug.Log("no esta en su rango " + posicion);
+            return;
+        }
 
         switch (caracteristicaPosible.Posicion(posicion, respuesta.GestureClass))
         {
@@ -112,6 +134,8 @@ public class Spell : MonoBehaviour
                 m_rangoRecibir = LugarPorNombre(caracteristicaPosible.GetNombreCompleto());
                 break;
         }
+
+        Debug.Log("Se agrego: " + respuesta.GestureClass);
     }
 
     private LugaresDeEfecto LugarPorNombre(string nombre)
@@ -143,9 +167,34 @@ public class Spell : MonoBehaviour
         return TipoDeMagia.Invalido;
     }
 
-    public void CrearSpell()
+    public void CastearSpell()
     {
+        if (!Valido())
+        {
+            Debug.Log("Spell no valido");
+            return;
+        }
+
+        if (m_magiaRecibir.Count == 0)
+            m_magiaRecibir.Add(TipoDeMagia.Temperatura);
+
+        if (m_magiaDar.Count == 0)
+            m_magiaDar.Add(TipoDeMagia.Temperatura);
+
+        Debug.Log("Tiene que sacar: " + m_rangoDar);
+        foreach (TipoDeMagia magia in m_magiaDar)
+            Debug.Log("Con la magia: " + magia);
+
+        Debug.Log("Tiene que agregar: " + m_rangoRecibir);
+        foreach (TipoDeMagia magia in m_magiaRecibir)
+            Debug.Log("Con la magia: " + magia);
+
         // llamamos spell system, tener en cuenta que el objeto magico puede ser null
+    }
+
+    private bool Valido()
+    {
+        return m_magiaRecibir.Count > 0 || m_magiaDar.Count > 0;
     }
 
     private List<IObjetoMagico> ObjetosPorRango(LugaresDeEfecto rango)
