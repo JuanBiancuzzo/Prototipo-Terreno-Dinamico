@@ -135,7 +135,7 @@ public class Spell : MonoBehaviour
                 break;
         }
 
-        Debug.Log("Se agrego: " + respuesta.GestureClass);
+        Debug.Log(respuesta.GestureClass);
     }
 
     private LugaresDeEfecto LugarPorNombre(string nombre)
@@ -146,7 +146,7 @@ public class Spell : MonoBehaviour
             case "Linea": return LugaresDeEfecto.Linea;
             case "Area": return LugaresDeEfecto.Area;
             case "Ambiente": return LugaresDeEfecto.Ambiente;
-            case "Esfera": return LugaresDeEfecto.Esfera;
+            case "Circulo": return LugaresDeEfecto.Esfera;
         }
 
         return LugaresDeEfecto.Invalido;
@@ -161,7 +161,7 @@ public class Spell : MonoBehaviour
             case "Temperatura": return TipoDeMagia.Temperatura;
             case "Concentracion": return TipoDeMagia.Concentracion;
             case "Constitucion": return TipoDeMagia.Constitucion;
-            case "Iluminacion": return TipoDeMagia.Iluminacion;
+            case "Luz": return TipoDeMagia.Iluminacion;
         }
 
         return TipoDeMagia.Invalido;
@@ -190,6 +190,36 @@ public class Spell : MonoBehaviour
             Debug.Log("Con la magia: " + magia);
 
         // llamamos spell system, tener en cuenta que el objeto magico puede ser null
+
+        List<Grupo> darLista = new List<Grupo>();
+        foreach (IObjetoMagico objetoMagico in ObjetosPorRango(m_rangoDar))
+        {
+            if (objetoMagico == null)
+                continue;
+            foreach (TipoDeMagia magia in m_magiaDar)
+                darLista.Add(new Grupo
+                {
+                    elemento = objetoMagico,
+                    tipoDeMagia = magia
+                });
+        }
+
+        List<Grupo> recibirLista = new List<Grupo>();
+        foreach (IObjetoMagico objetoMagico in ObjetosPorRango(m_rangoRecibir))
+        {
+            if (objetoMagico == null)
+                continue;
+            foreach (TipoDeMagia magia in m_magiaRecibir)
+                recibirLista.Add(new Grupo
+                {
+                    elemento = objetoMagico,
+                    tipoDeMagia = magia
+                });
+        }
+
+        bool algo = SpellSystem.Spell(darLista, recibirLista, new EnergiaCoin(60));
+        if (!algo)
+            Debug.LogError("No funca");
     }
 
     private bool Valido()

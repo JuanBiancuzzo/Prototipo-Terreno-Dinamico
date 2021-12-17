@@ -6,16 +6,20 @@ using UnityEngine;
 public class CrearSpell : MonoBehaviour
 {
     [SerializeField] GameObject spellPrefab = null;
+    GameObject spellObj = null;
     Spell spellActual = null;
 
-    private void OnEnable() => ReconocimientoBasico.PlanoCreado += NuevoGlyph;
-    private void OnDisable() => ReconocimientoBasico.PlanoCreado -= NuevoGlyph;
-
-    private void Update()
+    private void OnEnable()
     {
-        
+        ReconocimientoBasico.PlanoCreado += NuevoGlyph;
+        CrearPuntos.TerminarSpell += Reiniciar;
     }
-
+    private void OnDisable()
+    {
+        ReconocimientoBasico.PlanoCreado -= NuevoGlyph;
+        CrearPuntos.TerminarSpell -= Reiniciar;
+    }
+    
     void NuevoGlyph(PlanoDireccionado plano, List<Vector3> puntos)
     {
         if (spellPrefab == null)
@@ -27,8 +31,8 @@ public class CrearSpell : MonoBehaviour
         // se pone una base
         if (spellActual == null)
         {
-            GameObject spell = Instantiate(spellPrefab);
-            spellActual = spell.GetComponent<Spell>();
+            spellObj = Instantiate(spellPrefab);
+            spellActual = spellObj.GetComponent<Spell>();
             if (spellActual == null)
             {
                 Debug.LogError("El prefab no tiene el spell");
@@ -40,6 +44,12 @@ public class CrearSpell : MonoBehaviour
         }
 
         spellActual.AgregarGlyph(puntos, plano.posicion);        
+    }
+
+    void Reiniciar()
+    {
+        Destroy(spellObj);
+        spellActual = null;
     }
 }
 

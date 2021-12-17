@@ -11,7 +11,7 @@ public class EntidadMagica : MonoBehaviour, IObjetoMagico
     public int ConcentracionValor => m_elemento.ConcentracionValor;
     public int ConstitucionValor => m_elemento.ConstitucionValor;
 
-    private void Start()
+    private void Update()
     {
         m_elemento.ActualizarColor();
     }

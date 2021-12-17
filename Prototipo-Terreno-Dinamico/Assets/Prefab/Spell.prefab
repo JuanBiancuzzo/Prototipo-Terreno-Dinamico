@@ -50,7 +50,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 313dacef59eb91f4783f002808dd2a66, type: 2}
   - {fileID: 11400000, guid: efe131f1069a2024482adb44d69d2632, type: 2}
   - {fileID: 11400000, guid: c49c732afcb2fec4a9cb8766c8be3ce1, type: 2}
+  - {fileID: 11400000, guid: c263e9bf3d579bc408da64d66b5319f7, type: 2}
+  - {fileID: 11400000, guid: f7154f3f086212348832b885b59dd927, type: 2}
   m_margenDeError: 0.6
-  m_distancia: 3
+  m_distancia: 80
   m_extensionMedia: 3
   m_radio: 3

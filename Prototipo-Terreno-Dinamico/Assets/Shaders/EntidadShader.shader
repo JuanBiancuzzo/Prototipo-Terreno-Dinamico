@@ -12,12 +12,12 @@ Shader "Unlit/EntidadShader"
     SubShader
     {
         Tags {
-            //"Queue" = "Opaque"
-            "RenderType" = "Opaque"
+            "Queue" = "Transparent"
+            "RenderType" = "Transparent"
         }
 
-        //ZWrite Off
-        //Blend SrcAlpha OneMinusSrcAlpha
+        ZWrite Off
+        Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {
@@ -55,7 +55,7 @@ Shader "Unlit/EntidadShader"
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            fixed4 frag(v2f i) : SV_Target
             {
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);

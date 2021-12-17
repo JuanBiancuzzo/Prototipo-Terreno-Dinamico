@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c376a7e5f46eb94084627076470acef, type: 3}
-  m_Name: Recibir
+  m_Script: {fileID: 11500000, guid: 0f61ed48d3b8b204eb37d9967beb415e, type: 3}
+  m_Name: Iluminacion
   m_EditorClassIdentifier: 
-  m_posicion: 3
+  m_nombre: Luz
   m_rangos:
-  - minimo: {x: -0.8, y: 0.2}
-    maximo: {x: 0.8, y: 1.3}
+  - {fileID: 11400000, guid: e84350504bd7e53479d9a2dc52aaef32, type: 2}
